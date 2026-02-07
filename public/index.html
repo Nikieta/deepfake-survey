@@ -97,12 +97,48 @@
 <p id="status"></p>
 
 <script>
-function submitSurvey() {
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
+
+async function submitSurvey() {
+
+  const name = document.getElementById("name").value;
+
+  const age = document.querySelector('input[name="age"]:checked')?.value || "";
+  const familiar = document.querySelector('input[name="familiar"]:checked')?.value || "";
+  const hearing = document.querySelector('input[name="hearing"]:checked')?.value || "";
+
+  const realness = document.querySelector('input[name="realness"]:checked')?.value || "";
+
+  let artifacts = [];
+  document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+    artifacts.push(cb.value);
+  });
+
+  const comments = document.getElementById("comments").value;
+
+  const payload = {
+    name: name,
+    age: age,
+    familiar: familiar,
+    hearing: hearing,
+    realness: realness,
+    artifacts: artifacts.join(", "),
+    comments: comments
+  };
+
+  await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(payload)
+  });
+
   document.getElementById("status").innerText =
-    "Response submitted successfully!";
+    "Response saved to Google Sheets!";
 }
 </script>
+
 
 </div>
 </body>
 </html>
+
