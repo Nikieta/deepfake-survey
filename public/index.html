@@ -127,17 +127,38 @@
     <input type="radio" name="realness" value="Real"> Real  
     <input type="radio" name="realness" value="Very Real"> Very Real  
   </div>
+<div class="card">
+  <h2>Artifact Categories (select all that apply)</h2>
 
-  <div class="card">
-    
-    <h2>Artifact Categories (select all that apply)</h2>
-    <input type="checkbox" value="Robot" title="Speech sounds synthetic or mechanical"> Robot-like voice<br>
-    <input type="checkbox" value="Pauses" title="Odd or misplaced silences"> Unnatural pauses<br>
-    <input type="checkbox" value="Repetition" title="Unexpected word repetition"> Word repetition<br>
-    <input type="checkbox" value="Prosody" title="Emotion or rhythm feels wrong"> Prosody mismatch<br>
-    <input type="checkbox" value="Noise" title="Strange background distortions"> Background noise artifacts<br>
+  <p style="font-size: 13px; color:#4f46e5;">
+    ℹ️ Hover over each option to see what it means
+  </p>
 
-  </div>
+  <input type="checkbox" value="Robot"
+    title="The voice sounds artificial, flat, or like a machine rather than a real person">
+  Robot-like voice  
+  <br><br>
+
+  <input type="checkbox" value="Pauses"
+    title="There are awkward, sudden, or unnatural silences while speaking">
+  Unnatural pauses  
+  <br><br>
+
+  <input type="checkbox" value="Repetition"
+    title="Words or phrases repeat in a way that sounds incorrect or unnatural">
+  Word repetition  
+  <br><br>
+
+  <input type="checkbox" value="Prosody"
+    title="The emotion, tone, or rhythm of speech does not match the sentence (e.g., happy tone for sad text)">
+  Prosody mismatch  
+  <br><br>
+
+  <input type="checkbox" value="Noise"
+    title="You hear strange background sounds, echoes, buzzing, or distortions">
+  Background noise artifacts  
+</div>
+
 
   <div class="card">
     <h2>Additional Comments</h2>
@@ -221,6 +242,7 @@ async function submitSurvey() {
 </div>
 </body>
 </html>
+
 
 
 
