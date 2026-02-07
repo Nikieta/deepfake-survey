@@ -1,4 +1,4 @@
-rded<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
   <title>Deepfake Audio Survey</title>
@@ -147,33 +147,61 @@ rded<!DOCTYPE html>
   <p id="status"></p>
 
 </div>
-
 <script>
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
 
 async function submitSurvey() {
 
-  const name = document.getElementById("name").value;
+  const name = document.getElementById("name").value.trim();
 
-  const age = document.querySelector('input[name="age"]:checked')?.value || "";
-  const familiar = document.querySelector('input[name="familiar"]:checked')?.value || "";
-  const hearing = document.querySelector('input[name="hearing"]:checked')?.value || "";
+  const age = document.querySelector('input[name="age"]:checked');
+  const familiar = document.querySelector('input[name="familiar"]:checked');
+  const hearing = document.querySelector('input[name="hearing"]:checked');
+  const realness = document.querySelector('input[name="realness"]:checked');
 
-  const realness = document.querySelector('input[name="realness"]:checked')?.value || "";
+  const checkedArtifacts = document.querySelectorAll('input[type="checkbox"]:checked');
+
+  if (!name) {
+    alert("Please enter your name.");
+    return;
+  }
+
+  if (!age) {
+    alert("Please select your age group.");
+    return;
+  }
+
+  if (!familiar) {
+    alert("Please select familiarity with deepfakes.");
+    return;
+  }
+
+  if (!hearing) {
+    alert("Please select hearing impairment status.");
+    return;
+  }
+
+  if (!realness) {
+    alert("Please rate how real the audio sounds.");
+    return;
+  }
+
+  if (checkedArtifacts.length === 0) {
+    alert("Please select at least one artifact category.");
+    return;
+  }
 
   let artifacts = [];
-  document.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
-    artifacts.push(cb.value);
-  });
+  checkedArtifacts.forEach(cb => artifacts.push(cb.value));
 
   const comments = document.getElementById("comments").value;
 
   const payload = {
     name: name,
-    age: age,
-    familiar: familiar,
-    hearing: hearing,
-    realness: realness,
+    age: age.value,
+    familiar: familiar.value,
+    hearing: hearing.value,
+    realness: realness.value,
     artifacts: artifacts.join(", "),
     comments: comments
   };
@@ -185,14 +213,14 @@ async function submitSurvey() {
   });
 
   document.getElementById("status").innerText =
-    "Thank you for your response!";
+    "Response recorded successfully!";
 }
 </script>
-
 
 </div>
 </body>
 </html>
+
 
 
 
