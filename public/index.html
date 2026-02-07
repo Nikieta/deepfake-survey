@@ -131,33 +131,34 @@
   <h2>Artifact Categories (select all that apply)</h2>
 
   <p style="font-size: 13px; color:#4f46e5;">
-    ℹ️ Hover over each option to see what it means
+    Hover over each option to see what it means
   </p>
 
-  <input type="checkbox" value="Robot"
-    title="The voice sounds artificial, flat, or like a machine rather than a real person">
-  Robot-like voice  
+  <label title="The voice sounds artificial, flat, or like a machine rather than a real person">
+    <input type="checkbox" value="Robot"> Robot-like voice  
+  </label>
   <br><br>
 
-  <input type="checkbox" value="Pauses"
-    title="There are awkward, sudden, or unnatural silences while speaking">
-  Unnatural pauses  
+  <label title="There are awkward, sudden, or unnatural silences while speaking">
+    <input type="checkbox" value="Pauses"> Unnatural pauses  
+  </label>
   <br><br>
 
-  <input type="checkbox" value="Repetition"
-    title="Words or phrases repeat in a way that sounds incorrect or unnatural">
-  Word repetition  
+  <label title="Words or phrases repeat in a way that sounds incorrect or unnatural">
+    <input type="checkbox" value="Repetition"> Word repetition  
+  </label>
   <br><br>
 
-  <input type="checkbox" value="Prosody"
-    title="The emotion, tone, or rhythm of speech does not match the sentence (e.g., happy tone for sad text)">
-  Prosody mismatch  
+  <label title="The emotion, tone, or rhythm of speech does not match the sentence">
+    <input type="checkbox" value="Prosody"> Prosody mismatch  
+  </label>
   <br><br>
 
-  <input type="checkbox" value="Noise"
-    title="You hear strange background sounds, echoes, buzzing, or distortions">
-  Background noise artifacts  
+  <label title="You hear strange background sounds, echoes, buzzing, or distortions">
+    <input type="checkbox" value="Noise"> Background noise artifacts  
+  </label>
 </div>
+
 
 
   <div class="card">
@@ -242,6 +243,7 @@ async function submitSurvey() {
 </div>
 </body>
 </html>
+
 
 
 
