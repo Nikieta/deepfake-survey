@@ -127,37 +127,59 @@
     <input type="radio" name="realness" value="Real"> Real  
     <input type="radio" name="realness" value="Very Real"> Very Real  
   </div>
-<div class="card">
+    <div class="card">
   <h2>Artifact Categories (select all that apply)</h2>
 
   <p style="font-size: 13px; color:#4f46e5;">
-    Hover over each option to see what it means
+    ℹ️ Read the definition before selecting
   </p>
 
-  <label title="The voice sounds artificial, flat, or like a machine rather than a real person">
-    <input type="checkbox" value="Robot"> Robot-like voice  
+  <label>
+    <input type="checkbox" value="Robot"> 
+    <b>Robot-like voice</b><br>
+    <span style="font-size: 13px; color:#555;">
+      The voice sounds artificial, flat, or machine-like rather than natural human speech.
+    </span>
   </label>
   <br><br>
 
-  <label title="There are awkward, sudden, or unnatural silences while speaking">
-    <input type="checkbox" value="Pauses"> Unnatural pauses  
+  <label>
+    <input type="checkbox" value="Pauses"> 
+    <b>Unnatural pauses</b><br>
+    <span style="font-size: 13px; color:#555;">
+      There are awkward, sudden, or oddly timed silences that don’t sound natural in conversation.
+    </span>
   </label>
   <br><br>
 
-  <label title="Words or phrases repeat in a way that sounds incorrect or unnatural">
-    <input type="checkbox" value="Repetition"> Word repetition  
+  <label>
+    <input type="checkbox" value="Repetition"> 
+    <b>Word repetition</b><br>
+    <span style="font-size: 13px; color:#555;">
+      Words or phrases repeat in a way that feels incorrect, broken, or strange.
+    </span>
   </label>
   <br><br>
 
-  <label title="The emotion, tone, or rhythm of speech does not match the sentence">
-    <input type="checkbox" value="Prosody"> Prosody mismatch  
+  <label>
+    <input type="checkbox" value="Prosody"> 
+    <b>Prosody mismatch</b><br>
+    <span style="font-size: 13px; color:#555;">
+      The emotion, tone, or rhythm of speech does not match what is being said 
+      (e.g., sounding happy while saying something sad).
+    </span>
   </label>
   <br><br>
 
-  <label title="You hear strange background sounds, echoes, buzzing, or distortions">
-    <input type="checkbox" value="Noise"> Background noise artifacts  
+  <label>
+    <input type="checkbox" value="Noise"> 
+    <b>Background noise artifacts</b><br>
+    <span style="font-size: 13px; color:#555;">
+      You hear strange background sounds such as buzzing, echo, distortion, or digital noise.
+    </span>
   </label>
 </div>
+
 
 
 
@@ -243,6 +265,7 @@ async function submitSurvey() {
 </div>
 </body>
 </html>
+
 
 
 
