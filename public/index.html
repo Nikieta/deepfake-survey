@@ -38,13 +38,29 @@
 </div>
 
 <script>
-function submitSurvey() {
+async function submitSurvey() {
   let answer = document.getElementById("q1").value;
+
+  const payload = {
+    sample: "sample_1",
+    rating: answer
+  };
+
+  const response = await fetch(
+    "https://script.google.com/macros/s/AKfycbznaTo8LoTqBdRgCR02x_uoeqeShP6BkPpqW36XzzJ7SbbwTpWNvHtD_FBZ-NjhPWS4/exec",
+    {
+      method: "POST",
+      body: JSON.stringify(payload)
+    }
+  );
+
   document.getElementById("status").innerText =
-    "Response recorded: " + answer + " ✅";
+    "Response saved to Google Sheets ✅";
 }
 </script>
 
+
 </body>
 </html>
+
 
