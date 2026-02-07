@@ -1,18 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Deepfake Survey</title>
+  <title>Deepfake Audio Survey</title>
   <style>
-    body { font-family: Arial; margin: 40px; }
+    body { font-family: Arial, sans-serif; margin: 40px; }
     .card { border: 1px solid #ddd; padding: 20px; margin-bottom: 20px; }
+    select, button { margin-top: 10px; }
   </style>
 </head>
+
 <body>
 
 <h2>Deepfake Audio Survey</h2>
 
 <div class="card">
   <h3>Sample 1</h3>
+
   <audio controls>
     <source src="audio/sample1.wav" type="audio/wav">
   </audio>
@@ -26,17 +29,18 @@
     <option value="real">Real</option>
     <option value="very_real">Very Real</option>
   </select>
+
+  <br><br>
+  <button onclick="submitSurvey()">Submit</button>
+
+  <p id="status"></p>
 </div>
-
-<button onclick="submitSurvey()">Submit</button>
-
-<p id="status"></p>
 
 <script>
 function submitSurvey() {
   let answer = document.getElementById("q1").value;
   document.getElementById("status").innerText =
-    "Response recorded: " + answer;
+    "Response recorded: " + answer + " ✅";
 }
 </script>
 
