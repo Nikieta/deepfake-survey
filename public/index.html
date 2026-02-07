@@ -65,29 +65,33 @@ button:hover {
 
 <h2>Deepfake Audio Survey</h2>
 
-<div class="card">
-  <h3>Sample 1</h3>
+<div class="container">
+  <h1>🎧 Deepfake Audio Survey</h1>
 
-  <audio controls>
-    <source src="audio/DF_E_2000079.flac" type="audio/flac">
-  </audio>
+  <div class="card">
+    <h3>Sample 1</h3>
 
+    <audio controls>
+      <source src="audio/DF_E_2000079.flac" type="audio/flac">
+    </audio>
 
-  <p>How real does this sound?</p>
+    <p><strong>How real does this sound?</strong></p>
 
-  <select id="q1">
-    <option value="very_fake">Very Fake</option>
-    <option value="fake">Fake</option>
-    <option value="neutral">Neutral</option>
-    <option value="real">Real</option>
-    <option value="very_real">Very Real</option>
-  </select>
+    <select id="q1">
+      <option value="very_fake">Very Fake</option>
+      <option value="fake">Fake</option>
+      <option value="neutral">Neutral</option>
+      <option value="real">Real</option>
+      <option value="very_real">Very Real</option>
+    </select>
 
-  <br><br>
-  <button onclick="submitSurvey()">Submit</button>
+    <br><br>
+    <button onclick="submitSurvey()">Submit</button>
 
-  <p id="status"></p>
+    <p id="status"></p>
+  </div>
 </div>
+
 
 <script>
 async function submitSurvey() {
@@ -114,6 +118,7 @@ async function submitSurvey() {
 
 </body>
 </html>
+
 
 
 
