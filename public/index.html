@@ -95,10 +95,7 @@
     <input type="text" id="name"><br><br>
 
     Age:<br>
-    <input type="radio" name="age" value="18-25"> 18–25  
-    <input type="radio" name="age" value="26-35"> 26–35  
-    <input type="radio" name="age" value="36-50"> 36–50  
-    <input type="radio" name="age" value="50+"> 50+  
+    <input type="number" id="age" min="10" max="100" placeholder="Enter your age">
     <br><br>
 
     Familiar with deepfakes?<br>
@@ -198,8 +195,7 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-g
 async function submitSurvey() {
 
   const name = document.getElementById("name").value.trim();
-
-  const age = document.querySelector('input[name="age"]:checked');
+  const age = document.getElementById("age").value.trim();
   const familiar = document.querySelector('input[name="familiar"]:checked');
   const hearing = document.querySelector('input[name="hearing"]:checked');
   const realness = document.querySelector('input[name="realness"]:checked');
@@ -212,9 +208,10 @@ async function submitSurvey() {
   }
 
   if (!age) {
-    alert("Please select your age group.");
+    alert("Please enter your age.");
     return;
-  }
+}
+
 
   if (!familiar) {
     alert("Please select familiarity with deepfakes.");
@@ -265,6 +262,7 @@ async function submitSurvey() {
 </div>
 </body>
 </html>
+
 
 
 
