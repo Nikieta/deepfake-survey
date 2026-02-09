@@ -62,27 +62,6 @@
 
 <h1>Deepfake Audio Survey</h1>
 
-<div class="card">
-  <h2>Participant Information</h2>
-
-  Name:<br>
-  <input type="text" id="name"><br><br>
-
-  Age:<br>
-  <input type="number" id="age" min="10" max="100">
-  <br><br>
-
-  Familiar with deepfakes?<br>
-  <input type="radio" name="familiar" value="No"> No  
-  <input type="radio" name="familiar" value="Somewhat"> Somewhat  
-  <input type="radio" name="familiar" value="Very"> Very  
-  <br><br>
-
-  Hearing impairment?<br>
-  <input type="radio" name="hearing" value="No"> No  
-  <input type="radio" name="hearing" value="Mild"> Mild  
-  <input type="radio" name="hearing" value="Significant"> Significant  
-</div>
 
 <div class="card">
   <h2>Sample 1</h2>
@@ -120,24 +99,20 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "YOUR_GOOGLE_SCRIPT_URL_HERE";
-
-// Autofill name & age from Page 1
-document.getElementById("name").value = localStorage.getItem("name") || "";
-document.getElementById("age").value = localStorage.getItem("age") || "";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCy0prM1DFyQpXMErAvRvo2hnSQ_ZbK1rS3rYd9aLVZdd5m9rhDLQWkyDXNp4p40FX/exec";
 
 async function submitSurvey() {
 
-  const name = document.getElementById("name").value.trim();
-  const age = document.getElementById("age").value.trim();
-  const familiar = document.querySelector('input[name="familiar"]:checked');
-  const hearing = document.querySelector('input[name="hearing"]:checked');
   const realness = document.querySelector('input[name="realness"]:checked');
-
   const checkedArtifacts = document.querySelectorAll('input[type="checkbox"]:checked');
 
-  if (!name || !age || !familiar || !hearing || !realness || checkedArtifacts.length === 0) {
-    alert("Please complete all required fields.");
+  if (!realness) {
+    alert("Please rate how real the audio sounds.");
+    return;
+  }
+
+  if (checkedArtifacts.length === 0) {
+    alert("Please select at least one artifact category.");
     return;
   }
 
@@ -145,13 +120,12 @@ async function submitSurvey() {
   checkedArtifacts.forEach(cb => artifacts.push(cb.value));
 
   const payload = {
-    name: name,
-    age: age,
+
+    name: localStorage.getItem("name"),
+    age: localStorage.getItem("age"),
     gender: localStorage.getItem("gender"),
     hearing_page1: localStorage.getItem("hearing"),
     tech_difficulty: localStorage.getItem("tech"),
-    familiar: familiar.value,
-    hearing_page2: hearing.value,
     realness: realness.value,
     artifacts: artifacts.join(", "),
     comments: document.getElementById("comments").value
