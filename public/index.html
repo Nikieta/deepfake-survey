@@ -1,274 +1,135 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Deepfake Audio Survey</title>
- <style>
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f6f7fb;
-    margin: 0;
-    padding: 40px;
-    color: #111827;
-  }
+  <title>Audio Deepfake Detection and Explainability</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 40px;
+      color: #111827;
+    }
 
-  .container {
-    max-width: 760px;
-    margin: auto;
-    background: transparent;
-  }
+    .container {
+      max-width: 760px;
+      margin: auto;
+      background: transparent;
+    }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 24px;
-  }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
 
-  .card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-  }
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
 
-  .card h2 {
-    margin-top: 0;
-    font-size: 18px;
-    color: #4f46e5;
-  }
+    button:hover {
+      background: #4338ca;
+    }
 
-  label {
-    margin-right: 14px;
-    cursor: pointer;
-  }
-
-  input[type="text"] {
-    padding: 6px 8px;
-    border-radius: 6px;
-    border: 1px solid #d1d5db;
-    width: 200px;
-  }
-
-  .options {
-    margin: 10px 0;
-  }
-
-  button {
-    background: #4f46e5;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background: #4338ca;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-  }
-
-  audio {
-    width: 100%;
-    margin: 10px 0;
-  }
-</style>
-
+    input, select {
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #d1d5db;
+      width: 250px;
+    }
+  </style>
 </head>
 
 <body>
 
-  <div class="container">
+<div class="container">
 
-  <h1>Deepfake Audio Survey</h1>
+<h1>Audio Deepfake Detection and Explainability</h1>
 
-  <div class="card">
-    <h2>Participant Information</h2>
+<div class="card">
+  <h2>Participant Details</h2>
 
-    Name:<br>
-    <input type="text" id="name"><br><br>
+  Name:<br>
+  <input type="text" id="name"><br><br>
 
-    Age:<br>
-    <input type="number" id="age" min="10" max="100">
-    <br><br>
+  Age:<br>
+  <input type="number" id="age" min="10" max="100"><br><br>
 
-    Familiar with deepfakes?<br>
-    <input type="radio" name="familiar" value="No"> No  
-    <input type="radio" name="familiar" value="Somewhat"> Somewhat  
-    <input type="radio" name="familiar" value="Very"> Very  
-    <br><br>
-
-    Hearing impairment?<br>
-    <input type="radio" name="hearing" value="No"> No  
-    <input type="radio" name="hearing" value="Mild"> Mild  
-    <input type="radio" name="hearing" value="Significant"> Significant  
-  </div>
-
-  <div class="card">
-    <h2>Sample 1</h2>
-
-    <audio controls>
-      <source src="audio/DF_E_2000079.flac" type="audio/flac">
-    </audio>
-
-    <p><b>How real does this sound?</b></p>
-    <input type="radio" name="realness" value="Very Fake"> Very Fake  
-    <input type="radio" name="realness" value="Fake"> Fake  
-    <input type="radio" name="realness" value="Neutral"> Neutral  
-    <input type="radio" name="realness" value="Real"> Real  
-    <input type="radio" name="realness" value="Very Real"> Very Real  
-  </div>
-    <div class="card">
-  <h2>Artifact Categories (select all that apply)</h2>
-
-  <p style="font-size: 13px; color:#4f46e5;">
-    ℹ️ Read the definition before selecting
-  </p>
-
-  <label>
-    <input type="checkbox" value="Robot"> 
-    <b>Robot-like voice</b><br>
-    <span style="font-size: 13px; color:#555;">
-      The voice sounds artificial, flat, or machine-like rather than natural human speech.
-    </span>
-  </label>
+  Gender:<br>
+  <select id="gender">
+    <option value="">Select</option>
+    <option>Male</option>
+    <option>Female</option>
+    <option>Other</option>
+    <option>Prefer not to say</option>
+  </select>
   <br><br>
 
-  <label>
-    <input type="checkbox" value="Pauses"> 
-    <b>Unnatural pauses</b><br>
-    <span style="font-size: 13px; color:#555;">
-      There are awkward, sudden, or oddly timed silences that don’t sound natural in conversation.
-    </span>
-  </label>
+  Hearing Impairment:<br>
+  <select id="hearing">
+    <option value="">Select</option>
+    <option>No</option>
+    <option>Mild</option>
+    <option>Significant</option>
+    <option>Prefer not to say</option>
+  </select>
   <br><br>
 
-  <label>
-    <input type="checkbox" value="Repetition"> 
-    <b>Word repetition</b><br>
-    <span style="font-size: 13px; color:#555;">
-      Words or phrases repeat in a way that feels incorrect, broken, or strange.
-    </span>
-  </label>
+  Technical Difficulty:<br>
+  <select id="tech">
+    <option value="">Select</option>
+    <option>None</option>
+    <option>Mild</option>
+    <option>High</option>
+  </select>
   <br><br>
 
-  <label>
-    <input type="checkbox" value="Prosody"> 
-    <b>Prosody mismatch</b><br>
-    <span style="font-size: 13px; color:#555;">
-      The emotion, tone, or rhythm of speech does not match what is being said 
-      (e.g., sounding happy while saying something sad).
-    </span>
-  </label>
+  <input type="checkbox" id="consent">
+  I understand that my data will remain confidential and used only for research.
   <br><br>
 
-  <label>
-    <input type="checkbox" value="Noise"> 
-    <b>Background noise artifacts</b><br>
-    <span style="font-size: 13px; color:#555;">
-      You hear strange background sounds such as buzzing, echo, distortion, or digital noise.
-    </span>
-  </label>
+  <button onclick="proceed()">Start Survey</button>
 </div>
 
-
-
-
-  <div class="card">
-    <h2>Additional Comments</h2>
-    <textarea id="comments"></textarea>
-  </div>
-
-  <button onclick="submitSurvey()">Submit</button>
-  <p id="status"></p>
-
 </div>
+
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
+function proceed() {
 
-async function submitSurvey() {
-
-  const name = document.getElementById("name").value.trim();
-  const age = document.getElementById("age").value.trim();
-  const familiar = document.querySelector('input[name="familiar"]:checked');
-  const hearing = document.querySelector('input[name="hearing"]:checked');
-  const realness = document.querySelector('input[name="realness"]:checked');
-
-  const checkedArtifacts = document.querySelectorAll('input[type="checkbox"]:checked');
-
-  if (!name) {
+  if (!document.getElementById("name").value.trim()) {
     alert("Please enter your name.");
     return;
   }
 
-  if (!age) {
+  if (!document.getElementById("age").value.trim()) {
     alert("Please enter your age.");
     return;
-}
+  }
 
-
-  if (!familiar) {
-    alert("Please select familiarity with deepfakes.");
+  if (!document.getElementById("consent").checked) {
+    alert("Please accept the consent to continue.");
     return;
   }
 
-  if (!hearing) {
-    alert("Please select hearing impairment status.");
-    return;
-  }
 
-  if (!realness) {
-    alert("Please rate how real the audio sounds.");
-    return;
-  }
+  localStorage.setItem("name", document.getElementById("name").value);
+  localStorage.setItem("age", document.getElementById("age").value);
+  localStorage.setItem("gender", document.getElementById("gender").value);
+  localStorage.setItem("hearing", document.getElementById("hearing").value);
+  localStorage.setItem("tech", document.getElementById("tech").value);
 
-  if (checkedArtifacts.length === 0) {
-    alert("Please select at least one artifact category.");
-    return;
-  }
 
-  let artifacts = [];
-  checkedArtifacts.forEach(cb => artifacts.push(cb.value));
-
-  const comments = document.getElementById("comments").value;
-
-  const payload = {
-    name: name,
-    age: age.value,
-    familiar: familiar.value,
-    hearing: hearing.value,
-    realness: realness.value,
-    artifacts: artifacts.join(", "),
-    comments: comments
-  };
-
-  await fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(payload)
-  });
-
-  document.getElementById("status").innerText =
-    "Response recorded successfully!";
+  window.location.href = "survey.html";
 }
 </script>
 
-</div>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
