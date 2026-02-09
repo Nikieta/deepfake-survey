@@ -45,6 +45,22 @@
       border: 1px solid #d1d5db;
       width: 250px;
     }
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .consent-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .footer {
+      margin-top: 16px;
+    }
+
   </style>
 </head>
 
@@ -53,53 +69,66 @@
 <div class="container">
 
 <h1>Audio Deepfake Detection and Explainability</h1>
-
 <div class="card">
   <h2>Participant Details</h2>
 
-  Name:<br>
-  <input type="text" id="name"><br><br>
+  <div class="field">
+    <label>Name</label>
+    <input type="text" id="name">
+  </div>
 
-  Age:<br>
-  <input type="number" id="age" min="10" max="100"><br><br>
+  <div class="field">
+    <label>Age</label>
+    <input type="number" id="age" min="10" max="100">
+  </div>
 
-  Gender:<br>
-  <select id="gender">
-    <option value="">Select</option>
-    <option>Male</option>
-    <option>Female</option>
-    <option>Other</option>
-    <option>Prefer not to say</option>
-  </select>
-  <br><br>
+  <div class="field">
+    <label>Gender</label>
+    <select id="gender">
+      <option value="">Select</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+      <option>Prefer not to say</option>
+    </select>
+  </div>
 
-  Hearing Impairment:<br>
-  <select id="hearing">
-    <option value="">Select</option>
-    <option>No</option>
-    <option>Mild</option>
-    <option>Significant</option>
-    <option>Prefer not to say</option>
-  </select>
-  <br><br>
+  <div class="field">
+    <label>Hearing Impairment</label>
+    <select id="hearing">
+      <option value="">Select</option>
+      <option>No</option>
+      <option>Mild</option>
+      <option>Significant</option>
+      <option>Prefer not to say</option>
+    </select>
+  </div>
 
-  Technical Difficulty:<br>
-  <select id="tech">
-    <option value="">Select</option>
-    <option>None</option>
-    <option>Mild</option>
-    <option>High</option>
-  </select>
-  <br><br>
+  <div class="field">
+    <label>Technical Difficulty</label>
+    <select id="tech">
+      <option value="">Select</option>
+      <option>None</option>
+      <option>Mild</option>
+      <option>High</option>
+    </select>
+  </div>
 
-  <input type="checkbox" id="consent">
-  I understand that my data will remain confidential and used only for research.
-  <br><br>
+  <div class="consent-row">
+    <input type="checkbox" id="consent">
+    <span>
+      I understand that my data will remain confidential and used only for research.
+    </span>
+  </div>
 
-  <button onclick="proceed()">Start Survey</button>
+  <div class="footer">
+    <button onclick="proceed()">Start Survey</button>
+  </div>
 </div>
 
-</div>
+
+
+  
 
 <script>
 function proceed() {
@@ -133,3 +162,4 @@ function proceed() {
 
 </body>
 </html>
+
