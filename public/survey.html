@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Audio Survey</title>
+  <title>Audio Deepfake Survey</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -77,6 +77,20 @@
     button:hover {
       background: #4338ca;
     }
+
+    /* Inline error messages */
+    .error {
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .hint {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 
@@ -93,9 +107,17 @@
   </div>
   <div class="progress-text" id="progressText">Sample 1 of 20</div>
 
+  <p class="hint">
+    ▶️ Please listen to the audio completely before answering.
+  </p>
+
   <audio controls id="audioPlayer">
-    <source id="audioSource" src="audio/DF_E_2000013.flac" type="audio/flac">
+    <source id="audioSource" src="" type="audio/flac">
   </audio>
+
+  <div id="audioError" class="error">
+    Please play the audio before proceeding.
+  </div>
 
   <p><b>How real does this sound?</b></p>
   <input type="radio" name="realness" value="Very Fake"> Very Fake  
@@ -103,16 +125,26 @@
   <input type="radio" name="realness" value="Neutral"> Neutral  
   <input type="radio" name="realness" value="Real"> Real  
   <input type="radio" name="realness" value="Very Real"> Very Real  
-  <br><br>
 
-  <p><b>Select any artifacts you noticed:</b></p>
-  <input type="checkbox" value="Robot" class="artifact"> Robot-like voice<br>
-  <input type="checkbox" value="Pauses" class="artifact"> Unnatural pauses<br>
-  <input type="checkbox" value="Repetition" class="artifact"> Word repetition<br>
-  <input type="checkbox" value="Prosody" class="artifact"> Prosody mismatch<br>
-  <input type="checkbox" value="Noise" class="artifact"> Background noise<br><br>
+  <div id="realnessError" class="error">
+    Please select a rating.
+  </div>
 
-  <textarea id="comments" placeholder="Additional comments..."></textarea>
+  <br>
+
+  <p><b>Select the MOST prominent artifact you noticed:</b></p>
+
+  <input type="radio" name="artifact" value="Robot"> Robot-like voice<br>
+  <input type="radio" name="artifact" value="Pauses"> Unnatural pauses<br>
+  <input type="radio" name="artifact" value="Repetition"> Word repetition<br>
+  <input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
+  <input type="radio" name="artifact" value="Noise"> Background noise<br><br>
+
+  <div id="artifactError" class="error">
+    Please select one artifact category.
+  </div>
+
+  <textarea id="comments" placeholder="Additional comments (optional)..."></textarea>
   <br><br>
 
   <button onclick="submitAndNext()">Next Sample</button>
@@ -121,8 +153,11 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
-const audioFiles = [
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
+
+// Original list of files
+let audioFiles = [
   "audio/DF_E_2000013.flac",
   "audio/DF_E_2000024.flac",
   "audio/DF_E_2000026.flac",
@@ -145,7 +180,30 @@ const audioFiles = [
   "audio/DF_E_2749817.flac"
 ];
 
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+audioFiles = shuffle(audioFiles);
+
+
 let currentIndex = 0;
+let audioPlayed = false;
+
+const audioPlayer = document.getElementById("audioPlayer");
+const audioSource = document.getElementById("audioSource");
+
+audioPlayer.addEventListener("play", () => {
+  audioPlayed = true;
+  document.getElementById("audioError").style.display = "none";
+});
+
+audioSource.src = audioFiles[0];
+audioPlayer.load();
 
 function updateProgress() {
   const percent = ((currentIndex + 1) / 20) * 100;
@@ -156,15 +214,27 @@ function updateProgress() {
 
 async function submitAndNext() {
 
-  const realness = document.querySelector('input[name="realness"]:checked');
-  if (!realness) {
-    alert("Please rate the audio.");
+  document.getElementById("audioError").style.display = "none";
+  document.getElementById("realnessError").style.display = "none";
+  document.getElementById("artifactError").style.display = "none";
+
+  if (!audioPlayed) {
+    document.getElementById("audioError").style.display = "block";
     return;
   }
 
-  let artifacts = [];
-  document.querySelectorAll(".artifact:checked")
-    .forEach(cb => artifacts.push(cb.value));
+  const realness = document.querySelector('input[name="realness"]:checked');
+  if (!realness) {
+    document.getElementById("realnessError").style.display = "block";
+    return;
+  }
+
+  const artifact = document.querySelector('input[name="artifact"]:checked');
+  if (!artifact) {
+    document.getElementById("artifactError").style.display = "block";
+    return;
+  }
+
 
   const payload = {
     name: localStorage.getItem("name"),
@@ -175,7 +245,7 @@ async function submitAndNext() {
     sample: currentIndex + 1,
     audio_file: audioFiles[currentIndex],
     realness: realness.value,
-    artifacts: artifacts.join(", "),
+    artifact: artifact.value,
     comments: document.getElementById("comments").value
   };
 
@@ -192,13 +262,14 @@ async function submitAndNext() {
     return;
   }
 
-  document.getElementById("audioSource").src = audioFiles[currentIndex];
-  document.getElementById("audioPlayer").load();
+  audioSource.src = audioFiles[currentIndex];
+  audioPlayer.load();
 
+  audioPlayed = false;
   document.querySelectorAll('input[name="realness"]')
     .forEach(r => r.checked = false);
-  document.querySelectorAll(".artifact")
-    .forEach(cb => cb.checked = false);
+  document.querySelectorAll('input[name="artifact"]')
+    .forEach(r => r.checked = false);
   document.getElementById("comments").value = "";
 
   updateProgress();
