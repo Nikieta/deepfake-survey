@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Audio Deepfake Detection and Explainability</title>
+  <title>Audio Deepfake Detection and Explainability Survey</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -45,6 +45,18 @@
       color: #374151;
     }
 
+    .required {
+      color: red;
+      margin-left: 4px;
+    }
+
+    .error {
+      color: red;
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
     .field {
       display: flex;
       flex-direction: column;
@@ -52,7 +64,6 @@
       margin-bottom: 18px;
     }
 
-    /* ---- NEW CONSENT LAYOUT (SPREAD ACROSS CARD) ---- */
     .consent-wrapper {
       display: flex;
       justify-content: center;
@@ -62,17 +73,15 @@
 
     .consent-row {
       display: grid;
-      grid-template-columns: 24px 1fr; /* checkbox + wide text */
+      grid-template-columns: 24px 1fr;
       align-items: start;
       gap: 14px;
-      width: 85%;          /* spreads nicely across the card */
+      width: 85%;
       color: #4b5563;
       font-size: 14px;
       line-height: 1.4;
     }
-    /* ----------------------------------------------- */
 
-    /* Centered button */
     .button-wrapper {
       display: flex;
       justify-content: center;
@@ -106,23 +115,25 @@
 
 <div class="container">
 
-<h1>Audio Deepfake Detection and Explainability</h1>
+<h1>Audio Deepfake Detection and Explainability Survey</h1>
 
 <div class="card">
   <h2>Participant Details</h2>
 
   <div class="field">
-    <label>Name</label>
+    <label>Name <span class="required">*</span></label>
     <input type="text" id="name">
+    <div class="error" id="nameErr">Name is required.</div>
   </div>
 
   <div class="field">
-    <label>Age</label>
+    <label>Age <span class="required">*</span></label>
     <input type="number" id="age" min="10" max="100">
+    <div class="error" id="ageErr">Age is required.</div>
   </div>
 
   <div class="field">
-    <label>Gender</label>
+    <label>Gender <span class="required">*</span></label>
     <select id="gender">
       <option value="">Select</option>
       <option>Male</option>
@@ -130,10 +141,11 @@
       <option>Other</option>
       <option>Prefer not to say</option>
     </select>
+    <div class="error" id="genderErr">Please select your gender.</div>
   </div>
 
   <div class="field">
-    <label>Hearing Impairment</label>
+    <label>Hearing Impairment <span class="required">*</span></label>
     <select id="hearing">
       <option value="">Select</option>
       <option>No</option>
@@ -141,16 +153,18 @@
       <option>Significant</option>
       <option>Prefer not to say</option>
     </select>
+    <div class="error" id="hearingErr">Please select hearing status.</div>
   </div>
 
   <div class="field">
-    <label>Technical Difficulty</label>
+    <label>Technical Difficulty <span class="required">*</span></label>
     <select id="tech">
       <option value="">Select</option>
       <option>None</option>
       <option>Mild</option>
       <option>High</option>
     </select>
+    <div class="error" id="techErr">Please select technical difficulty.</div>
   </div>
 
   <div class="consent-wrapper">
@@ -161,6 +175,9 @@
       </span>
     </div>
   </div>
+  <div class="error" id="consentErr" style="text-align:center;">
+    Please accept the consent to continue.
+  </div>
 
   <div class="button-wrapper">
     <button onclick="proceed()">Start Survey</button>
@@ -170,28 +187,40 @@
 </div>
 
 <script>
+function clearErrors() {
+  document.querySelectorAll(".error").forEach(e => e.style.display = "none");
+}
+
+function showError(id) {
+  document.getElementById(id).style.display = "block";
+}
+
 function proceed() {
+  clearErrors();
 
-  if (!document.getElementById("name").value.trim()) {
-    alert("Please enter your name.");
-    return;
-  }
+  let valid = true;
 
-  if (!document.getElementById("age").value.trim()) {
-    alert("Please enter your age.");
-    return;
-  }
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const gender = document.getElementById("gender").value;
+  const hearing = document.getElementById("hearing").value;
+  const tech = document.getElementById("tech").value;
+  const consent = document.getElementById("consent").checked;
 
-  if (!document.getElementById("consent").checked) {
-    alert("Please accept the consent to continue.");
-    return;
-  }
+  if (!name) { showError("nameErr"); valid = false; }
+  if (!age) { showError("ageErr"); valid = false; }
+  if (!gender) { showError("genderErr"); valid = false; }
+  if (!hearing) { showError("hearingErr"); valid = false; }
+  if (!tech) { showError("techErr"); valid = false; }
+  if (!consent) { showError("consentErr"); valid = false; }
 
-  localStorage.setItem("name", document.getElementById("name").value);
-  localStorage.setItem("age", document.getElementById("age").value);
-  localStorage.setItem("gender", document.getElementById("gender").value);
-  localStorage.setItem("hearing", document.getElementById("hearing").value);
-  localStorage.setItem("tech", document.getElementById("tech").value);
+  if (!valid) return;
+
+  localStorage.setItem("name", name);
+  localStorage.setItem("age", age);
+  localStorage.setItem("gender", gender);
+  localStorage.setItem("hearing", hearing);
+  localStorage.setItem("tech", tech);
 
   window.location.href = "survey.html";
 }
