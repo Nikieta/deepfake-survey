@@ -154,7 +154,7 @@
 
 <script>
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec";
+"https://script.google.com/macros/s/AKfycbwU1pmJuGGefuMMkDIFgPnq6fEMyMzPEcmo-0uJgJ3l6j3iwlGkMGZ67pJTDe7ZSVQd/exec";
 
 // Original list of files
 let audioFiles = [
@@ -237,17 +237,17 @@ async function submitAndNext() {
 
 
   const payload = {
-    name: localStorage.getItem("name"),
-    age: localStorage.getItem("age"),
-    gender: localStorage.getItem("gender"),
-    hearing: localStorage.getItem("hearing"),
-    tech: localStorage.getItem("tech"),
-    sample: currentIndex + 1,
-    audio_file: audioFiles[currentIndex],
-    realness: realness.value,
-    artifact: artifact.value,
-    comments: document.getElementById("comments").value
-  };
+  name: localStorage.getItem("name"),
+  age: localStorage.getItem("age"),
+  familiar: localStorage.getItem("familiar"),
+  hearing: localStorage.getItem("hearing"),
+  tech: localStorage.getItem("tech"),
+  sample: currentIndex + 1,
+  realness: realness.value,
+  artifact: artifact.value,
+  comments: document.getElementById("comments").value
+};
+
 
   await fetch(APPS_SCRIPT_URL, {
     method: "POST",
