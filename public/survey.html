@@ -28,7 +28,6 @@
       text-align: center;
     }
 
-    /* Progress bar */
     .progress-container {
       width: 100%;
       background: #e5e7eb;
@@ -74,11 +73,11 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #4338ca;
+    button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
     }
 
-    /* Inline error messages */
     .error {
       color: #dc2626;
       font-size: 13px;
@@ -86,18 +85,12 @@
       display: none;
     }
 
-    .hint {
-      font-size: 13px;
-      color: #4b5563;
-      margin-bottom: 8px;
-    }
   </style>
 </head>
 
 <body>
 
 <div class="container">
-
 <h1>Audio Deepfake Survey</h1>
 
 <div class="card">
@@ -106,10 +99,6 @@
     <div class="progress-bar" id="progressBar"></div>
   </div>
   <div class="progress-text" id="progressText">Sample 1 of 20</div>
-
-  <p class="hint">
-    ▶️ Please listen to the audio completely before answering.
-  </p>
 
   <audio controls id="audioPlayer">
     <source id="audioSource" src="" type="audio/flac">
@@ -147,15 +136,15 @@
   <textarea id="comments" placeholder="Additional comments..."></textarea>
   <br><br>
 
-  <button onclick="submitAndNext()">Next Sample</button>
+  <button id="nextBtn" onclick="submitAndNext()">Next Sample</button>
 
 </div>
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxdnUOFyy1L5bgZDaztlemC9uqNKtaJsMtY8LxyNtTh6AosCFANjYvx734kMmYl0gOk/exec";
 
-// Original list of files
 let audioFiles = [
   "audio/DF_E_2000013.flac",
   "audio/DF_E_2000024.flac",
@@ -189,9 +178,9 @@ function shuffle(array) {
 
 audioFiles = shuffle(audioFiles);
 
-
 let currentIndex = 0;
 let audioPlayed = false;
+let submitting = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
@@ -213,40 +202,48 @@ function updateProgress() {
 
 async function submitAndNext() {
 
+  if (submitting) return;
+  submitting = true;
+  document.getElementById("nextBtn").disabled = true;
+
   document.getElementById("audioError").style.display = "none";
   document.getElementById("realnessError").style.display = "none";
   document.getElementById("artifactError").style.display = "none";
 
   if (!audioPlayed) {
     document.getElementById("audioError").style.display = "block";
+    submitting = false;
+    document.getElementById("nextBtn").disabled = false;
     return;
   }
 
   const realness = document.querySelector('input[name="realness"]:checked');
   if (!realness) {
     document.getElementById("realnessError").style.display = "block";
+    submitting = false;
+    document.getElementById("nextBtn").disabled = false;
     return;
   }
 
   const artifact = document.querySelector('input[name="artifact"]:checked');
   if (!artifact) {
     document.getElementById("artifactError").style.display = "block";
+    submitting = false;
+    document.getElementById("nextBtn").disabled = false;
     return;
   }
 
-
   const payload = {
-  name: localStorage.getItem("name"),
-  age: localStorage.getItem("age"),
-  familiar: localStorage.getItem("familiar"),
-  hearing: localStorage.getItem("hearing"),
-  tech: localStorage.getItem("tech"),
-  sample: currentIndex + 1,
-  realness: realness.value,
-  artifact: artifact.value,
-  comments: document.getElementById("comments").value
-};
-
+    name: localStorage.getItem("name"),
+    age: localStorage.getItem("age"),
+    familiar: localStorage.getItem("familiar"),
+    hearing: localStorage.getItem("hearing"),
+    tech: localStorage.getItem("tech"),
+    sample: currentIndex + 1,
+    realness: realness.value,
+    artifact: artifact.value,
+    comments: document.getElementById("comments").value
+  };
 
   await fetch(APPS_SCRIPT_URL, {
     method: "POST",
@@ -265,13 +262,15 @@ async function submitAndNext() {
   audioPlayer.load();
 
   audioPlayed = false;
-  document.querySelectorAll('input[name="realness"]')
-    .forEach(r => r.checked = false);
-  document.querySelectorAll('input[name="artifact"]')
-    .forEach(r => r.checked = false);
+
+  document.querySelectorAll('input[name="realness"]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[name="artifact"]').forEach(r => r.checked = false);
   document.getElementById("comments").value = "";
 
   updateProgress();
+
+  submitting = false;
+  document.getElementById("nextBtn").disabled = false;
 }
 
 updateProgress();
