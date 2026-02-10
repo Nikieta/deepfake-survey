@@ -1,131 +1,177 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Deepfake Audio Survey</title>
- <style>
-  body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    background: #f6f7fb;
-    margin: 0;
-    padding: 40px;
-    color: #111827;
-  }
+  <title>Audio Survey</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 40px;
+      color: #111827;
+    }
 
-  .container {
-    max-width: 760px;
-    margin: auto;
-    background: transparent;
-  }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 24px;
-  }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
 
-  .card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px;
-    padding: 20px 24px;
-    margin-bottom: 20px;
-  }
+    h1 {
+      text-align: center;
+    }
 
-  button {
-    background: #4f46e5;
-    color: white;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 8px;
-    font-size: 14px;
-    cursor: pointer;
-  }
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      background: #e5e7eb;
+      border-radius: 8px;
+      height: 10px;
+      margin-bottom: 12px;
+    }
 
-  textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #d1d5db;
-  }
+    .progress-bar {
+      height: 10px;
+      width: 5%;
+      background: #4f46e5;
+      border-radius: 8px;
+      transition: width 0.3s ease;
+    }
 
-  audio {
-    width: 100%;
-    margin: 10px 0;
-  }
-</style>
+    .progress-text {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
 
+    audio {
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    .options {
+      margin: 10px 0;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+  </style>
 </head>
 
 <body>
 
 <div class="container">
 
-<h1>Deepfake Audio Survey</h1>
-
+<h1>Audio Deepfake Survey</h1>
 
 <div class="card">
-  <h2>Sample 1</h2>
 
-  <audio controls>
-    <source src="audio/DF_E_2000079.flac" type="audio/flac">
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText">Sample 1 of 20</div>
+
+  <audio controls id="audioPlayer">
+    <source id="audioSource" src="audio/DF_E_2000079.flac" type="audio/flac">
   </audio>
 
   <p><b>How real does this sound?</b></p>
-  <input type="radio" name="realness" value="Very Fake"> Very Fake  
-  <input type="radio" name="realness" value="Fake"> Fake  
-  <input type="radio" name="realness" value="Neutral"> Neutral  
-  <input type="radio" name="realness" value="Real"> Real  
-  <input type="radio" name="realness" value="Very Real"> Very Real  
+  <div class="options">
+    <input type="radio" name="realness" value="Very Fake"> Very Fake  
+    <input type="radio" name="realness" value="Fake"> Fake  
+    <input type="radio" name="realness" value="Neutral"> Neutral  
+    <input type="radio" name="realness" value="Real"> Real  
+    <input type="radio" name="realness" value="Very Real"> Very Real  
+  </div>
+
+  <p><b>Select any artifacts you noticed:</b></p>
+  <input type="checkbox" value="Robot" class="artifact"> Robot-like voice<br>
+  <input type="checkbox" value="Pauses" class="artifact"> Unnatural pauses<br>
+  <input type="checkbox" value="Repetition" class="artifact"> Word repetition<br>
+  <input type="checkbox" value="Prosody" class="artifact"> Prosody mismatch<br>
+  <input type="checkbox" value="Noise" class="artifact"> Background noise<br><br>
+
+  <textarea id="comments" placeholder="Additional comments..."></textarea>
+  <br><br>
+
+  <button onclick="submitAndNext()">Next Sample</button>
+
 </div>
-
-<div class="card">
-  <h2>Artifact Categories (select all that apply)</h2>
-
-  <label><input type="checkbox" value="Robot"> Robot-like voice</label><br>
-  <label><input type="checkbox" value="Pauses"> Unnatural pauses</label><br>
-  <label><input type="checkbox" value="Repetition"> Word repetition</label><br>
-  <label><input type="checkbox" value="Prosody"> Prosody mismatch</label><br>
-  <label><input type="checkbox" value="Noise"> Background noise artifacts</label>
-</div>
-
-<div class="card">
-  <h2>Additional Comments</h2>
-  <textarea id="comments"></textarea>
-</div>
-
-<button onclick="submitSurvey()">Submit</button>
-<p id="status"></p>
-
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzCy0prM1DFyQpXMErAvRvo2hnSQ_ZbK1rS3rYd9aLVZdd5m9rhDLQWkyDXNp4p40FX/exec";
+const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
 
-async function submitSurvey() {
+/* Replace these with your 20 actual files */
+const audioFiles = [
+  "audio/DF_E_2000079.flac",
+  "audio/sample2.flac",
+  "audio/sample3.flac",
+  "audio/sample4.flac",
+  "audio/sample5.flac",
+  "audio/sample6.flac",
+  "audio/sample7.flac",
+  "audio/sample8.flac",
+  "audio/sample9.flac",
+  "audio/sample10.flac",
+  "audio/sample11.flac",
+  "audio/sample12.flac",
+  "audio/sample13.flac",
+  "audio/sample14.flac",
+  "audio/sample15.flac",
+  "audio/sample16.flac",
+  "audio/sample17.flac",
+  "audio/sample18.flac",
+  "audio/sample19.flac",
+  "audio/sample20.flac"
+];
+
+let currentIndex = 0;
+
+function updateProgress() {
+  const percent = ((currentIndex + 1) / 20) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText =
+    `Sample ${currentIndex + 1} of 20`;
+}
+
+async function submitAndNext() {
 
   const realness = document.querySelector('input[name="realness"]:checked');
-  const checkedArtifacts = document.querySelectorAll('input[type="checkbox"]:checked');
-
   if (!realness) {
-    alert("Please rate how real the audio sounds.");
-    return;
-  }
-
-  if (checkedArtifacts.length === 0) {
-    alert("Please select at least one artifact category.");
+    alert("Please rate the audio.");
     return;
   }
 
   let artifacts = [];
-  checkedArtifacts.forEach(cb => artifacts.push(cb.value));
+  document.querySelectorAll(".artifact:checked").forEach(cb => artifacts.push(cb.value));
 
   const payload = {
-
     name: localStorage.getItem("name"),
     age: localStorage.getItem("age"),
     gender: localStorage.getItem("gender"),
-    hearing_page1: localStorage.getItem("hearing"),
-    tech_difficulty: localStorage.getItem("tech"),
+    hearing: localStorage.getItem("hearing"),
+    tech: localStorage.getItem("tech"),
+    sample: currentIndex + 1,
+    audio_file: audioFiles[currentIndex],
     realness: realness.value,
     artifacts: artifacts.join(", "),
     comments: document.getElementById("comments").value
@@ -137,9 +183,27 @@ async function submitSurvey() {
     body: JSON.stringify(payload)
   });
 
-  document.getElementById("status").innerText =
-    "Response recorded successfully!";
+  // Move to next sample
+  currentIndex++;
+
+  if (currentIndex >= 20) {
+    window.location.href = "thankyou.html";
+    return;
+  }
+
+  // Load next audio
+  document.getElementById("audioSource").src = audioFiles[currentIndex];
+  document.getElementById("audioPlayer").load();
+
+  // Reset form
+  document.querySelectorAll('input[name="realness"]').forEach(r => r.checked = false);
+  document.querySelectorAll(".artifact").forEach(cb => cb.checked = false);
+  document.getElementById("comments").value = "";
+
+  updateProgress();
 }
+
+updateProgress();
 </script>
 
 </body>
