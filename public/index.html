@@ -52,7 +52,7 @@
       margin-bottom: 18px;
     }
 
-    /* ----- FIXED CENTERING FOR CONSENT ----- */
+    /* Centered consent block */
     .consent-wrapper {
       display: flex;
       justify-content: center;
@@ -65,8 +65,15 @@
       gap: 12px;
       color: #4b5563;
       font-size: 14px;
+      max-width: 520px;
     }
-    /* -------------------------------------- */
+
+    /* Centered button */
+    .button-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 8px;
+    }
 
     button {
       background: #4f46e5;
@@ -80,6 +87,12 @@
 
     button:hover {
       background: #4338ca;
+    }
+
+    /* Optional nicer checkbox */
+    #consent {
+      transform: scale(1.15);
+      accent-color: #4f46e5;
     }
 
   </style>
@@ -145,7 +158,9 @@
     </div>
   </div>
 
-  <button onclick="proceed()">Start Survey</button>
+  <div class="button-wrapper">
+    <button onclick="proceed()">Start Survey</button>
+  </div>
 </div>
 
 </div>
