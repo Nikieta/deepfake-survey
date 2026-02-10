@@ -52,21 +52,25 @@
       margin-bottom: 18px;
     }
 
-    /* Centered consent block */
+    /* ---- NEW CONSENT LAYOUT (SPREAD ACROSS CARD) ---- */
     .consent-wrapper {
       display: flex;
       justify-content: center;
       margin: 24px 0;
+      width: 100%;
     }
 
     .consent-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      display: grid;
+      grid-template-columns: 24px 1fr; /* checkbox + wide text */
+      align-items: start;
+      gap: 14px;
+      width: 85%;          /* spreads nicely across the card */
       color: #4b5563;
       font-size: 14px;
-      max-width: 520px;
+      line-height: 1.4;
     }
+    /* ----------------------------------------------- */
 
     /* Centered button */
     .button-wrapper {
@@ -89,10 +93,10 @@
       background: #4338ca;
     }
 
-    /* Optional nicer checkbox */
     #consent {
       transform: scale(1.15);
       accent-color: #4f46e5;
+      margin-top: 2px;
     }
 
   </style>
