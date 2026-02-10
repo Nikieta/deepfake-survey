@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Survey Instructions</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 40px;
+      color: #111827;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      font-weight: 700;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    ul {
+      line-height: 1.7;
+      margin: 16px 0;
+    }
+
+    .button-wrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 24px;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #4338ca;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Survey Instructions</h1>
+
+<div class="card">
+  <h2>Please read carefully before proceeding</h2>
+
+  <p>You are about to participate in an audio-based evaluation task. Please follow these guidelines:</p>
+
+  <ul>
+    <li>
+      You will listen to a total of <b>20 audio samples</b>, and answer a short set of questions for each one.
+    </li>
+    <li>
+      Please listen to each audio sample <b>carefully and without distractions</b> before answering.
+    </li>
+    <li>
+      Your responses should be based only on what you hear in the audio.
+    </li>
+    <li>
+      There are no right or wrong answers — we are interested in your honest perception.
+    </li>
+    <li>
+      You may replay any audio as many times as needed before responding.
+    </li>
+  </ul>
+
+  <div class="button-wrapper">
+    <button onclick="proceedToSurvey()">Proceed to Survey</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+function proceedToSurvey() {
+  window.location.href = "survey.html";
+}
+</script>
+
+</body>
+</html>
