@@ -56,8 +56,12 @@
       margin: 10px 0;
     }
 
-    .options {
-      margin: 10px 0;
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
     }
 
     button {
@@ -90,17 +94,16 @@
   <div class="progress-text" id="progressText">Sample 1 of 20</div>
 
   <audio controls id="audioPlayer">
-    <source id="audioSource" src="audio/DF_E_2000079.flac" type="audio/flac">
+    <source id="audioSource" src="audio/DF_E_2000013.flac" type="audio/flac">
   </audio>
 
   <p><b>How real does this sound?</b></p>
-  <div class="options">
-    <input type="radio" name="realness" value="Very Fake"> Very Fake  
-    <input type="radio" name="realness" value="Fake"> Fake  
-    <input type="radio" name="realness" value="Neutral"> Neutral  
-    <input type="radio" name="realness" value="Real"> Real  
-    <input type="radio" name="realness" value="Very Real"> Very Real  
-  </div>
+  <input type="radio" name="realness" value="Very Fake"> Very Fake  
+  <input type="radio" name="realness" value="Fake"> Fake  
+  <input type="radio" name="realness" value="Neutral"> Neutral  
+  <input type="radio" name="realness" value="Real"> Real  
+  <input type="radio" name="realness" value="Very Real"> Very Real  
+  <br><br>
 
   <p><b>Select any artifacts you noticed:</b></p>
   <input type="checkbox" value="Robot" class="artifact"> Robot-like voice<br>
@@ -118,30 +121,31 @@
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "YOUR_APPS_SCRIPT_URL_HERE";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxNOlfNj-Y55V-gvLHxQg4TyXCphUzU7jNpIdoG6fHRCLVJ__6GvdU7bf-WCfp_QieV/exec
+";
 
-/* Replace these with your 20 actual files */
+
 const audioFiles = [
+  "audio/DF_E_2000013.flac",
+  "audio/DF_E_2000024.flac",
+  "audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac",
+  "audio/DF_E_2000048.flac",
+  "audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac",
+  "audio/DF_E_2000075.flac",
   "audio/DF_E_2000079.flac",
-  "audio/sample2.flac",
-  "audio/sample3.flac",
-  "audio/sample4.flac",
-  "audio/sample5.flac",
-  "audio/sample6.flac",
-  "audio/sample7.flac",
-  "audio/sample8.flac",
-  "audio/sample9.flac",
-  "audio/sample10.flac",
-  "audio/sample11.flac",
-  "audio/sample12.flac",
-  "audio/sample13.flac",
-  "audio/sample14.flac",
-  "audio/sample15.flac",
-  "audio/sample16.flac",
-  "audio/sample17.flac",
-  "audio/sample18.flac",
-  "audio/sample19.flac",
-  "audio/sample20.flac"
+  "audio/DF_E_2000091.flac",
+  "audio/DF_E_2000100.flac",
+  "audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac",
+  "audio/DF_E_2000524.flac",
+  "audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac",
+  "audio/DF_E_2749711.flac",
+  "audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac",
+  "audio/DF_E_2749817.flac"
 ];
 
 let currentIndex = 0;
@@ -162,7 +166,8 @@ async function submitAndNext() {
   }
 
   let artifacts = [];
-  document.querySelectorAll(".artifact:checked").forEach(cb => artifacts.push(cb.value));
+  document.querySelectorAll(".artifact:checked")
+    .forEach(cb => artifacts.push(cb.value));
 
   const payload = {
     name: localStorage.getItem("name"),
@@ -183,7 +188,6 @@ async function submitAndNext() {
     body: JSON.stringify(payload)
   });
 
-  // Move to next sample
   currentIndex++;
 
   if (currentIndex >= 20) {
@@ -191,13 +195,13 @@ async function submitAndNext() {
     return;
   }
 
-  // Load next audio
   document.getElementById("audioSource").src = audioFiles[currentIndex];
   document.getElementById("audioPlayer").load();
 
-  // Reset form
-  document.querySelectorAll('input[name="realness"]').forEach(r => r.checked = false);
-  document.querySelectorAll(".artifact").forEach(cb => cb.checked = false);
+  document.querySelectorAll('input[name="realness"]')
+    .forEach(r => r.checked = false);
+  document.querySelectorAll(".artifact")
+    .forEach(cb => cb.checked = false);
   document.getElementById("comments").value = "";
 
   updateProgress();
