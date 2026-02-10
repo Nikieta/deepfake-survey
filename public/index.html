@@ -12,7 +12,7 @@
     }
 
     .container {
-      max-width: 900px;      /* matches your screenshot width */
+      max-width: 900px;
       margin: auto;
     }
 
@@ -52,14 +52,21 @@
       margin-bottom: 18px;
     }
 
+    /* ----- FIXED CENTERING FOR CONSENT ----- */
+    .consent-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 24px 0;
+    }
+
     .consent-row {
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 12px;
-      margin: 20px 0;
       color: #4b5563;
       font-size: 14px;
     }
+    /* -------------------------------------- */
 
     button {
       background: #4f46e5;
@@ -129,11 +136,13 @@
     </select>
   </div>
 
-  <div class="consent-row">
-    <input type="checkbox" id="consent">
-    <span>
-      I understand that my data will remain confidential and used only for research.
-    </span>
+  <div class="consent-wrapper">
+    <div class="consent-row">
+      <input type="checkbox" id="consent">
+      <span>
+        I understand that my data will remain confidential and used only for research.
+      </span>
+    </div>
   </div>
 
   <button onclick="proceed()">Start Survey</button>
