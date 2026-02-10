@@ -85,6 +85,11 @@
       display: none;
     }
 
+    .hint {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
   </style>
 </head>
 
@@ -99,6 +104,8 @@
     <div class="progress-bar" id="progressBar"></div>
   </div>
   <div class="progress-text" id="progressText">Sample 1 of 20</div>
+
+  <p class="hint">▶️ Please listen to the audio completely before answering.</p>
 
   <audio controls id="audioPlayer">
     <source id="audioSource" src="" type="audio/flac">
@@ -145,6 +152,7 @@
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxdnUOFyy1L5bgZDaztlemC9uqNKtaJsMtY8LxyNtTh6AosCFANjYvx734kMmYl0gOk/exec";
 
+// ----- AUDIO LIST -----
 let audioFiles = [
   "audio/DF_E_2000013.flac",
   "audio/DF_E_2000024.flac",
@@ -168,6 +176,7 @@ let audioFiles = [
   "audio/DF_E_2749817.flac"
 ];
 
+// Shuffle for bias control
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -175,24 +184,41 @@ function shuffle(array) {
   }
   return array;
 }
-
 audioFiles = shuffle(audioFiles);
 
+// ----- STATE -----
 let currentIndex = 0;
 let audioPlayed = false;
 let submitting = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
+const nextBtn = document.getElementById("nextBtn");
 
+// Track whether audio was played
 audioPlayer.addEventListener("play", () => {
   audioPlayed = true;
   document.getElementById("audioError").style.display = "none";
 });
 
+// Load first sample
 audioSource.src = audioFiles[0];
 audioPlayer.load();
 
+// ----- PRELOAD NEXT AUDIO (KEY CHANGE) -----
+function preloadAudio(url) {
+  const a = new Audio();
+  a.src = url;
+}
+
+// After loading sample N, preload sample N+1 in background
+function preloadNext() {
+  if (currentIndex + 1 < audioFiles.length) {
+    preloadAudio(audioFiles[currentIndex + 1]);
+  }
+}
+
+// ----- PROGRESS -----
 function updateProgress() {
   const percent = ((currentIndex + 1) / 20) * 100;
   document.getElementById("progressBar").style.width = percent + "%";
@@ -200,11 +226,14 @@ function updateProgress() {
     `Sample ${currentIndex + 1} of 20`;
 }
 
+// Preload sample 2 immediately
+preloadNext();
+
 async function submitAndNext() {
 
   if (submitting) return;
   submitting = true;
-  document.getElementById("nextBtn").disabled = true;
+  nextBtn.disabled = true;
 
   document.getElementById("audioError").style.display = "none";
   document.getElementById("realnessError").style.display = "none";
@@ -213,7 +242,7 @@ async function submitAndNext() {
   if (!audioPlayed) {
     document.getElementById("audioError").style.display = "block";
     submitting = false;
-    document.getElementById("nextBtn").disabled = false;
+    nextBtn.disabled = false;
     return;
   }
 
@@ -221,7 +250,7 @@ async function submitAndNext() {
   if (!realness) {
     document.getElementById("realnessError").style.display = "block";
     submitting = false;
-    document.getElementById("nextBtn").disabled = false;
+    nextBtn.disabled = false;
     return;
   }
 
@@ -229,7 +258,7 @@ async function submitAndNext() {
   if (!artifact) {
     document.getElementById("artifactError").style.display = "block";
     submitting = false;
-    document.getElementById("nextBtn").disabled = false;
+    nextBtn.disabled = false;
     return;
   }
 
@@ -258,6 +287,7 @@ async function submitAndNext() {
     return;
   }
 
+  // Switch to next already-preloaded file
   audioSource.src = audioFiles[currentIndex];
   audioPlayer.load();
 
@@ -269,8 +299,11 @@ async function submitAndNext() {
 
   updateProgress();
 
+  // Start preloading the *next* one again
+  preloadNext();
+
   submitting = false;
-  document.getElementById("nextBtn").disabled = false;
+  nextBtn.disabled = false;
 }
 
 updateProgress();
