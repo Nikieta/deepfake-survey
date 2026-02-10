@@ -90,6 +90,29 @@
       color: #4b5563;
       margin-bottom: 8px;
     }
+
+    /* -------- LOADING SPINNER -------- */
+    #loadingWrapper {
+      display: none;
+      text-align: center;
+      margin: 16px 0;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #e5e7eb;
+      border-top: 4px solid #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 8px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* ---------------------------------- */
   </style>
 </head>
 
@@ -143,6 +166,12 @@
   <textarea id="comments" placeholder="Additional comments..."></textarea>
   <br><br>
 
+  <!-- Loading UI -->
+  <div id="loadingWrapper">
+    <div class="spinner"></div>
+    <div>Loading next sample…</div>
+  </div>
+
   <button id="nextBtn" onclick="submitAndNext()">Next Sample</button>
 
 </div>
@@ -152,7 +181,6 @@
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxdnUOFyy1L5bgZDaztlemC9uqNKtaJsMtY8LxyNtTh6AosCFANjYvx734kMmYl0gOk/exec";
 
-// ----- AUDIO LIST -----
 let audioFiles = [
   "audio/DF_E_2000013.flac",
   "audio/DF_E_2000024.flac",
@@ -176,7 +204,6 @@ let audioFiles = [
   "audio/DF_E_2749817.flac"
 ];
 
-// Shuffle for bias control
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -186,7 +213,6 @@ function shuffle(array) {
 }
 audioFiles = shuffle(audioFiles);
 
-// ----- STATE -----
 let currentIndex = 0;
 let audioPlayed = false;
 let submitting = false;
@@ -194,31 +220,16 @@ let submitting = false;
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
 const nextBtn = document.getElementById("nextBtn");
+const loadingWrapper = document.getElementById("loadingWrapper");
 
-// Track whether audio was played
 audioPlayer.addEventListener("play", () => {
   audioPlayed = true;
   document.getElementById("audioError").style.display = "none";
 });
 
-// Load first sample
 audioSource.src = audioFiles[0];
 audioPlayer.load();
 
-// ----- PRELOAD NEXT AUDIO (KEY CHANGE) -----
-function preloadAudio(url) {
-  const a = new Audio();
-  a.src = url;
-}
-
-// After loading sample N, preload sample N+1 in background
-function preloadNext() {
-  if (currentIndex + 1 < audioFiles.length) {
-    preloadAudio(audioFiles[currentIndex + 1]);
-  }
-}
-
-// ----- PROGRESS -----
 function updateProgress() {
   const percent = ((currentIndex + 1) / 20) * 100;
   document.getElementById("progressBar").style.width = percent + "%";
@@ -226,14 +237,26 @@ function updateProgress() {
     `Sample ${currentIndex + 1} of 20`;
 }
 
-// Preload sample 2 immediately
+function preloadAudio(url) {
+  const a = new Audio();
+  a.src = url;
+}
+
+function preloadNext() {
+  if (currentIndex + 1 < audioFiles.length) {
+    preloadAudio(audioFiles[currentIndex + 1]);
+  }
+}
+
 preloadNext();
 
 async function submitAndNext() {
 
   if (submitting) return;
   submitting = true;
+
   nextBtn.disabled = true;
+  loadingWrapper.style.display = "block";
 
   document.getElementById("audioError").style.display = "none";
   document.getElementById("realnessError").style.display = "none";
@@ -243,6 +266,7 @@ async function submitAndNext() {
     document.getElementById("audioError").style.display = "block";
     submitting = false;
     nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
     return;
   }
 
@@ -251,6 +275,7 @@ async function submitAndNext() {
     document.getElementById("realnessError").style.display = "block";
     submitting = false;
     nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
     return;
   }
 
@@ -259,6 +284,7 @@ async function submitAndNext() {
     document.getElementById("artifactError").style.display = "block";
     submitting = false;
     nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
     return;
   }
 
@@ -287,7 +313,6 @@ async function submitAndNext() {
     return;
   }
 
-  // Switch to next already-preloaded file
   audioSource.src = audioFiles[currentIndex];
   audioPlayer.load();
 
@@ -298,12 +323,11 @@ async function submitAndNext() {
   document.getElementById("comments").value = "";
 
   updateProgress();
-
-  // Start preloading the *next* one again
   preloadNext();
 
   submitting = false;
   nextBtn.disabled = false;
+  loadingWrapper.style.display = "none";
 }
 
 updateProgress();
