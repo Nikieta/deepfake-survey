@@ -16,6 +16,18 @@
       margin: auto;
     }
 
+    h1 {
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #4b5563;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+
     .card {
       background: #ffffff;
       border: 1px solid #e5e7eb;
@@ -24,15 +36,11 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    h1, h2 {
-      text-align: center;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 18px;
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: block;
     }
 
     input, select {
@@ -40,28 +48,45 @@
       border-radius: 8px;
       border: 1px solid #d1d5db;
       width: 100%;
+      box-sizing: border-box;
+      font-size: 14px;
+      margin-bottom: 16px;
     }
 
-    /* -------- YOUR REQUEST #1: RED ASTERISKS -------- */
     .required {
-      color: #dc2626; /* red */
-      font-weight: 600;
+      color: #dc2626;
     }
 
+    .section-title {
+      font-size: 18px;
+      margin-top: 18px;
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+  
     .consent-box {
       background: #f3f4f6;
-      padding: 16px;
+      padding: 18px 22px;
       border-radius: 12px;
-      margin: 20px 0;
+      margin: 22px 0;
     }
 
-    /* -------- YOUR REQUEST #2: INLINE CHECKBOX + TEXT -------- */
     .consent-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      align-items: start;
+      gap: 12px;
+      margin-top: 14px;
+      width: 100%;
     }
+
+    #consent {
+      margin-top: 3px;
+      transform: scale(1.15);
+      accent-color: #4f46e5;
+    }
+
 
     button {
       background: #4f46e5;
@@ -73,12 +98,10 @@
       cursor: pointer;
     }
 
-    .error {
-      color: #dc2626;
-      font-size: 13px;
-      margin-top: 4px;
-      display: none;
+    button:hover {
+      background: #4338ca;
     }
+
   </style>
 </head>
 
@@ -87,43 +110,32 @@
 <div class="container">
 
 <h1>Audio Deepfake Explainability Survey</h1>
-<h2>Understanding how people perceive and explain artifacts in synthetic speech</h2>
+<div class="subtitle">
+Understanding how people perceive and explain artifacts in synthetic speech
+</div>
 
 <div class="card">
 
-<h3>Participant Information</h3>
+<h2>Participant Information</h2>
 
-<div class="field">
 <label>Name <span class="required">*</span></label>
 <input type="text" id="name">
-<div class="error" id="nameErr">Name is required.</div>
-</div>
 
-<div class="field">
 <label>Age <span class="required">*</span></label>
-<input type="number" id="age" min="18">
-<div class="error" id="ageErr">Age is required (18+).</div>
-</div>
+<input type="number" id="age" min="18" max="100">
 
-<div class="field">
 <label>Gender <span class="required">*</span></label>
 <select id="gender">
   <option value="">Select</option>
   <option>Male</option>
   <option>Female</option>
-  <option>Non-binary</option>
+  <option>Other</option>
   <option>Prefer not to say</option>
 </select>
-<div class="error" id="genderErr">Please select gender.</div>
-</div>
 
-<div class="field">
 <label>Email <span class="required">*</span></label>
 <input type="email" id="email">
-<div class="error" id="emailErr">Valid email is required.</div>
-</div>
 
-<div class="field">
 <label>Do you have any hearing impairment? <span class="required">*</span></label>
 <select id="hearing">
   <option value="">Select</option>
@@ -133,10 +145,7 @@
   <option>Yes (severe)</option>
   <option>Prefer not to say</option>
 </select>
-<div class="error" id="hearingErr">Please select an option.</div>
-</div>
 
-<div class="field">
 <label>How familiar are you with audio/speech technologies? <span class="required">*</span></label>
 <select id="familiar">
   <option value="">Select</option>
@@ -144,28 +153,26 @@
   <option>Slightly familiar</option>
   <option>Moderately familiar</option>
   <option>Very familiar</option>
-  <option>Expert (researcher/professional)</option>
+  <option>Expert (researcher / professional)</option>
 </select>
-<div class="error" id="familiarErr">Please select familiarity level.</div>
-</div>
 
 <div class="consent-box">
-<b>Consent Statement</b>
-<ul>
-<li>I understand that my responses will be used only for academic research.</li>
-<li>No personally identifiable information will be published.</li>
-<li>Participation is voluntary; I may stop at any time.</li>
-<li>I confirm I am 18 years or older.</li>
-</ul>
+  <div class="section-title">Consent Statement</div>
 
-<!-- INLINE CHECKBOX + TEXT -->
-<div class="consent-row">
-  <input type="checkbox" id="consent">
-  <span>
-  I have read and understood the above information and consent to participate in this research study.
-  </span>
-</div>
-<div class="error" id="consentErr">You must provide consent to continue.</div>
+  <ul>
+    <li>I understand that my responses will be used only for academic research.</li>
+    <li>No personally identifiable information will be shared or published.</li>
+    <li>Participation is voluntary; I may stop at any time.</li>
+    <li>I confirm that I am 18 years or older.</li>
+  </ul>
+
+  <div class="consent-row">
+    <input type="checkbox" id="consent">
+    <span>
+      I have read and understood the above information and consent to participate
+      in this research study.
+    </span>
+  </div>
 </div>
 
 <button onclick="proceed()">Proceed</button>
@@ -176,34 +183,32 @@
 <script>
 function proceed() {
 
-  document.querySelectorAll(".error").forEach(e => e.style.display = "none");
+  if (!document.getElementById("name").value.trim()) {
+    alert("Please enter your name.");
+    return;
+  }
 
-  let valid = true;
+  if (!document.getElementById("age").value.trim()) {
+    alert("Please enter your age.");
+    return;
+  }
 
-  const name = document.getElementById("name").value.trim();
-  const age = document.getElementById("age").value;
-  const gender = document.getElementById("gender").value;
-  const email = document.getElementById("email").value.trim();
-  const hearing = document.getElementById("hearing").value;
-  const familiar = document.getElementById("familiar").value;
-  const consent = document.getElementById("consent").checked;
+  if (!document.getElementById("email").value.trim()) {
+    alert("Please enter your email.");
+    return;
+  }
 
-  if (!name) { document.getElementById("nameErr").style.display = "block"; valid = false; }
-  if (!age) { document.getElementById("ageErr").style.display = "block"; valid = false; }
-  if (!gender) { document.getElementById("genderErr").style.display = "block"; valid = false; }
-  if (!email) { document.getElementById("emailErr").style.display = "block"; valid = false; }
-  if (!hearing) { document.getElementById("hearingErr").style.display = "block"; valid = false; }
-  if (!familiar) { document.getElementById("familiarErr").style.display = "block"; valid = false; }
-  if (!consent) { document.getElementById("consentErr").style.display = "block"; valid = false; }
+  if (!document.getElementById("consent").checked) {
+    alert("Please accept the consent to continue.");
+    return;
+  }
 
-  if (!valid) return;
-
-  localStorage.setItem("name", name);
-  localStorage.setItem("age", age);
-  localStorage.setItem("gender", gender);
-  localStorage.setItem("email", email);
-  localStorage.setItem("hearing", hearing);
-  localStorage.setItem("familiar", familiar);
+  localStorage.setItem("name", document.getElementById("name").value);
+  localStorage.setItem("age", document.getElementById("age").value);
+  localStorage.setItem("gender", document.getElementById("gender").value);
+  localStorage.setItem("email", document.getElementById("email").value);
+  localStorage.setItem("hearing", document.getElementById("hearing").value);
+  localStorage.setItem("familiar", document.getElementById("familiar").value);
 
   window.location.href = "context.html";
 }
