@@ -58,13 +58,6 @@
       font-size: 14px;
       cursor: pointer;
     }
-
-    .error {
-      color: #dc2626;
-      font-size: 13px;
-      margin-top: 4px;
-      display: none;
-    }
   </style>
 </head>
 
@@ -82,13 +75,11 @@
 <div class="field">
 <label>Name *</label>
 <input type="text" id="name">
-<div class="error" id="nameErr">Name is required.</div>
 </div>
 
 <div class="field">
 <label>Age *</label>
 <input type="number" id="age" min="18">
-<div class="error" id="ageErr">Age is required (18+).</div>
 </div>
 
 <div class="field">
@@ -100,17 +91,15 @@
   <option>Non-binary</option>
   <option>Prefer not to say</option>
 </select>
-<div class="error" id="genderErr">Please select gender.</div>
 </div>
 
 <div class="field">
 <label>Email *</label>
 <input type="email" id="email">
-<div class="error" id="emailErr">Valid email is required.</div>
 </div>
 
 <div class="field">
-<label>Hearing impairment? *</label>
+<label>Do you have any hearing impairment or hearing-related condition? *</label>
 <select id="hearing">
   <option value="">Select</option>
   <option>No</option>
@@ -119,7 +108,6 @@
   <option>Yes (severe)</option>
   <option>Prefer not to say</option>
 </select>
-<div class="error" id="hearingErr">Please select an option.</div>
 </div>
 
 <div class="field">
@@ -130,23 +118,21 @@
   <option>Slightly familiar</option>
   <option>Moderately familiar</option>
   <option>Very familiar</option>
-  <option>Expert (researcher/professional)</option>
+  <option>Expert (researcher / professional)</option>
 </select>
-<div class="error" id="familiarErr">Please select familiarity level.</div>
 </div>
 
 <div class="consent-box">
 <b>Consent Statement</b>
 <ul>
-<li>I understand that my responses will be used only for academic research.</li>
-<li>No personally identifiable information will be published.</li>
-<li>Participation is voluntary; I may stop at any time.</li>
-<li>I confirm I am 18 years or older.</li>
+<li>I understand that my responses will be used only for academic research purposes.</li>
+<li>I understand that no personally identifiable information will be shared or published.</li>
+<li>I understand that my participation is voluntary, and I may stop at any time.</li>
+<li>I confirm that I am 18 years or older.</li>
 </ul>
 
 <input type="checkbox" id="consent">  
-I have read and understood the above and consent to participate.
-<div class="error" id="consentErr">You must provide consent to continue.</div>
+I have read and understood the above information and consent to participate in this research study.
 </div>
 
 <button onclick="proceed()">Proceed</button>
@@ -157,12 +143,21 @@ I have read and understood the above and consent to participate.
 <script>
 function proceed() {
 
-  // Hide all previous errors
-  document.querySelectorAll(".error").forEach(e => e.style.display = "none");
+  if (!name.value || !age.value || !email.value || !hearing.value || !familiar.value || !consent.checked) {
+    alert("Please complete all required fields and consent.");
+    return;
+  }
 
-  let valid = true;
+  localStorage.setItem("name", name.value);
+  localStorage.setItem("age", age.value);
+  localStorage.setItem("gender", gender.value);
+  localStorage.setItem("email", email.value);
+  localStorage.setItem("hearing", hearing.value);
+  localStorage.setItem("familiar", familiar.value);
 
-  const name = document.getElementById("name").value.trim();
-  const age = document.getElementById("age").value;
-  const gender = document.getElementById("gender").value;
-  const email = document.getElementById("email")
+  window.location.href = "context.html";
+}
+</script>
+
+</body>
+</html>
