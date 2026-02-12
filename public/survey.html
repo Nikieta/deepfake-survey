@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Audio Listening Task</title>
+
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -39,7 +40,7 @@
 
     .progress-bar {
       height: 10px;
-      width: 5%;
+      width: 0%;
       background: #4f46e5;
       border-radius: 8px;
       transition: width 0.3s ease;
@@ -54,14 +55,15 @@
     audio { width: 100%; margin: 10px 0; }
 
     .artifact-option {
-      margin-bottom: 10px;
-      padding: 8px 0;
+      margin-bottom: 12px;
+      padding: 6px 0;
     }
 
     .definition {
       font-size: 13px;
       color: #4b5563;
       margin-left: 22px;
+      margin-top: 2px;
     }
 
     textarea {
@@ -84,7 +86,12 @@
 
     .secondary-btn {
       background: #9ca3af;
-      margin-right: 10px;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
     }
 
     .error {
@@ -92,12 +99,6 @@
       font-size: 13px;
       margin-top: 6px;
       display: none;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 20px;
     }
   </style>
 </head>
@@ -125,54 +126,54 @@
   </div>
 
   <!-- Q1 -->
-  <p><b>Q1. Which audio artifact do you think is most prominent in this clip?</b></p>
+  <p><b>Q1. Which audio artifact is most prominent?</b></p>
 
   <div class="artifact-option">
     <input type="radio" name="artifact" value="Robot">
     Robot-like voice
-    <div class="definition">Speech sounds mechanical, metallic, or synthetic rather than natural.</div>
+    <div class="definition">Speech sounds mechanical, metallic, or synthetic.</div>
   </div>
 
   <div class="artifact-option">
     <input type="radio" name="artifact" value="Pauses">
     Unnatural pauses
-    <div class="definition">Unexpected or awkward breaks in speech that disrupt natural flow.</div>
+    <div class="definition">Unexpected breaks disrupting natural speech flow.</div>
   </div>
 
   <div class="artifact-option">
     <input type="radio" name="artifact" value="Repetition">
     Word repetition
-    <div class="definition">Words or phrases are repeated unnecessarily or unnaturally.</div>
+    <div class="definition">Repeated words or phrases not typical of natural speech.</div>
   </div>
 
   <div class="artifact-option">
     <input type="radio" name="artifact" value="Prosody">
     Prosody mismatch
-    <div class="definition">Unnatural rhythm, pitch, stress, or intonation patterns.</div>
+    <div class="definition">Unnatural rhythm, pitch, stress, or intonation.</div>
   </div>
 
   <div class="artifact-option">
     <input type="radio" name="artifact" value="Noise">
     Background noise
-    <div class="definition">Unwanted static, distortion, or environmental noise.</div>
+    <div class="definition">Unwanted static, distortion, or environmental sound.</div>
   </div>
 
   <div id="artifactError" class="error">
-    Please select one artifact category.
+    Please select an artifact.
   </div>
 
   <!-- Q2 -->
-  <p><b>Q2. How confident are you in your selection above?</b></p>
+  <p><b>Q2. How confident are you?</b></p>
   <input type="radio" name="confidence" value="Low"> Low  
   <input type="radio" name="confidence" value="Medium"> Medium  
   <input type="radio" name="confidence" value="High"> High  
 
   <div id="confidenceError" class="error">
-    Please select your confidence level.
+    Please select confidence level.
   </div>
 
   <!-- Q3 -->
-  <p><b>Q3. How easy or difficult was it to identify the artifact in this audio?</b></p>
+  <p><b>Q3. How easy or difficult was it to identify?</b></p>
   <input type="radio" name="difficulty" value="Very Easy"> Very Easy  
   <input type="radio" name="difficulty" value="Easy"> Easy  
   <input type="radio" name="difficulty" value="Neutral"> Neutral  
@@ -180,28 +181,59 @@
   <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult  
 
   <div id="difficultyError" class="error">
-    Please select one option.
+    Please select difficulty level.
   </div>
 
   <!-- Q4 -->
-  <p><b>Q4. In your own words, what made this audio sound unnatural or unusual to you?</b></p>
+  <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
   <textarea id="comments" placeholder="Write your response here..."></textarea>
 
   <div class="button-row">
     <button class="secondary-btn" onclick="history.back()">Back</button>
-    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
+    <button onclick="submitAndNext()">Next Audio</button>
   </div>
 
 </div>
 </div>
 
 <script>
-const APPS_SCRIPT_URL = "YOUR_SCRIPT_URL_HERE";
 
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
+
+/* --------- ALL 20 AUDIO FILES --------- */
 let audioFiles = [
   "audio/DF_E_2000013.flac",
-  "audio/DF_E_2000024.flac"
+  "audio/DF_E_2000024.flac",
+  "audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac",
+  "audio/DF_E_2000048.flac",
+  "audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac",
+  "audio/DF_E_2000075.flac",
+  "audio/DF_E_2000079.flac",
+  "audio/DF_E_2000091.flac",
+  "audio/DF_E_2000100.flac",
+  "audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac",
+  "audio/DF_E_2000524.flac",
+  "audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac",
+  "audio/DF_E_2749711.flac",
+  "audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac",
+  "audio/DF_E_2749817.flac"
 ];
+
+/* --------- RANDOM SHUFFLE --------- */
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+audioFiles = shuffle(audioFiles);
 
 let currentIndex = 0;
 let audioPlayed = false;
@@ -214,9 +246,10 @@ audioPlayer.addEventListener("play", () => {
   document.getElementById("audioError").style.display = "none";
 });
 
-audioSource.src = audioFiles[0];
+audioSource.src = audioFiles[currentIndex];
 audioPlayer.load();
 
+/* --------- PROGRESS --------- */
 function updateProgress() {
   const percent = ((currentIndex + 1) / audioFiles.length) * 100;
   document.getElementById("progressBar").style.width = percent + "%";
@@ -224,6 +257,9 @@ function updateProgress() {
     `Sample ${currentIndex + 1} of ${audioFiles.length}`;
 }
 
+updateProgress();
+
+/* --------- SUBMIT --------- */
 async function submitAndNext() {
 
   if (!audioPlayed) {
@@ -281,7 +317,6 @@ async function submitAndNext() {
   updateProgress();
 }
 
-updateProgress();
 </script>
 
 </body>
