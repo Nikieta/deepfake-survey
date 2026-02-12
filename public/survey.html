@@ -54,16 +54,12 @@
 
     audio { width: 100%; margin: 10px 0; }
 
-    .artifact-option {
-      margin-bottom: 12px;
-      padding: 6px 0;
-    }
+    .artifact-option { margin-bottom: 12px; }
 
     .definition {
       font-size: 13px;
       color: #4b5563;
       margin-left: 22px;
-      margin-top: 2px;
     }
 
     textarea {
@@ -84,14 +80,9 @@
       cursor: pointer;
     }
 
-    .secondary-btn {
+    button:disabled {
       background: #9ca3af;
-    }
-
-    .button-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 24px;
+      cursor: not-allowed;
     }
 
     .error {
@@ -100,6 +91,30 @@
       margin-top: 6px;
       display: none;
     }
+
+    /* -------- SPINNER -------- */
+    #loadingWrapper {
+      display: none;
+      text-align: center;
+      margin-top: 16px;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 4px solid #e5e7eb;
+      border-top: 4px solid #4f46e5;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 8px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    /* -------------------------- */
+
   </style>
 </head>
 
@@ -188,9 +203,14 @@
   <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
   <textarea id="comments" placeholder="Write your response here..."></textarea>
 
-  <div class="button-row">
-    <button class="secondary-btn" onclick="goToPrevious()">Back</button>
-    <button onclick="submitAndNext()">Next Audio</button>
+  <!-- Spinner -->
+  <div id="loadingWrapper">
+    <div class="spinner"></div>
+    <div>Loading next sample...</div>
+  </div>
+
+  <div style="margin-top:20px;">
+    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
   </div>
 
 </div>
@@ -200,7 +220,6 @@
 
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
 
-/* ALL 20 AUDIO FILES */
 let audioFiles = [
   "audio/DF_E_2000013.flac",
   "audio/DF_E_2000024.flac",
@@ -224,7 +243,6 @@ let audioFiles = [
   "audio/DF_E_2749817.flac"
 ];
 
-/* RANDOM SHUFFLE */
 function shuffle(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -239,6 +257,8 @@ let audioPlayed = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
+const nextBtn = document.getElementById("nextBtn");
+const loadingWrapper = document.getElementById("loadingWrapper");
 
 audioPlayer.addEventListener("play", () => {
   audioPlayed = true;
@@ -254,26 +274,8 @@ function updateProgress() {
   document.getElementById("progressText").innerText =
     `Sample ${currentIndex + 1} of ${audioFiles.length}`;
 }
-
 updateProgress();
 
-/* BACK BUTTON LOGIC */
-function goToPrevious() {
-  if (currentIndex === 0) return;
-
-  currentIndex--;
-
-  audioSource.src = audioFiles[currentIndex];
-  audioPlayer.load();
-  audioPlayed = false;
-
-  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
-  document.getElementById("comments").value = "";
-
-  updateProgress();
-}
-
-/* NEXT BUTTON LOGIC */
 async function submitAndNext() {
 
   if (!audioPlayed) {
@@ -289,16 +291,17 @@ async function submitAndNext() {
     document.getElementById("artifactError").style.display = "block";
     return;
   }
-
   if (!confidence) {
     document.getElementById("confidenceError").style.display = "block";
     return;
   }
-
   if (!difficulty) {
     document.getElementById("difficultyError").style.display = "block";
     return;
   }
+
+  nextBtn.disabled = true;
+  loadingWrapper.style.display = "block";
 
   const payload = {
     sample: currentIndex + 1,
@@ -329,6 +332,9 @@ async function submitAndNext() {
   document.getElementById("comments").value = "";
 
   updateProgress();
+
+  nextBtn.disabled = false;
+  loadingWrapper.style.display = "none";
 }
 
 </script>
