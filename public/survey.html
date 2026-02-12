@@ -115,6 +115,343 @@
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
+  <div class="progress-text" id="progressText"></div>
+
+  <audio controls id="audioPlayer">
+    <source id="audioSource" src="" type="audio/flac">
+  </audio>
+
+  <div id="audioError" class="error">
+    Please play the audio before proceeding.
+  </div>
+
+  <!-- Q1 -->
+  <p><b>Q1. Which audio artifact is most prominent?</b></p>
+
+  <div class="artifact-option">
+    <input type="radio" name="artifact" value="Robot">
+    Robot-like voice
+    <div class="definition">Speech sounds mechanical, metallic, or synthetic.</div>
+  </div>
+
+  <div class="artifact-option">
+    <input type="radio" name="artifact" value="Pauses">
+    Unnatural pauses
+    <div class="definition">Unexpected breaks disrupting natural speech flow.</div>
+  </div>
+
+  <div class="artifact-option">
+    <input type="radio" name="artifact" value="Repetition">
+    Word repetition
+    <div class="definition">Repeated words or phrases not typical of natural speech.</div>
+  </div>
+
+  <div class="artifact-option">
+    <input type="radio" name="artifact" value="Prosody">
+    Prosody mismatch
+    <div class="definition">Unnatural rhythm, pitch, stress, or intonation.</div>
+  </div>
+
+  <div class="artifact-option">
+    <input type="radio" name="artifact" value="Noise">
+    Background noise
+    <div class="definition">Unwanted static, distortion, or environmental sound.</div>
+  </div>
+
+  <div id="artifactError" class="error">
+    Please select an artifact.
+  </div>
+
+  <!-- Q2 -->
+  <p><b>Q2. How confident are you?</b></p>
+  <input type="radio" name="confidence" value="Low"> Low  
+  <input type="radio" name="confidence" value="Medium"> Medium  
+  <input type="radio" name="confidence" value="High"> High  
+
+  <div id="confidenceError" class="error">
+    Please select confidence level.
+  </div>
+
+  <!-- Q3 -->
+  <p><b>Q3. How easy or difficult was it to identify?</b></p>
+  <input type="radio" name="difficulty" value="Very Easy"> Very Easy  
+  <input type="radio" name="difficulty" value="Easy"> Easy  
+  <input type="radio" name="difficulty" value="Neutral"> Neutral  
+  <input type="radio" name="difficulty" value="Difficult"> Difficult  
+  <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult  
+
+  <div id="difficultyError" class="error">
+    Please select difficulty level.
+  </div>
+
+  <!-- Q4 -->
+  <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
+  <textarea id="comments" placeholder="Write your response here..."></textarea>
+
+  <div class="button-row">
+    <button class="secondary-btn" onclick="goToPrevious()">Back</button>
+    <button onclick="submitAndNext()">Next Audio</button>
+  </div>
+
+</div>
+</div>
+
+<script>
+
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
+
+/* ALL 20 AUDIO FILES */
+let audioFiles = [
+  "audio/DF_E_2000013.flac",
+  "audio/DF_E_2000024.flac",
+  "audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac",
+  "audio/DF_E_2000048.flac",
+  "audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac",
+  "audio/DF_E_2000075.flac",
+  "audio/DF_E_2000079.flac",
+  "audio/DF_E_2000091.flac",
+  "audio/DF_E_2000100.flac",
+  "audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac",
+  "audio/DF_E_2000524.flac",
+  "audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac",
+  "audio/DF_E_2749711.flac",
+  "audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac",
+  "audio/DF_E_2749817.flac"
+];
+
+/* RANDOM SHUFFLE */
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+audioFiles = shuffle(audioFiles);
+
+let currentIndex = 0;
+let audioPlayed = false;
+
+const audioPlayer = document.getElementById("audioPlayer");
+const audioSource = document.getElementById("audioSource");
+
+audioPlayer.addEventListener("play", () => {
+  audioPlayed = true;
+  document.getElementById("audioError").style.display = "none";
+});
+
+audioSource.src = audioFiles[currentIndex];
+audioPlayer.load();
+
+function updateProgress() {
+  const percent = ((currentIndex + 1) / audioFiles.length) * 100;
+  document.getElementById("progressBar").style.width = percent + "%";
+  document.getElementById("progressText").innerText =
+    `Sample ${currentIndex + 1} of ${audioFiles.length}`;
+}
+
+updateProgress();
+
+/* BACK BUTTON LOGIC */
+function goToPrevious() {
+  if (currentIndex === 0) return;
+
+  currentIndex--;
+
+  audioSource.src = audioFiles[currentIndex];
+  audioPlayer.load();
+  audioPlayed = false;
+
+  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+  document.getElementById("comments").value = "";
+
+  updateProgress();
+}
+
+/* NEXT BUTTON LOGIC */
+async function submitAndNext() {
+
+  if (!audioPlayed) {
+    document.getElementById("audioError").style.display = "block";
+    return;
+  }
+
+  const artifact = document.querySelector('input[name="artifact"]:checked');
+  const confidence = document.querySelector('input[name="confidence"]:checked');
+  const difficulty = document.querySelector('input[name="difficulty"]:checked');
+
+  if (!artifact) {
+    document.getElementById("artifactError").style.display = "block";
+    return;
+  }
+
+  if (!confidence) {
+    document.getElementById("confidenceError").style.display = "block";
+    return;
+  }
+
+  if (!difficulty) {
+    document.getElementById("difficultyError").style.display = "block";
+    return;
+  }
+
+  const payload = {
+    sample: currentIndex + 1,
+    artifact: artifact.value,
+    confidence: confidence.value,
+    difficulty: difficulty.value,
+    comments: document.getElementById("comments").value
+  };
+
+  await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(payload)
+  });
+
+  currentIndex++;
+
+  if (currentIndex >= audioFiles.length) {
+    window.location.href = "thankyou.html";
+    return;
+  }
+
+  audioSource.src = audioFiles[currentIndex];
+  audioPlayer.load();
+  audioPlayed = false;
+
+  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+  document.getElementById("comments").value = "";
+
+  updateProgress();
+}
+
+</script>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Audio Listening Task</title>
+
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #f6f7fb;
+      margin: 0;
+      padding: 40px;
+      color: #111827;
+    }
+
+    .container { max-width: 900px; margin: auto; }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 16px;
+      padding: 28px 32px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    h1 { text-align: center; margin-bottom: 8px; }
+
+    .subtitle {
+      text-align: center;
+      color: #4b5563;
+      margin-bottom: 20px;
+    }
+
+    .progress-container {
+      width: 100%;
+      background: #e5e7eb;
+      border-radius: 8px;
+      height: 10px;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar {
+      height: 10px;
+      width: 0%;
+      background: #4f46e5;
+      border-radius: 8px;
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      text-align: center;
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    audio { width: 100%; margin: 10px 0; }
+
+    .artifact-option {
+      margin-bottom: 12px;
+      padding: 6px 0;
+    }
+
+    .definition {
+      font-size: 13px;
+      color: #4b5563;
+      margin-left: 22px;
+      margin-top: 2px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+    }
+
+    button {
+      background: #4f46e5;
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .secondary-btn {
+      background: #9ca3af;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+    }
+
+    .error {
+      color: #dc2626;
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Audio Clip</h1>
+<div class="subtitle">Please listen to the audio clip below.</div>
+
+<div class="card">
+
+  <div class="progress-container">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
   <div class="progress-text" id="progressText">Sample 1 of 20</div>
 
   <audio controls id="audioPlayer">
