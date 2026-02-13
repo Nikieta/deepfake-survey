@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Audio Deepfake Survey</title>
+  <title>Audio Listening Task</title>
+
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -11,10 +12,7 @@
       color: #111827;
     }
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-    }
+    .container { max-width: 900px; margin: auto; }
 
     .card {
       background: #ffffff;
@@ -24,9 +22,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    h1 {
-      text-align: center;
-    }
+    h1 { text-align: center; margin-bottom: 8px; }
 
     .progress-container {
       width: 100%;
@@ -38,7 +34,7 @@
 
     .progress-bar {
       height: 10px;
-      width: 5%;
+      width: 0%;
       background: #4f46e5;
       border-radius: 8px;
       transition: width 0.3s ease;
@@ -50,14 +46,11 @@
       font-weight: 600;
     }
 
-    audio {
-      width: 100%;
-      margin: 10px 0;
-    }
+    audio { width: 100%; margin: 10px 0; }
 
     textarea {
       width: 100%;
-      min-height: 80px;
+      min-height: 90px;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid #d1d5db;
@@ -78,6 +71,11 @@
       cursor: not-allowed;
     }
 
+    #backBtn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
     .error {
       color: #dc2626;
       font-size: 13px;
@@ -85,13 +83,6 @@
       display: none;
     }
 
-    .hint {
-      font-size: 13px;
-      color: #4b5563;
-      margin-bottom: 8px;
-    }
-
-    /* -------- LOADING SPINNER -------- */
     #loadingWrapper {
       display: none;
       text-align: center;
@@ -112,235 +103,185 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-    /* ---------------------------------- */
   </style>
 </head>
 
 <body>
 
 <div class="container">
-<h1>Audio Deepfake Survey</h1>
+
+<h1>Audio Clip</h1>
 
 <div class="card">
 
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
-  <div class="progress-text" id="progressText">Sample 1 of 20</div>
-
-  <p class="hint">▶️ Please listen to the audio completely before answering.</p>
+  <div class="progress-text" id="progressText"></div>
 
   <audio controls id="audioPlayer">
     <source id="audioSource" src="" type="audio/flac">
   </audio>
 
-  <div id="audioError" class="error">
-    Please play the audio before proceeding.
-  </div>
+  <div id="audioError" class="error">Please play the audio before proceeding.</div>
 
-  <p><b>How real does this sound?</b></p>
-  <input type="radio" name="realness" value="Very Fake"> Very Fake  
-  <input type="radio" name="realness" value="Fake"> Fake  
-  <input type="radio" name="realness" value="Neutral"> Neutral  
-  <input type="radio" name="realness" value="Real"> Real  
-  <input type="radio" name="realness" value="Very Real"> Very Real  
-
-  <div id="realnessError" class="error">
-    Please select a rating.
-  </div>
-
-  <br>
-
-  <p><b>Select the MOST prominent artifact you noticed:</b></p>
+  <p><b>Q1. Which audio artifact is most prominent?</b></p>
 
   <input type="radio" name="artifact" value="Robot"> Robot-like voice<br>
   <input type="radio" name="artifact" value="Pauses"> Unnatural pauses<br>
   <input type="radio" name="artifact" value="Repetition"> Word repetition<br>
   <input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
-  <input type="radio" name="artifact" value="Noise"> Background noise<br><br>
+  <input type="radio" name="artifact" value="Noise"> Background noise<br>
 
-  <div id="artifactError" class="error">
-    Please select one artifact category.
-  </div>
+  <div id="artifactError" class="error">Please select an artifact.</div>
 
-  <textarea id="comments" placeholder="Additional comments..."></textarea>
-  <br><br>
+  <p><b>Q2. How confident are you?</b></p>
+  <input type="radio" name="confidence" value="Low"> Low
+  <input type="radio" name="confidence" value="Medium"> Medium
+  <input type="radio" name="confidence" value="High"> High
 
-  <!-- Loading UI -->
+  <div id="confidenceError" class="error">Please select confidence level.</div>
+
+  <p><b>Q3. How easy or difficult was it to identify?</b></p>
+  <input type="radio" name="difficulty" value="Very Easy"> Very Easy
+  <input type="radio" name="difficulty" value="Easy"> Easy
+  <input type="radio" name="difficulty" value="Neutral"> Neutral
+  <input type="radio" name="difficulty" value="Difficult"> Difficult
+  <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult
+
+  <div id="difficultyError" class="error">Please select difficulty level.</div>
+
+  <p><b>Q4. What made this audio sound unnatural?</b></p>
+  <textarea id="comments"></textarea>
+
   <div id="loadingWrapper">
     <div class="spinner"></div>
     <div>Loading next sample…</div>
   </div>
 
-  <button id="nextBtn" onclick="submitAndNext()">Next Sample</button>
+  <div style="margin-top:20px; display:flex; justify-content:space-between;">
+    <button id="backBtn" onclick="goBack()">Back</button>
+    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
+  </div>
 
 </div>
 </div>
 
 <script>
+
 const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
+if (!sessionData) window.location.href = "index.html";
 
-if (!sessionData) {
-  window.location.href = "index.html";
-}
-
-const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyLNqzJMIYvSKrOMN3r5C6MWqRX-0NyrAiB-QgU2w1DxYBPkbg0VXS7othElYOwd22K/exec";
+const APPS_SCRIPT_URL = "YOUR_DEPLOYED_WEB_APP_URL_HERE";
 
 let audioFiles = [
-  "audio/DF_E_2000013.flac",
-  "audio/DF_E_2000024.flac",
-  "audio/DF_E_2000026.flac",
-  "audio/DF_E_2000042.flac",
-  "audio/DF_E_2000048.flac",
-  "audio/DF_E_2000053.flac",
-  "audio/DF_E_2000055.flac",
-  "audio/DF_E_2000075.flac",
-  "audio/DF_E_2000079.flac",
-  "audio/DF_E_2000091.flac",
-  "audio/DF_E_2000100.flac",
-  "audio/DF_E_2000102.flac",
-  "audio/DF_E_2000508.flac",
-  "audio/DF_E_2000524.flac",
-  "audio/DF_E_2749699.flac",
-  "audio/DF_E_2749700.flac",
-  "audio/DF_E_2749711.flac",
-  "audio/DF_E_2749732.flac",
-  "audio/DF_E_2749783.flac",
-  "audio/DF_E_2749817.flac"
+  "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac","audio/DF_E_2000048.flac","audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac","audio/DF_E_2000075.flac","audio/DF_E_2000079.flac",
+  "audio/DF_E_2000091.flac","audio/DF_E_2000100.flac","audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac","audio/DF_E_2000524.flac","audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac","audio/DF_E_2749711.flac","audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac"
 ];
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
   }
   return array;
 }
 audioFiles = shuffle(audioFiles);
 
+let responses = new Array(audioFiles.length).fill(null);
 let currentIndex = 0;
 let audioPlayed = false;
 let submitting = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
-const nextBtn = document.getElementById("nextBtn");
-const loadingWrapper = document.getElementById("loadingWrapper");
 
-audioPlayer.addEventListener("play", () => {
-  audioPlayed = true;
-  document.getElementById("audioError").style.display = "none";
-});
+audioPlayer.addEventListener("play", () => audioPlayed = true);
 
-audioSource.src = audioFiles[0];
-audioPlayer.load();
-
-function updateProgress() {
-  const percent = ((currentIndex + 1) / 20) * 100;
-  document.getElementById("progressBar").style.width = percent + "%";
-  document.getElementById("progressText").innerText =
-    `Sample ${currentIndex + 1} of 20`;
+function updateProgress(){
+  const percent=((currentIndex+1)/audioFiles.length)*100;
+  document.getElementById("progressBar").style.width=percent+"%";
+  document.getElementById("progressText").innerText=
+    `Sample ${currentIndex+1} of ${audioFiles.length}`;
+  document.getElementById("backBtn").disabled=currentIndex===0;
 }
 
-function preloadAudio(url) {
-  const a = new Audio();
-  a.src = url;
+function loadSample(){
+  audioSource.src=audioFiles[currentIndex];
+  audioPlayer.load();
+  audioPlayed=false;
+
+  document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
+  document.getElementById("comments").value="";
+
+  const saved=responses[currentIndex];
+  if(saved){
+    document.querySelector(`input[name="artifact"][value="${saved.artifact}"]`).checked=true;
+    document.querySelector(`input[name="confidence"][value="${saved.confidence}"]`).checked=true;
+    document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`).checked=true;
+    document.getElementById("comments").value=saved.comments;
+  }
+
+  updateProgress();
 }
 
-function preloadNext() {
-  if (currentIndex + 1 < audioFiles.length) {
-    preloadAudio(audioFiles[currentIndex + 1]);
-  }
-}
+async function submitAndNext(){
 
-preloadNext();
+  if(submitting) return;
 
-async function submitAndNext() {
+  const artifact=document.querySelector('input[name="artifact"]:checked');
+  const confidence=document.querySelector('input[name="confidence"]:checked');
+  const difficulty=document.querySelector('input[name="difficulty"]:checked');
 
-  if (submitting) return;
-  submitting = true;
+  if(!audioPlayed || !artifact || !confidence || !difficulty) return;
 
-  nextBtn.disabled = true;
-  loadingWrapper.style.display = "block";
+  submitting=true;
+  document.getElementById("nextBtn").disabled=true;
+  document.getElementById("loadingWrapper").style.display="block";
 
-  document.getElementById("audioError").style.display = "none";
-  document.getElementById("realnessError").style.display = "none";
-  document.getElementById("artifactError").style.display = "none";
+  const responseData={
+    sample:currentIndex+1,
+    artifact:artifact.value,
+    confidence:confidence.value,
+    difficulty:difficulty.value,
+    comments:document.getElementById("comments").value
+  };
 
-  if (!audioPlayed) {
-    document.getElementById("audioError").style.display = "block";
-    submitting = false;
-    nextBtn.disabled = false;
-    loadingWrapper.style.display = "none";
-    return;
-  }
+  responses[currentIndex]=responseData;
 
-  const realness = document.querySelector('input[name="realness"]:checked');
-  if (!realness) {
-    document.getElementById("realnessError").style.display = "block";
-    submitting = false;
-    nextBtn.disabled = false;
-    loadingWrapper.style.display = "none";
-    return;
-  }
-
-  const artifact = document.querySelector('input[name="artifact"]:checked');
-  if (!artifact) {
-    document.getElementById("artifactError").style.display = "block";
-    submitting = false;
-    nextBtn.disabled = false;
-    loadingWrapper.style.display = "none";
-    return;
-  }
-
-
-  const payload = {
-  name: sessionData.name,
-  age: sessionData.age,
-  gender: sessionData.gender,
-  email: sessionData.email,
-  hearing: sessionData.hearing,
-  familiar: sessionData.familiar,
-  sample: currentIndex + 1,
-  realness: realness.value,
-  artifact: artifact.value,
-  comments: document.getElementById("comments").value
-};
-
-
-
-  await fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(payload)
+  fetch(APPS_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body:JSON.stringify({...sessionData,...responseData})
   });
 
   currentIndex++;
 
-  if (currentIndex >= 20) {
-    window.location.href = "thankyou.html";
+  if(currentIndex>=audioFiles.length){
+    window.location.href="thankyou.html";
     return;
   }
 
-  audioSource.src = audioFiles[currentIndex];
-  audioPlayer.load();
+  loadSample();
 
-  audioPlayed = false;
-
-  document.querySelectorAll('input[name="realness"]').forEach(r => r.checked = false);
-  document.querySelectorAll('input[name="artifact"]').forEach(r => r.checked = false);
-  document.getElementById("comments").value = "";
-
-  updateProgress();
-  preloadNext();
-
-  submitting = false;
-  nextBtn.disabled = false;
-  loadingWrapper.style.display = "none";
+  submitting=false;
+  document.getElementById("nextBtn").disabled=false;
+  document.getElementById("loadingWrapper").style.display="none";
 }
 
-updateProgress();
+function goBack(){
+  if(currentIndex===0) return;
+  currentIndex--;
+  loadSample();
+}
+
+loadSample();
+
 </script>
 
 </body>
