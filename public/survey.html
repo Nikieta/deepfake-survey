@@ -288,12 +288,18 @@ async function submitFinalResponses() {
     participantID: participantID,
     responses: responses
   };
+await fetch(APPS_SCRIPT_URL, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify(finalPayload)
+})
+.then(res => res.text())
+.then(data => console.log("Server response:", data))
+.catch(err => console.error("Error:", err));
 
-  await fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(finalPayload)
-  });
+
 
   window.location.href = "thankyou.html";
 }
