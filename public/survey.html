@@ -178,6 +178,12 @@
 </div>
 
 <script>
+const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
+
+if (!sessionData) {
+  window.location.href = "index.html";
+}
+
 const APPS_SCRIPT_URL =
 "https://script.google.com/macros/s/AKfycbxdnUOFyy1L5bgZDaztlemC9uqNKtaJsMtY8LxyNtTh6AosCFANjYvx734kMmYl0gOk/exec";
 
