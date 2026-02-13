@@ -224,12 +224,21 @@ audioPlayer.addEventListener("play", () => {
 });
 
 function loadSample(index) {
+
   audioPlayer.pause();
-  audioPlayer.src = audioFiles[index];   // DIRECT SRC FIX
+  audioPlayer.src = audioFiles[index];
   audioPlayer.load();
   audioPlayed = false;
+
+
+  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
+
+
+  document.getElementById("comments").value = "";
+
   updateProgress();
 }
+
 
 function updateProgress() {
   const percent = ((currentIndex + 1) / audioFiles.length) * 100;
