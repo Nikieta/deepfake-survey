@@ -185,7 +185,7 @@ if (!sessionData) {
 }
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwG1ak1D77JX5FT673ewuKcoJD32yLQclaCclZ2_fkX9m1mzKhXIWhYm_iwMSDmlmfC/exec";
+"https://script.google.com/macros/s/AKfycbyLNqzJMIYvSKrOMN3r5C6MWqRX-0NyrAiB-QgU2w1DxYBPkbg0VXS7othElYOwd22K/exec";
 
 let audioFiles = [
   "audio/DF_E_2000013.flac",
@@ -294,6 +294,7 @@ async function submitAndNext() {
     return;
   }
 
+
   const payload = {
   name: sessionData.name,
   age: sessionData.age,
@@ -302,11 +303,11 @@ async function submitAndNext() {
   hearing: sessionData.hearing,
   familiar: sessionData.familiar,
   sample: currentIndex + 1,
+  realness: realness.value,
   artifact: artifact.value,
-  confidence: confidence.value,
-  difficulty: difficulty.value,
   comments: document.getElementById("comments").value
 };
+
 
 
   await fetch(APPS_SCRIPT_URL, {
