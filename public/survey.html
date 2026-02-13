@@ -92,7 +92,6 @@
       display: none;
     }
 
-    /* Spinner */
     #loadingWrapper {
       display: none;
       text-align: center;
@@ -131,15 +130,13 @@
   </div>
   <div class="progress-text" id="progressText"></div>
 
-  <audio controls id="audioPlayer">
-    <source id="audioSource" src="" type="audio/flac">
-  </audio>
+  <!-- IMPORTANT: NO <source> TAG -->
+  <audio controls id="audioPlayer"></audio>
 
   <div id="audioError" class="error">
     Please play the audio before proceeding.
   </div>
 
-  <!-- Q1 -->
   <p><b>Q1. Which audio artifact is most prominent?</b></p>
 
   <div class="artifact-option">
@@ -167,21 +164,11 @@
     <div class="definition">Unwanted static, distortion, or environmental sound.</div>
   </div>
 
-  <div id="artifactError" class="error">
-    Please select an artifact.
-  </div>
-
-  <!-- Q2 -->
   <p><b>Q2. How confident are you?</b></p>
   <input type="radio" name="confidence" value="Low"> Low  
   <input type="radio" name="confidence" value="Medium"> Medium  
   <input type="radio" name="confidence" value="High"> High  
 
-  <div id="confidenceError" class="error">
-    Please select confidence level.
-  </div>
-
-  <!-- Q3 -->
   <p><b>Q3. How easy or difficult was it to identify?</b></p>
   <input type="radio" name="difficulty" value="Very Easy"> Very Easy  
   <input type="radio" name="difficulty" value="Easy"> Easy  
@@ -189,18 +176,12 @@
   <input type="radio" name="difficulty" value="Difficult"> Difficult  
   <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult  
 
-  <div id="difficultyError" class="error">
-    Please select difficulty level.
-  </div>
-
-  <!-- Q4 -->
   <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
-  <textarea id="comments" placeholder="Write your response here..."></textarea>
+  <textarea id="comments"></textarea>
 
-  <!-- Spinner -->
   <div id="loadingWrapper">
     <div class="spinner"></div>
-    <div>Loading next sample...</div>
+    <div>Submitting responses...</div>
   </div>
 
   <div style="margin-top:20px;">
@@ -211,6 +192,7 @@
 </div>
 
 <script>
+
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
 
 const participantID = Date.now().toString() + Math.floor(Math.random() * 1000);
@@ -225,21 +207,14 @@ let audioFiles = [
   "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac"
 ];
 
-function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
-}
-audioFiles = shuffle(audioFiles);
+/* Shuffle */
+audioFiles.sort(() => Math.random() - 0.5);
 
 let currentIndex = 0;
 let audioPlayed = false;
 let responses = {};
 
 const audioPlayer = document.getElementById("audioPlayer");
-const audioSource = document.getElementById("audioSource");
 const nextBtn = document.getElementById("nextBtn");
 const loadingWrapper = document.getElementById("loadingWrapper");
 
@@ -249,20 +224,10 @@ audioPlayer.addEventListener("play", () => {
 });
 
 function loadSample(index) {
-  audioSource.src = audioFiles[index];
+  audioPlayer.pause();
+  audioPlayer.src = audioFiles[index];   // DIRECT SRC FIX
   audioPlayer.load();
   audioPlayed = false;
-
-  if (responses[index]) {
-    document.querySelector(`input[name="artifact"][value="${responses[index].artifact}"]`)?.checked = true;
-    document.querySelector(`input[name="confidence"][value="${responses[index].confidence}"]`)?.checked = true;
-    document.querySelector(`input[name="difficulty"][value="${responses[index].difficulty}"]`)?.checked = true;
-    document.getElementById("comments").value = responses[index].comments;
-  } else {
-    document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
-    document.getElementById("comments").value = "";
-  }
-
   updateProgress();
 }
 
@@ -274,12 +239,6 @@ function updateProgress() {
 }
 
 loadSample(currentIndex);
-
-function goToPrevious() {
-  if (currentIndex === 0) return;
-  currentIndex--;
-  loadSample(currentIndex);
-}
 
 async function submitAndNext() {
 
@@ -293,7 +252,6 @@ async function submitAndNext() {
   const difficulty = document.querySelector('input[name="difficulty"]:checked');
 
   if (!artifact || !confidence || !difficulty) return;
-
 
   responses[currentIndex] = {
     artifact: artifact.value,
@@ -330,7 +288,6 @@ async function submitFinalResponses() {
 
   window.location.href = "thankyou.html";
 }
-
 
 </script>
 
