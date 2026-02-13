@@ -22,7 +22,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    h1 { text-align: center; margin-bottom: 8px; }
+    h1 { text-align: center; }
 
     .progress-container {
       width: 100%;
@@ -76,13 +76,6 @@
       color: #111827;
     }
 
-    .error {
-      color: #dc2626;
-      font-size: 13px;
-      margin-top: 6px;
-      display: none;
-    }
-
     #loadingWrapper {
       display: none;
       text-align: center;
@@ -103,13 +96,13 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
   </style>
 </head>
 
 <body>
 
 <div class="container">
-
 <h1>Audio Clip</h1>
 
 <div class="card">
@@ -123,24 +116,17 @@
     <source id="audioSource" src="" type="audio/flac">
   </audio>
 
-  <div id="audioError" class="error">Please play the audio before proceeding.</div>
-
   <p><b>Q1. Which audio artifact is most prominent?</b></p>
-
   <input type="radio" name="artifact" value="Robot"> Robot-like voice<br>
   <input type="radio" name="artifact" value="Pauses"> Unnatural pauses<br>
   <input type="radio" name="artifact" value="Repetition"> Word repetition<br>
   <input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
   <input type="radio" name="artifact" value="Noise"> Background noise<br>
 
-  <div id="artifactError" class="error">Please select an artifact.</div>
-
   <p><b>Q2. How confident are you?</b></p>
   <input type="radio" name="confidence" value="Low"> Low
   <input type="radio" name="confidence" value="Medium"> Medium
   <input type="radio" name="confidence" value="High"> High
-
-  <div id="confidenceError" class="error">Please select confidence level.</div>
 
   <p><b>Q3. How easy or difficult was it to identify?</b></p>
   <input type="radio" name="difficulty" value="Very Easy"> Very Easy
@@ -148,8 +134,6 @@
   <input type="radio" name="difficulty" value="Neutral"> Neutral
   <input type="radio" name="difficulty" value="Difficult"> Difficult
   <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult
-
-  <div id="difficultyError" class="error">Please select difficulty level.</div>
 
   <p><b>Q4. What made this audio sound unnatural?</b></p>
   <textarea id="comments"></textarea>
@@ -195,13 +179,12 @@ audioFiles = shuffle(audioFiles);
 
 let responses = new Array(audioFiles.length).fill(null);
 let currentIndex = 0;
-let audioPlayed = false;
 let submitting = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
-
-audioPlayer.addEventListener("play", () => audioPlayed = true);
+const nextBtn = document.getElementById("nextBtn");
+const loadingWrapper = document.getElementById("loadingWrapper");
 
 function updateProgress(){
   const percent=((currentIndex+1)/audioFiles.length)*100;
@@ -214,23 +197,22 @@ function updateProgress(){
 function loadSample(){
   audioSource.src=audioFiles[currentIndex];
   audioPlayer.load();
-  audioPlayed=false;
 
   document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
   document.getElementById("comments").value="";
 
   const saved=responses[currentIndex];
   if(saved){
-    document.querySelector(`input[name="artifact"][value="${saved.artifact}"]`).checked=true;
-    document.querySelector(`input[name="confidence"][value="${saved.confidence}"]`).checked=true;
-    document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`).checked=true;
+    document.querySelector(`input[name="artifact"][value="${saved.artifact}"]`)?.checked=true;
+    document.querySelector(`input[name="confidence"][value="${saved.confidence}"]`)?.checked=true;
+    document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`)?.checked=true;
     document.getElementById("comments").value=saved.comments;
   }
 
   updateProgress();
 }
 
-async function submitAndNext(){
+function submitAndNext(){
 
   if(submitting) return;
 
@@ -238,11 +220,11 @@ async function submitAndNext(){
   const confidence=document.querySelector('input[name="confidence"]:checked');
   const difficulty=document.querySelector('input[name="difficulty"]:checked');
 
-  if(!audioPlayed || !artifact || !confidence || !difficulty) return;
+  if(!artifact || !confidence || !difficulty) return;
 
   submitting=true;
-  document.getElementById("nextBtn").disabled=true;
-  document.getElementById("loadingWrapper").style.display="block";
+  nextBtn.disabled=true;
+  loadingWrapper.style.display="block";
 
   const responseData={
     sample:currentIndex+1,
@@ -258,7 +240,7 @@ async function submitAndNext(){
     method:"POST",
     mode:"no-cors",
     body:JSON.stringify({...sessionData,...responseData})
-  });
+  }).catch(()=>{});
 
   currentIndex++;
 
@@ -270,8 +252,8 @@ async function submitAndNext(){
   loadSample();
 
   submitting=false;
-  document.getElementById("nextBtn").disabled=false;
-  document.getElementById("loadingWrapper").style.display="none";
+  nextBtn.disabled=false;
+  loadingWrapper.style.display="none";
 }
 
 function goBack(){
