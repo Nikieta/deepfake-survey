@@ -276,12 +276,19 @@ async function submitAndNext() {
   loadingWrapper.style.display = "block";
 
   const payload = {
-    sample: currentIndex + 1,
-    artifact: artifact.value,
-    confidence: confidence.value,
-    difficulty: difficulty.value,
-    comments: document.getElementById("comments").value
-  };
+  name: sessionData.name,
+  age: sessionData.age,
+  gender: sessionData.gender,
+  email: sessionData.email,
+  hearing: sessionData.hearing,
+  familiar: sessionData.familiar,
+  sample: currentIndex + 1,
+  artifact: artifact.value,
+  confidence: confidence.value,
+  difficulty: difficulty.value,
+  comments: document.getElementById("comments").value
+};
+
 
   // Move immediately
   currentIndex++;
