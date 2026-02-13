@@ -211,7 +211,15 @@ function updateProgress(){
   document.getElementById("progressText").innerText=
     `Sample ${currentIndex+1} of ${audioFiles.length}`;
   document.getElementById("backBtn").disabled=currentIndex===0;
+
+  const nextBtn = document.getElementById("nextBtn");
+  if(currentIndex === audioFiles.length - 1){
+    nextBtn.innerText = "Finish";
+  } else {
+    nextBtn.innerText = "Next Audio";
+  }
 }
+
 
 function loadSample(){
 
