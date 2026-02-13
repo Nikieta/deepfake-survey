@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Audio Listening Task</title>
-
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -11,250 +10,134 @@
       padding: 40px;
       color: #111827;
     }
-
     .container { max-width: 900px; margin: auto; }
-
     .card {
-      background: #ffffff;
+      background: #fff;
       border: 1px solid #e5e7eb;
       border-radius: 16px;
       padding: 28px 32px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-
-    h1 { text-align: center; margin-bottom: 8px; }
-
-    .subtitle {
-      text-align: center;
-      color: #4b5563;
-      margin-bottom: 20px;
+    .button-row {
+      display:flex;
+      justify-content:space-between;
+      margin-top:20px;
     }
-
-    .progress-container {
-      width: 100%;
-      background: #e5e7eb;
-      border-radius: 8px;
-      height: 10px;
-      margin-bottom: 12px;
-    }
-
-    .progress-bar {
-      height: 10px;
-      width: 0%;
-      background: #4f46e5;
-      border-radius: 8px;
-      transition: width 0.3s ease;
-    }
-
-    .progress-text {
-      text-align: center;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    audio { width: 100%; margin: 10px 0; }
-
-    .artifact-option { margin-bottom: 12px; }
-
-    .definition {
-      font-size: 13px;
-      color: #4b5563;
-      margin-left: 22px;
-    }
-
-    textarea {
-      width: 100%;
-      min-height: 90px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-    }
-
-    button {
-      background: #4f46e5;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    .error {
-      color: #dc2626;
-      font-size: 13px;
-      margin-top: 6px;
-      display: none;
-    }
-
-    #loadingWrapper {
-      display: none;
-      text-align: center;
-      margin-top: 16px;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 4px solid #e5e7eb;
-      border-top: 4px solid #4f46e5;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 8px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
   </style>
 </head>
-
 <body>
 
 <div class="container">
-
-<h1>Audio Clip</h1>
-<div class="subtitle">Please listen to the audio clip below.</div>
-
 <div class="card">
 
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div class="progress-text" id="progressText"></div>
+<h2 id="progressText"></h2>
 
-  <!-- IMPORTANT: NO <source> TAG -->
-  <audio controls id="audioPlayer"></audio>
+<audio controls id="audioPlayer"></audio>
 
-  <div id="audioError" class="error">
-    Please play the audio before proceeding.
-  </div>
+<p><b>Q1. Which audio artifact is most prominent?</b></p>
+<input type="radio" name="artifact" value="Robot"> Robot-like voice<br>
+<input type="radio" name="artifact" value="Pauses"> Unnatural pauses<br>
+<input type="radio" name="artifact" value="Repetition"> Word repetition<br>
+<input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
+<input type="radio" name="artifact" value="Noise"> Background noise<br>
 
-  <p><b>Q1. Which audio artifact is most prominent?</b></p>
+<p><b>Q2. Confidence?</b></p>
+<input type="radio" name="confidence" value="Low"> Low
+<input type="radio" name="confidence" value="Medium"> Medium
+<input type="radio" name="confidence" value="High"> High
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Robot"> Robot-like voice
-    <div class="definition">Speech sounds mechanical, metallic, or synthetic.</div>
-  </div>
+<p><b>Q3. Difficulty?</b></p>
+<input type="radio" name="difficulty" value="Very Easy"> Very Easy
+<input type="radio" name="difficulty" value="Easy"> Easy
+<input type="radio" name="difficulty" value="Neutral"> Neutral
+<input type="radio" name="difficulty" value="Difficult"> Difficult
+<input type="radio" name="difficulty" value="Very Difficult"> Very Difficult
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Pauses"> Unnatural pauses
-    <div class="definition">Unexpected breaks disrupting natural speech flow.</div>
-  </div>
+<p><b>Q4. Comments</b></p>
+<textarea id="comments"></textarea>
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Repetition"> Word repetition
-    <div class="definition">Repeated words or phrases not typical of natural speech.</div>
-  </div>
-
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Prosody"> Prosody mismatch
-    <div class="definition">Unnatural rhythm, pitch, stress, or intonation.</div>
-  </div>
-
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Noise"> Background noise
-    <div class="definition">Unwanted static, distortion, or environmental sound.</div>
-  </div>
-
-  <p><b>Q2. How confident are you?</b></p>
-  <input type="radio" name="confidence" value="Low"> Low  
-  <input type="radio" name="confidence" value="Medium"> Medium  
-  <input type="radio" name="confidence" value="High"> High  
-
-  <p><b>Q3. How easy or difficult was it to identify?</b></p>
-  <input type="radio" name="difficulty" value="Very Easy"> Very Easy  
-  <input type="radio" name="difficulty" value="Easy"> Easy  
-  <input type="radio" name="difficulty" value="Neutral"> Neutral  
-  <input type="radio" name="difficulty" value="Difficult"> Difficult  
-  <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult  
-
-  <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
-  <textarea id="comments"></textarea>
-
-  <div id="loadingWrapper">
-    <div class="spinner"></div>
-    <div>Submitting responses...</div>
-  </div>
-
-  <div style="margin-top:20px;">
-    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-  </div>
+<div class="button-row">
+  <button onclick="goBack()">Back</button>
+  <button onclick="submitAndNext()">Next</button>
+</div>
 
 </div>
 </div>
 
 <script>
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyObG3C956YvYZzrNiKiUyQIt4VzDDYCXJwSyW-rVraZ52Km7oWpXtP4guEehHH8WVw/exec";
+const APPS_SCRIPT_URL = "PASTE_YOUR_DEPLOYED_WEBAPP_URL_HERE";
 
-const participantID = Date.now().toString() + Math.floor(Math.random() * 1000);
+/* ---------- STABLE PARTICIPANT ID ---------- */
+let participantID = localStorage.getItem("participantID");
+if (!participantID) {
+  participantID = Date.now().toString();
+  localStorage.setItem("participantID", participantID);
+}
 
+/* ---------- AUDIO FILES ---------- */
 let audioFiles = [
-  "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac",
-  "audio/DF_E_2000042.flac","audio/DF_E_2000048.flac","audio/DF_E_2000053.flac",
-  "audio/DF_E_2000055.flac","audio/DF_E_2000075.flac","audio/DF_E_2000079.flac",
-  "audio/DF_E_2000091.flac","audio/DF_E_2000100.flac","audio/DF_E_2000102.flac",
-  "audio/DF_E_2000508.flac","audio/DF_E_2000524.flac","audio/DF_E_2749699.flac",
-  "audio/DF_E_2749700.flac","audio/DF_E_2749711.flac","audio/DF_E_2749732.flac",
-  "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac"
+  "audio/DF_E_2000013.flac",
+  "audio/DF_E_2000024.flac",
+  "audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac",
+  "audio/DF_E_2000048.flac",
+  "audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac",
+  "audio/DF_E_2000075.flac",
+  "audio/DF_E_2000079.flac",
+  "audio/DF_E_2000091.flac",
+  "audio/DF_E_2000100.flac",
+  "audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac",
+  "audio/DF_E_2000524.flac",
+  "audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac",
+  "audio/DF_E_2749711.flac",
+  "audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac",
+  "audio/DF_E_2749817.flac"
 ];
 
-/* Shuffle */
 audioFiles.sort(() => Math.random() - 0.5);
 
 let currentIndex = 0;
-let audioPlayed = false;
 let responses = {};
 
 const audioPlayer = document.getElementById("audioPlayer");
-const nextBtn = document.getElementById("nextBtn");
-const loadingWrapper = document.getElementById("loadingWrapper");
-
-audioPlayer.addEventListener("play", () => {
-  audioPlayed = true;
-  document.getElementById("audioError").style.display = "none";
-});
 
 function loadSample(index) {
 
-  audioPlayer.pause();
   audioPlayer.src = audioFiles[index];
   audioPlayer.load();
-  audioPlayed = false;
 
-
-  document.querySelectorAll('input[type="radio"]').forEach(r => r.checked = false);
-
-
-  document.getElementById("comments").value = "";
-
-  updateProgress();
-}
-
-
-function updateProgress() {
-  const percent = ((currentIndex + 1) / audioFiles.length) * 100;
-  document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("progressText").innerText =
-    `Sample ${currentIndex + 1} of ${audioFiles.length}`;
+    `Sample ${index + 1} of ${audioFiles.length}`;
+
+  // restore old response if exists
+  if (responses[index]) {
+    const r = responses[index];
+    document.querySelector(`input[name="artifact"][value="${r.artifact}"]`)?.checked = true;
+    document.querySelector(`input[name="confidence"][value="${r.confidence}"]`)?.checked = true;
+    document.querySelector(`input[name="difficulty"][value="${r.difficulty}"]`)?.checked = true;
+    document.getElementById("comments").value = r.comments;
+  } else {
+    document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    document.getElementById("comments").value = "";
+  }
 }
 
 loadSample(currentIndex);
 
-async function submitAndNext() {
+/* ---------- BACK BUTTON ---------- */
+function goBack() {
+  if (currentIndex === 0) return;
+  currentIndex--;
+  loadSample(currentIndex);
+}
 
-  if (!audioPlayed) {
-    document.getElementById("audioError").style.display = "block";
-    return;
-  }
+/* ---------- SUBMIT ---------- */
+function submitAndNext() {
 
   const artifact = document.querySelector('input[name="artifact"]:checked');
   const confidence = document.querySelector('input[name="confidence"]:checked');
@@ -269,42 +152,31 @@ async function submitAndNext() {
     comments: document.getElementById("comments").value
   };
 
+  const payload = {
+    participantID: participantID,
+    sampleNumber: currentIndex + 1,
+    artifact: artifact.value,
+    confidence: confidence.value,
+    difficulty: difficulty.value,
+    comments: document.getElementById("comments").value
+  };
+
+  fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(payload)
+  });
+
   currentIndex++;
 
   if (currentIndex >= audioFiles.length) {
-    submitFinalResponses();
+    window.location.href = "thankyou.html";
     return;
   }
 
   loadSample(currentIndex);
 }
 
-async function submitFinalResponses() {
-
-  loadingWrapper.style.display = "block";
-  nextBtn.disabled = true;
-
-  const finalPayload = {
-    participantID: participantID,
-    responses: responses
-  };
-await fetch(APPS_SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(finalPayload)
-})
-.then(res => res.text())
-.then(data => console.log("Server response:", data))
-.catch(err => console.error("Error:", err));
-
-
-
-  window.location.href = "thankyou.html";
-}
-
 </script>
-
 </body>
 </html>
