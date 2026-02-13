@@ -211,8 +211,9 @@
 </div>
 
 <script>
-
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwTbB2bT7mY7O258gYSew3M_igS3-EWBbBzcF-BSWr9netV_6sFI2r1ho6TE9mp9kzI/exec";
+
+const participantID = Date.now().toString() + Math.floor(Math.random() * 1000);
 
 let audioFiles = [
   "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac",
@@ -235,6 +236,7 @@ audioFiles = shuffle(audioFiles);
 
 let currentIndex = 0;
 let audioPlayed = false;
+let responses = {};
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
@@ -246,8 +248,23 @@ audioPlayer.addEventListener("play", () => {
   document.getElementById("audioError").style.display = "none";
 });
 
-audioSource.src = audioFiles[currentIndex];
-audioPlayer.load();
+function loadSample(index) {
+  audioSource.src = audioFiles[index];
+  audioPlayer.load();
+  audioPlayed = false;
+
+  if (responses[index]) {
+    document.querySelector(`input[name="artifact"][value="${responses[index].artifact}"]`)?.checked = true;
+    document.querySelector(`input[name="confidence"][value="${responses[index].confidence}"]`)?.checked = true;
+    document.querySelector(`input[name="difficulty"][value="${responses[index].difficulty}"]`)?.checked = true;
+    document.getElementById("comments").value = responses[index].comments;
+  } else {
+    document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+    document.getElementById("comments").value = "";
+  }
+
+  updateProgress();
+}
 
 function updateProgress() {
   const percent = ((currentIndex + 1) / audioFiles.length) * 100;
@@ -255,7 +272,14 @@ function updateProgress() {
   document.getElementById("progressText").innerText =
     `Sample ${currentIndex + 1} of ${audioFiles.length}`;
 }
-updateProgress();
+
+loadSample(currentIndex);
+
+function goToPrevious() {
+  if (currentIndex === 0) return;
+  currentIndex--;
+  loadSample(currentIndex);
+}
 
 async function submitAndNext() {
 
@@ -268,54 +292,45 @@ async function submitAndNext() {
   const confidence = document.querySelector('input[name="confidence"]:checked');
   const difficulty = document.querySelector('input[name="difficulty"]:checked');
 
-  if (!artifact) { document.getElementById("artifactError").style.display = "block"; return; }
-  if (!confidence) { document.getElementById("confidenceError").style.display = "block"; return; }
-  if (!difficulty) { document.getElementById("difficultyError").style.display = "block"; return; }
+  if (!artifact || !confidence || !difficulty) return;
 
-  nextBtn.disabled = true;
-  loadingWrapper.style.display = "block";
 
-  const payload = {
-    sample: currentIndex + 1,
+  responses[currentIndex] = {
     artifact: artifact.value,
     confidence: confidence.value,
     difficulty: difficulty.value,
     comments: document.getElementById("comments").value
   };
 
-  // Move immediately
   currentIndex++;
 
-  // Send in background
-  fetch(APPS_SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    body: JSON.stringify(payload)
-  });
-
   if (currentIndex >= audioFiles.length) {
-    window.location.href = "thankyou.html";
+    submitFinalResponses();
     return;
   }
 
-  audioSource.src = audioFiles[currentIndex];
-  audioPlayer.load();
-  audioPlayed = false;
-
-  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
-  document.getElementById("comments").value = "";
-
-  updateProgress();
-
-  // Preload next audio
-  if (currentIndex + 1 < audioFiles.length) {
-    const preload = new Audio();
-    preload.src = audioFiles[currentIndex + 1];
-  }
-
-  nextBtn.disabled = false;
-  loadingWrapper.style.display = "none";
+  loadSample(currentIndex);
 }
+
+async function submitFinalResponses() {
+
+  loadingWrapper.style.display = "block";
+  nextBtn.disabled = true;
+
+  const finalPayload = {
+    participantID: participantID,
+    responses: responses
+  };
+
+  await fetch(APPS_SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: JSON.stringify(finalPayload)
+  });
+
+  window.location.href = "thankyou.html";
+}
+
 
 </script>
 
