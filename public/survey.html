@@ -295,16 +295,19 @@ async function submitAndNext() {
   }
 
   const payload = {
-    name: localStorage.getItem("name"),
-    age: localStorage.getItem("age"),
-    familiar: localStorage.getItem("familiar"),
-    hearing: localStorage.getItem("hearing"),
-    tech: localStorage.getItem("tech"),
-    sample: currentIndex + 1,
-    realness: realness.value,
-    artifact: artifact.value,
-    comments: document.getElementById("comments").value
-  };
+  name: sessionData.name,
+  age: sessionData.age,
+  gender: sessionData.gender,
+  email: sessionData.email,
+  hearing: sessionData.hearing,
+  familiar: sessionData.familiar,
+  sample: currentIndex + 1,
+  artifact: artifact.value,
+  confidence: confidence.value,
+  difficulty: difficulty.value,
+  comments: document.getElementById("comments").value
+};
+
 
   await fetch(APPS_SCRIPT_URL, {
     method: "POST",
