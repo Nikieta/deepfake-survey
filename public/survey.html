@@ -109,7 +109,6 @@
 <body>
 
 <div class="container">
-
 <h1>Audio Clip</h1>
 
 <div class="card">
@@ -123,7 +122,7 @@
     <source id="audioSource" src="" type="audio/flac">
   </audio>
 
-  <div id="audioError" class="error">Please play the audio before proceeding.</div>
+  <div id="audioError" class="error">Please play the audio at least once.</div>
 
   <p><b>Q1. Which audio artifact is most prominent?</b></p>
 
@@ -201,7 +200,10 @@ let submitting = false;
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
 
-audioPlayer.addEventListener("play", () => audioPlayed = true);
+audioPlayer.addEventListener("play", () => {
+  audioPlayed = true;
+  document.getElementById("audioError").style.display = "none";
+});
 
 function updateProgress(){
   const percent=((currentIndex+1)/audioFiles.length)*100;
@@ -212,19 +214,25 @@ function updateProgress(){
 }
 
 function loadSample(){
+
   audioSource.src=audioFiles[currentIndex];
   audioPlayer.load();
-  audioPlayed=false;
+
+  document.querySelectorAll(".error").forEach(e=>e.style.display="none");
+
+  const saved=responses[currentIndex];
 
   document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
   document.getElementById("comments").value="";
 
-  const saved=responses[currentIndex];
   if(saved){
+    audioPlayed = true;
     document.querySelector(`input[name="artifact"][value="${saved.artifact}"]`).checked=true;
     document.querySelector(`input[name="confidence"][value="${saved.confidence}"]`).checked=true;
     document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`).checked=true;
     document.getElementById("comments").value=saved.comments;
+  } else {
+    audioPlayed = false;
   }
 
   updateProgress();
@@ -238,7 +246,24 @@ async function submitAndNext(){
   const confidence=document.querySelector('input[name="confidence"]:checked');
   const difficulty=document.querySelector('input[name="difficulty"]:checked');
 
-  if(!audioPlayed || !artifact || !confidence || !difficulty) return;
+  document.querySelectorAll(".error").forEach(e=>e.style.display="none");
+
+  if(!audioPlayed){
+    document.getElementById("audioError").style.display="block";
+    return;
+  }
+  if(!artifact){
+    document.getElementById("artifactError").style.display="block";
+    return;
+  }
+  if(!confidence){
+    document.getElementById("confidenceError").style.display="block";
+    return;
+  }
+  if(!difficulty){
+    document.getElementById("difficultyError").style.display="block";
+    return;
+  }
 
   submitting=true;
   document.getElementById("nextBtn").disabled=true;
@@ -254,17 +279,15 @@ async function submitAndNext(){
 
   responses[currentIndex]=responseData;
 
- fetch(APPS_SCRIPT_URL, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({...sessionData, ...responseData})
-}).catch(err => {
-  console.error("Submission error:", err);
-});
-
-
+  try{
+    await fetch(APPS_SCRIPT_URL,{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({...sessionData,...responseData})
+    });
+  } catch(err){
+    console.error("Submission failed:",err);
+  }
 
   currentIndex++;
 
@@ -289,6 +312,5 @@ function goBack(){
 loadSample();
 
 </script>
-
 </body>
 </html>
