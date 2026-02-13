@@ -254,13 +254,16 @@ async function submitAndNext(){
 
   responses[currentIndex]=responseData;
 
- await fetch(APPS_SCRIPT_URL, {
+ fetch(APPS_SCRIPT_URL, {
   method: "POST",
   headers: {
     "Content-Type": "application/json"
   },
   body: JSON.stringify({...sessionData, ...responseData})
+}).catch(err => {
+  console.error("Submission error:", err);
 });
+
 
 
   currentIndex++;
