@@ -179,40 +179,43 @@ Understanding how people perceive and explain artifacts in synthetic speech
 
 </div>
 </div>
-
 <script>
 function proceed() {
 
-  if (!document.getElementById("name").value.trim()) {
-    alert("Please enter your name.");
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value.trim();
+  const gender = document.getElementById("gender").value;
+  const email = document.getElementById("email").value.trim();
+  const hearing = document.getElementById("hearing").value;
+  const familiar = document.getElementById("familiar").value;
+  const consent = document.getElementById("consent").checked;
+
+  if (!name || !age || !gender || !email || !hearing || !familiar) {
+    alert("Please fill all required fields.");
     return;
   }
 
-  if (!document.getElementById("age").value.trim()) {
-    alert("Please enter your age.");
-    return;
-  }
-
-  if (!document.getElementById("email").value.trim()) {
-    alert("Please enter your email.");
-    return;
-  }
-
-  if (!document.getElementById("consent").checked) {
+  if (!consent) {
     alert("Please accept the consent to continue.");
     return;
   }
 
-  localStorage.setItem("name", document.getElementById("name").value);
-  localStorage.setItem("age", document.getElementById("age").value);
-  localStorage.setItem("gender", document.getElementById("gender").value);
-  localStorage.setItem("email", document.getElementById("email").value);
-  localStorage.setItem("hearing", document.getElementById("hearing").value);
-  localStorage.setItem("familiar", document.getElementById("familiar").value);
+  const participantData = {
+    name,
+    age,
+    gender,
+    email,
+    hearing,
+    familiar
+  };
+
+  sessionStorage.setItem("participantData", JSON.stringify(participantData));
 
   window.location.href = "context.html";
 }
 </script>
 
+
 </body>
 </html>
+
