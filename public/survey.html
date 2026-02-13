@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Audio Listening Task</title>
-
+  <title>Audio Deepfake Survey</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
@@ -12,7 +11,10 @@
       color: #111827;
     }
 
-    .container { max-width: 900px; margin: auto; }
+    .container {
+      max-width: 900px;
+      margin: auto;
+    }
 
     .card {
       background: #ffffff;
@@ -22,12 +24,8 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    h1 { text-align: center; margin-bottom: 8px; }
-
-    .subtitle {
+    h1 {
       text-align: center;
-      color: #4b5563;
-      margin-bottom: 20px;
     }
 
     .progress-container {
@@ -40,7 +38,7 @@
 
     .progress-bar {
       height: 10px;
-      width: 0%;
+      width: 5%;
       background: #4f46e5;
       border-radius: 8px;
       transition: width 0.3s ease;
@@ -52,19 +50,14 @@
       font-weight: 600;
     }
 
-    audio { width: 100%; margin: 10px 0; }
-
-    .artifact-option { margin-bottom: 12px; }
-
-    .definition {
-      font-size: 13px;
-      color: #4b5563;
-      margin-left: 22px;
+    audio {
+      width: 100%;
+      margin: 10px 0;
     }
 
     textarea {
       width: 100%;
-      min-height: 90px;
+      min-height: 80px;
       padding: 8px;
       border-radius: 8px;
       border: 1px solid #d1d5db;
@@ -92,11 +85,17 @@
       display: none;
     }
 
-    /* Spinner */
+    .hint {
+      font-size: 13px;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+
+    /* -------- LOADING SPINNER -------- */
     #loadingWrapper {
       display: none;
       text-align: center;
-      margin-top: 16px;
+      margin: 16px 0;
     }
 
     .spinner {
@@ -113,23 +112,23 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
+    /* ---------------------------------- */
   </style>
 </head>
 
 <body>
 
 <div class="container">
-
-<h1>Audio Clip</h1>
-<div class="subtitle">Please listen to the audio clip below.</div>
+<h1>Audio Deepfake Survey</h1>
 
 <div class="card">
 
   <div class="progress-container">
     <div class="progress-bar" id="progressBar"></div>
   </div>
-  <div class="progress-text" id="progressText"></div>
+  <div class="progress-text" id="progressText">Sample 1 of 20</div>
+
+  <p class="hint">▶️ Please listen to the audio completely before answering.</p>
 
   <audio controls id="audioPlayer">
     <source id="audioSource" src="" type="audio/flac">
@@ -139,89 +138,70 @@
     Please play the audio before proceeding.
   </div>
 
-  <!-- Q1 -->
-  <p><b>Q1. Which audio artifact is most prominent?</b></p>
+  <p><b>How real does this sound?</b></p>
+  <input type="radio" name="realness" value="Very Fake"> Very Fake  
+  <input type="radio" name="realness" value="Fake"> Fake  
+  <input type="radio" name="realness" value="Neutral"> Neutral  
+  <input type="radio" name="realness" value="Real"> Real  
+  <input type="radio" name="realness" value="Very Real"> Very Real  
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Robot"> Robot-like voice
-    <div class="definition">Speech sounds mechanical, metallic, or synthetic.</div>
+  <div id="realnessError" class="error">
+    Please select a rating.
   </div>
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Pauses"> Unnatural pauses
-    <div class="definition">Unexpected breaks disrupting natural speech flow.</div>
-  </div>
+  <br>
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Repetition"> Word repetition
-    <div class="definition">Repeated words or phrases not typical of natural speech.</div>
-  </div>
+  <p><b>Select the MOST prominent artifact you noticed:</b></p>
 
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Prosody"> Prosody mismatch
-    <div class="definition">Unnatural rhythm, pitch, stress, or intonation.</div>
-  </div>
-
-  <div class="artifact-option">
-    <input type="radio" name="artifact" value="Noise"> Background noise
-    <div class="definition">Unwanted static, distortion, or environmental sound.</div>
-  </div>
+  <input type="radio" name="artifact" value="Robot"> Robot-like voice<br>
+  <input type="radio" name="artifact" value="Pauses"> Unnatural pauses<br>
+  <input type="radio" name="artifact" value="Repetition"> Word repetition<br>
+  <input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
+  <input type="radio" name="artifact" value="Noise"> Background noise<br><br>
 
   <div id="artifactError" class="error">
-    Please select an artifact.
+    Please select one artifact category.
   </div>
 
-  <!-- Q2 -->
-  <p><b>Q2. How confident are you?</b></p>
-  <input type="radio" name="confidence" value="Low"> Low  
-  <input type="radio" name="confidence" value="Medium"> Medium  
-  <input type="radio" name="confidence" value="High"> High  
+  <textarea id="comments" placeholder="Additional comments..."></textarea>
+  <br><br>
 
-  <div id="confidenceError" class="error">
-    Please select confidence level.
-  </div>
-
-  <!-- Q3 -->
-  <p><b>Q3. How easy or difficult was it to identify?</b></p>
-  <input type="radio" name="difficulty" value="Very Easy"> Very Easy  
-  <input type="radio" name="difficulty" value="Easy"> Easy  
-  <input type="radio" name="difficulty" value="Neutral"> Neutral  
-  <input type="radio" name="difficulty" value="Difficult"> Difficult  
-  <input type="radio" name="difficulty" value="Very Difficult"> Very Difficult  
-
-  <div id="difficultyError" class="error">
-    Please select difficulty level.
-  </div>
-
-  <!-- Q4 -->
-  <p><b>Q4. What made this audio sound unnatural or unusual?</b></p>
-  <textarea id="comments" placeholder="Write your response here..."></textarea>
-
-  <!-- Spinner -->
+  <!-- Loading UI -->
   <div id="loadingWrapper">
     <div class="spinner"></div>
-    <div>Loading next sample...</div>
+    <div>Loading next sample…</div>
   </div>
 
-  <div style="margin-top:20px;">
-    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-  </div>
+  <button id="nextBtn" onclick="submitAndNext()">Next Sample</button>
 
 </div>
 </div>
 
 <script>
-
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbz-b93__io-vFF1RF35oEtfNs6e4utQfP2kMx4xl7WPO-z1RFye2v2VH0SaYe349p-D/exec";
+const APPS_SCRIPT_URL =
+"https://script.google.com/macros/s/AKfycbxdnUOFyy1L5bgZDaztlemC9uqNKtaJsMtY8LxyNtTh6AosCFANjYvx734kMmYl0gOk/exec";
 
 let audioFiles = [
-  "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac",
-  "audio/DF_E_2000042.flac","audio/DF_E_2000048.flac","audio/DF_E_2000053.flac",
-  "audio/DF_E_2000055.flac","audio/DF_E_2000075.flac","audio/DF_E_2000079.flac",
-  "audio/DF_E_2000091.flac","audio/DF_E_2000100.flac","audio/DF_E_2000102.flac",
-  "audio/DF_E_2000508.flac","audio/DF_E_2000524.flac","audio/DF_E_2749699.flac",
-  "audio/DF_E_2749700.flac","audio/DF_E_2749711.flac","audio/DF_E_2749732.flac",
-  "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac"
+  "audio/DF_E_2000013.flac",
+  "audio/DF_E_2000024.flac",
+  "audio/DF_E_2000026.flac",
+  "audio/DF_E_2000042.flac",
+  "audio/DF_E_2000048.flac",
+  "audio/DF_E_2000053.flac",
+  "audio/DF_E_2000055.flac",
+  "audio/DF_E_2000075.flac",
+  "audio/DF_E_2000079.flac",
+  "audio/DF_E_2000091.flac",
+  "audio/DF_E_2000100.flac",
+  "audio/DF_E_2000102.flac",
+  "audio/DF_E_2000508.flac",
+  "audio/DF_E_2000524.flac",
+  "audio/DF_E_2749699.flac",
+  "audio/DF_E_2749700.flac",
+  "audio/DF_E_2749711.flac",
+  "audio/DF_E_2749732.flac",
+  "audio/DF_E_2749783.flac",
+  "audio/DF_E_2749817.flac"
 ];
 
 function shuffle(array) {
@@ -235,6 +215,7 @@ audioFiles = shuffle(audioFiles);
 
 let currentIndex = 0;
 let audioPlayed = false;
+let submitting = false;
 
 const audioPlayer = document.getElementById("audioPlayer");
 const audioSource = document.getElementById("audioSource");
@@ -246,84 +227,110 @@ audioPlayer.addEventListener("play", () => {
   document.getElementById("audioError").style.display = "none";
 });
 
-audioSource.src = audioFiles[currentIndex];
+audioSource.src = audioFiles[0];
 audioPlayer.load();
 
 function updateProgress() {
-  const percent = ((currentIndex + 1) / audioFiles.length) * 100;
+  const percent = ((currentIndex + 1) / 20) * 100;
   document.getElementById("progressBar").style.width = percent + "%";
   document.getElementById("progressText").innerText =
-    `Sample ${currentIndex + 1} of ${audioFiles.length}`;
+    `Sample ${currentIndex + 1} of 20`;
 }
-updateProgress();
+
+function preloadAudio(url) {
+  const a = new Audio();
+  a.src = url;
+}
+
+function preloadNext() {
+  if (currentIndex + 1 < audioFiles.length) {
+    preloadAudio(audioFiles[currentIndex + 1]);
+  }
+}
+
+preloadNext();
 
 async function submitAndNext() {
 
-  if (!audioPlayed) {
-    document.getElementById("audioError").style.display = "block";
-    return;
-  }
-
-  const artifact = document.querySelector('input[name="artifact"]:checked');
-  const confidence = document.querySelector('input[name="confidence"]:checked');
-  const difficulty = document.querySelector('input[name="difficulty"]:checked');
-
-  if (!artifact) { document.getElementById("artifactError").style.display = "block"; return; }
-  if (!confidence) { document.getElementById("confidenceError").style.display = "block"; return; }
-  if (!difficulty) { document.getElementById("difficultyError").style.display = "block"; return; }
+  if (submitting) return;
+  submitting = true;
 
   nextBtn.disabled = true;
   loadingWrapper.style.display = "block";
 
+  document.getElementById("audioError").style.display = "none";
+  document.getElementById("realnessError").style.display = "none";
+  document.getElementById("artifactError").style.display = "none";
+
+  if (!audioPlayed) {
+    document.getElementById("audioError").style.display = "block";
+    submitting = false;
+    nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
+    return;
+  }
+
+  const realness = document.querySelector('input[name="realness"]:checked');
+  if (!realness) {
+    document.getElementById("realnessError").style.display = "block";
+    submitting = false;
+    nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
+    return;
+  }
+
+  const artifact = document.querySelector('input[name="artifact"]:checked');
+  if (!artifact) {
+    document.getElementById("artifactError").style.display = "block";
+    submitting = false;
+    nextBtn.disabled = false;
+    loadingWrapper.style.display = "none";
+    return;
+  }
+
   const payload = {
-  name: sessionData.name,
-  age: sessionData.age,
-  gender: sessionData.gender,
-  email: sessionData.email,
-  hearing: sessionData.hearing,
-  familiar: sessionData.familiar,
-  sample: currentIndex + 1,
-  artifact: artifact.value,
-  confidence: confidence.value,
-  difficulty: difficulty.value,
-  comments: document.getElementById("comments").value
-};
+    name: localStorage.getItem("name"),
+    age: localStorage.getItem("age"),
+    familiar: localStorage.getItem("familiar"),
+    hearing: localStorage.getItem("hearing"),
+    tech: localStorage.getItem("tech"),
+    sample: currentIndex + 1,
+    realness: realness.value,
+    artifact: artifact.value,
+    comments: document.getElementById("comments").value
+  };
 
-
-  // Move immediately
-  currentIndex++;
-
-  // Send in background
-  fetch(APPS_SCRIPT_URL, {
+  await fetch(APPS_SCRIPT_URL, {
     method: "POST",
     mode: "no-cors",
     body: JSON.stringify(payload)
   });
 
-  if (currentIndex >= audioFiles.length) {
+  currentIndex++;
+
+  if (currentIndex >= 20) {
     window.location.href = "thankyou.html";
     return;
   }
 
   audioSource.src = audioFiles[currentIndex];
   audioPlayer.load();
+
   audioPlayed = false;
 
-  document.querySelectorAll("input[type=radio]").forEach(r => r.checked = false);
+  document.querySelectorAll('input[name="realness"]').forEach(r => r.checked = false);
+  document.querySelectorAll('input[name="artifact"]').forEach(r => r.checked = false);
   document.getElementById("comments").value = "";
 
   updateProgress();
+  preloadNext();
 
-  // Preload next audio
-  if (currentIndex + 1 < audioFiles.length) {
-    const preload = new Audio();
-    preload.src = audioFiles[currentIndex + 1];
-  }
-
+  submitting = false;
   nextBtn.disabled = false;
   loadingWrapper.style.display = "none";
 }
 
+updateProgress();
 </script>
 
 </body>
