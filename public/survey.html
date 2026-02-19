@@ -76,15 +76,25 @@ select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
 <p><b>Q3. Describe the artifact in your own language.</b></p>
 <textarea id="comments"></textarea>
 
-<div id="validationBox">
-<div style="font-weight:600;margin-bottom:6px;">Ground truth explanation</div>
-<div id="groundTruthText" style="margin-bottom:10px;"></div>
+<div id="validationBox" style="display:none; margin-top:18px; padding:14px; border-radius:10px; background:#f3f4f6;">
 
-<b>Was this explanation useful?</b><br>
-<label><input type="radio" name="useful" value="Yes"> Yes</label>
-<label><input type="radio" name="useful" value="No"> No</label>
-<div id="usefulError" class="error">Please answer this question.</div>
+  <div style="font-weight:600; margin-bottom:6px;">
+    Provided description for this audio
+  </div>
+
+  <div id="groundTruthText" style="margin-bottom:12px;"></div>
+
+  <b>Q4. How good is this description for the audio?</b><br>
+
+  <label><input type="radio" name="rating" value="1"> 1 (Very Poor)</label><br>
+  <label><input type="radio" name="rating" value="2"> 2</label><br>
+  <label><input type="radio" name="rating" value="3"> 3 (Neutral)</label><br>
+  <label><input type="radio" name="rating" value="4"> 4</label><br>
+  <label><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+
+  <div id="ratingError" class="error">Please rate the description.</div>
 </div>
+
 
 <div style="margin-top:20px;display:flex;justify-content:space-between;">
 <button onclick="goBack()">Back</button>
@@ -152,29 +162,42 @@ groundTruth:groundTruthMap[f]
 let currentIndex=0;
 let audioPlayed=false;
 
-
-
 function loadSample(){
-const s=selectedSamples[currentIndex];
-document.getElementById("audioSource").src=s.file;
-document.getElementById("audioPlayer").load();
 
-document.querySelectorAll("input").forEach(i=>i.checked=false);
-document.getElementById("comments").value="";
-document.getElementById("artifactCategory").value="";
-document.getElementById("subOptions").innerHTML="";
-audioPlayed=false;
+  const s = selectedSamples[currentIndex];
 
-const percent=((currentIndex+1)/selectedSamples.length)*100;
-document.getElementById("progressBar").style.width=percent+"%";
-document.getElementById("progressText").innerText=
-`Sample ${currentIndex+1} of ${selectedSamples.length}`;
+  audioSource.src = s.file;
+  audioPlayer.load();
 
-const box=document.getElementById("validationBox");
-if(s.isValidation){
-box.style.display="block";
-document.getElementById("groundTruthText").innerText=s.groundTruth;
-}else box.style.display="none";
+  document.querySelectorAll(".error").forEach(e=>e.style.display="none");
+  document.getElementById("artifactCategory").value="";
+  document.getElementById("subOptions").innerHTML="";
+  document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
+  document.getElementById("comments").value="";
+  audioPlayed=false;
+
+  const percent=((currentIndex+1)/selectedSamples.length)*100;
+  document.getElementById("progressBar").style.width=percent+"%";
+  document.getElementById("progressText").innerText=
+    `Sample ${currentIndex+1} of ${selectedSamples.length}`;
+
+  /* SHOW VALIDATION ONLY FOR LAST 3 */
+  const validationBox=document.getElementById("validationBox");
+
+  if(currentIndex >= selectedSamples.length - 3){
+    validationBox.style.display="block";
+    document.getElementById("groundTruthText").innerText=s.groundTruth;
+  }else{
+    validationBox.style.display="none";
+  }
+
+  /* CHANGE BUTTON TEXT FOR LAST QUESTION */
+  const nextBtn=document.getElementById("nextBtn");
+  if(currentIndex === selectedSamples.length - 1){
+    nextBtn.innerText="Finish";
+  }else{
+    nextBtn.innerText="Next Audio";
+  }
 }
 
 
@@ -210,7 +233,8 @@ const s=selectedSamples[currentIndex];
 const category=document.getElementById("artifactCategory").value;
 const sub=document.querySelector('input[name="subArtifact"]:checked');
 const diff=document.querySelector('input[name="difficulty"]:checked');
-const useful=document.querySelector('input[name="useful"]:checked');
+const rating=document.querySelector('input[name="rating"]:checked');
+
 
 if(!audioPlayed)return alert("Please play audio.");
 if(!category||(category!=="None"&&!sub))return alert("Select artifact.");
@@ -233,9 +257,13 @@ explanationUseful:s.isValidation?useful.value:""
 await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
 
 currentIndex++;
-if(currentIndex>=selectedSamples.length) return window.location="thankyou.html";
-loadSample();
+if(currentIndex >= selectedSamples.length - 3){
+  if(!rating){
+    document.getElementById("ratingError").style.display="block";
+    return;
+  }
 }
+
 
 document.getElementById("audioPlayer").addEventListener("play",()=>audioPlayed=true);
 loadSample();
