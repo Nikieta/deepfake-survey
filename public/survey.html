@@ -1,182 +1,95 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Audio Listening Task</title>
+<title>Audio Listening Task</title>
 
-  <style>
-    body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      background: #f6f7fb;
-      margin: 0;
-      padding: 40px;
-      color: #111827;
-    }
-
-    .container { max-width: 900px; margin: auto; }
-
-    .card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 16px;
-      padding: 28px 32px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    h1 { text-align: center; margin-bottom: 8px; }
-
-    .progress-container {
-      width: 100%;
-      background: #e5e7eb;
-      border-radius: 8px;
-      height: 10px;
-      margin-bottom: 12px;
-    }
-
-    .progress-bar {
-      height: 10px;
-      width: 0%;
-      background: #4f46e5;
-      border-radius: 8px;
-      transition: width 0.3s ease;
-    }
-
-    .progress-text {
-      text-align: center;
-      margin-bottom: 20px;
-      font-weight: 600;
-    }
-
-    audio { width: 100%; margin: 10px 0; }
-
-    textarea {
-      width: 100%;
-      min-height: 90px;
-      padding: 8px;
-      border-radius: 8px;
-      border: 1px solid #d1d5db;
-    }
-
-    button {
-      background: #4f46e5;
-      color: white;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 8px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    button:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    #backBtn {
-      background: #e5e7eb;
-      color: #111827;
-    }
-
-    .error {
-      color: #dc2626;
-      font-size: 13px;
-      margin-top: 6px;
-      display: none;
-    }
-
-    #loadingWrapper {
-      display: none;
-      text-align: center;
-      margin: 16px 0;
-    }
-
-    .spinner {
-      width: 32px;
-      height: 32px;
-      border: 4px solid #e5e7eb;
-      border-top: 4px solid #4f46e5;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 8px auto;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    select {
-      padding:6px;
-      border-radius:6px;
-      border:1px solid #d1d5db;
-      margin-top:6px;
-    }
-  </style>
+<style>
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:#f6f7fb;
+  margin:0;
+  padding:40px;
+  color:#111827;
+}
+.container{max-width:900px;margin:auto;}
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:28px 32px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
+}
+.progress-container{width:100%;background:#e5e7eb;border-radius:8px;height:10px;margin-bottom:12px;}
+.progress-bar{height:10px;width:0;background:#4f46e5;border-radius:8px;}
+.progress-text{text-align:center;margin-bottom:20px;font-weight:600;}
+audio{width:100%;margin:10px 0;}
+textarea{width:100%;min-height:90px;padding:8px;border-radius:8px;border:1px solid #d1d5db;}
+button{background:#4f46e5;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:14px;cursor:pointer;}
+button:disabled{background:#9ca3af;}
+#error,.error{color:#dc2626;font-size:13px;margin-top:6px;display:none;}
+select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
+#validationBox{display:none;margin-top:20px;padding:14px;border-radius:10px;background:#f3f4f6;}
+</style>
 </head>
 
 <body>
-
 <div class="container">
 <h1>Audio Deepfake Sample</h1>
 
 <div class="card">
 
-  <div class="progress-container">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div class="progress-text" id="progressText"></div>
+<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+<div class="progress-text" id="progressText"></div>
 
-  <audio controls id="audioPlayer">
-    <source id="audioSource" src="" type="audio/flac">
-  </audio>
+<audio controls id="audioPlayer">
+<source id="audioSource" src="" type="audio/flac">
+</audio>
 
-  <div id="audioError" class="error">Please play the audio at least once.</div>
+<div id="audioError" class="error">Please play the audio at least once.</div>
 
-  <p><b>Q1. Which artifact category best describes the issue?</b></p>
+<p><b>Q1. Which artifact category best describes the issue?</b></p>
 
-<div style="display:flex; gap:40px; align-items:flex-start; margin-top:10px;">
+<div style="display:flex;gap:40px;align-items:flex-start;">
+<div style="min-width:260px;">
+<select id="artifactCategory" onchange="showSubOptions()" style="width:100%;">
+<option value="">-- Select category --</option>
+<option value="Articulation">Articulation Related</option>
+<option value="Linguistic">Linguistic / Paralinguistic</option>
+<option value="Temporal">Temporal / Prosodic</option>
+<option value="Signal">Signal-Level</option>
+<option value="Voice">Voice-Quality Related</option>
+<option value="None">No obvious artifact</option>
+</select>
+</div>
 
-  <!-- LEFT COLUMN -->
-  <div style="min-width:260px;">
-    <select id="artifactCategory" onchange="showSubOptions()" style="width:100%;">
-      <option value="">-- Select category --</option>
-      <option value="Articulation">Articulation Related</option>
-      <option value="Linguistic">Linguistic / Paralinguistic</option>
-      <option value="Temporal">Temporal / Prosodic</option>
-      <option value="Signal">Signal-Level</option>
-      <option value="Voice">Voice-Quality Related</option>
-      <option value="None">No obvious artifact</option>
-    </select>
-  </div>
-
-  <!-- RIGHT COLUMN -->
-  <div id="subOptions" style="flex:1;"></div>
-
+<div id="subOptions" style="flex:1;"></div>
 </div>
 
 <div id="artifactError" class="error">Please select artifact category and type.</div>
 
-  <div id="subOptions" style="margin-top:12px;"></div>
+<p><b>Q2. How easy or difficult was it to identify?</b></p>
+<label><input type="radio" name="difficulty" value="Easy"> Easy</label>
+<label><input type="radio" name="difficulty" value="Neutral"> Neutral</label>
+<label><input type="radio" name="difficulty" value="Difficult"> Difficult</label>
+<div id="difficultyError" class="error">Please select difficulty level.</div>
 
-  <div id="artifactError" class="error">Please select artifact category and type.</div>
+<p><b>Q3. Describe the artifact in your own language.</b></p>
+<textarea id="comments"></textarea>
 
-  <p><b>Q2. How easy or difficult was it to identify?</b></p>
-  <input type="radio" name="difficulty" value="Easy"> Easy
-  <input type="radio" name="difficulty" value="Neutral"> Neutral
-  <input type="radio" name="difficulty" value="Difficult"> Difficult
-  <div id="difficultyError" class="error">Please select difficulty level.</div>
+<div id="validationBox">
+<div style="font-weight:600;margin-bottom:6px;">Ground truth explanation</div>
+<div id="groundTruthText" style="margin-bottom:10px;"></div>
 
-  <p><b>Q3. Describe the artifact in your own language.</b></p>
-  <textarea id="comments"></textarea>
+<b>Was this explanation useful?</b><br>
+<label><input type="radio" name="useful" value="Yes"> Yes</label>
+<label><input type="radio" name="useful" value="No"> No</label>
+<div id="usefulError" class="error">Please answer this question.</div>
+</div>
 
-  <div id="loadingWrapper">
-    <div class="spinner"></div>
-    <div>Loading next sample…</div>
-  </div>
-
-  <div style="margin-top:20px; display:flex; justify-content:space-between;">
-    <button id="backBtn" onclick="goBack()">Back</button>
-    <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-  </div>
+<div style="margin-top:20px;display:flex;justify-content:space-between;">
+<button onclick="goBack()">Back</button>
+<button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
+</div>
 
 </div>
 </div>
@@ -184,194 +97,147 @@
 <script>
 
 const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
-if (!sessionData) window.location.href = "index.html";
+if(!sessionData) window.location.href="index.html";
 
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzmjUQET1I_rSu5f6Hmxc93ksYXeChoAkPaUpKidg0_bddQvQUhJb_5QuDCjXBYUfTv/exec";
+const APPS_SCRIPT_URL="YOUR_SCRIPT_URL_HERE";
 
+/* ---------- AUDIO POOL ---------- */
 
+const audioPool=[
+"DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
+"DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
+"DF_E_2000079.flac","DF_E_2000091.flac","DF_E_2000100.flac","DF_E_2000102.flac",
+"DF_E_2000508.flac","DF_E_2000524.flac","DF_E_2749699.flac","DF_E_2749700.flac",
+"DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
+];
 
-const subOptionMap = {
-  Articulation: [
-    "Poor Word Articulation",
-    "Slurred Speech"
-  ],
-  Linguistic: [
-    "Word / Phrase Repetition",
-    "Mispronounced Words",
-    "Unnatural Paralinguistics"
-  ],
-  Temporal: [
-    "Awkward Pauses / Word Stress",
-    "Missing Natural Pauses",
-    "Lack of Expressiveness / Flat Intonation"
-  ],
-  Signal: [
-    "Background Noise",
-    "Impulsive Noise"
-  ],
-  Voice: [
-    "Unnatural Voice Timbre",
-    "Muffled Voice",
-    "Distorted / Wobbly Voice"
-  ],
-  None: []
+/* ---------- GROUND TRUTH ---------- */
+
+const groundTruthMap={
+"DF_E_2000013.flac":"This clip contains noticeable background noise affecting clarity.",
+"DF_E_2000024.flac":"Speech articulation is unclear, reducing intelligibility.",
+"DF_E_2000026.flac":"Background noise artifacts are present.",
+"DF_E_2000042.flac":"Voice sounds robotic and unnatural.",
+"DF_E_2000048.flac":"Background noise reduces audio clarity.",
+"DF_E_2000053.flac":"Background noise artifacts are audible.",
+"DF_E_2000055.flac":"Robotic tone detected in speech.",
+"DF_E_2000075.flac":"Pronunciation clarity issues present.",
+"DF_E_2000079.flac":"No clear artifact detected in this sample.",
+"DF_E_2000091.flac":"Background noise present.",
+"DF_E_2000100.flac":"Pronunciation clarity issues present.",
+"DF_E_2000102.flac":"Robotic voice characteristics detected.",
+"DF_E_2000508.flac":"No obvious artifact detected.",
+"DF_E_2000524.flac":"No obvious artifact detected.",
+"DF_E_2749699.flac":"Robotic voice present.",
+"DF_E_2749700.flac":"Pronunciation clarity issues present.",
+"DF_E_2749711.flac":"Robotic tone detected.",
+"DF_E_2749732.flac":"No clear artifact present.",
+"DF_E_2749783.flac":"No clear artifact present.",
+"DF_E_2749817.flac":"No clear artifact present."
 };
 
-function showSubOptions() {
+/* ---------- RANDOMIZATION ---------- */
 
-  const category = document.getElementById("artifactCategory").value;
-  const container = document.getElementById("subOptions");
-  container.innerHTML = "";
+function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
-  if (!category) return;
+let selectedSamples=shuffle([...audioPool]).slice(0,15);
+let validationIndices=shuffle([...Array(15).keys()]).slice(0,3);
 
-  if (category === "None") {
-    container.innerHTML = `
-      <div style="color:#6b7280; font-style:italic;">
-        No noticeable artifact detected.
-      </div>`;
-    return;
-  }
+selectedSamples=selectedSamples.map((f,i)=>({
+file:"audio/"+f,
+isValidation:validationIndices.includes(i),
+groundTruth:groundTruthMap[f]
+}));
 
-  const definitions = {
-    "Poor Word Articulation": "Words are spoken unclearly, as if sounds are not fully formed.",
-    "Slurred Speech": "Speech sounds blended together, making words run into each other.",
-
-    "Word / Phrase Repetition": "Words or short phrases repeat unnecessarily.",
-    "Mispronounced Words": "Some words are pronounced incorrectly or oddly.",
-    "Unnatural Paralinguistics": "Odd vocal sounds like unnatural 'uhh', 'hmm', or fillers.",
-
-    "Awkward Pauses / Word Stress": "Strange pauses or emphasis in the wrong places.",
-    "Missing Natural Pauses": "Speech flows too continuously without natural breaks.",
-    "Lack of Expressiveness / Flat Intonation": "Voice sounds monotone or emotionless.",
-
-    "Background Noise": "Constant unwanted noise like hiss, static, or hum.",
-    "Impulsive Noise": "Sudden clicks, pops, or short noises interrupt speech.",
-
-    "Unnatural Voice Timbre": "Voice tone sounds metallic, sharp, or artificial.",
-    "Muffled Voice": "Speech sounds distant or covered, like through a cloth.",
-    "Distorted / Wobbly Voice": "Voice sounds unstable, shaky, or warped."
-  };
-
-  const options = subOptionMap[category];
-
-  let html = `<div style="font-weight:600; margin-bottom:8px;">
-                Select specific issue:
-              </div>`;
-
-  options.forEach(opt => {
-    html += `
-      <label style="display:block; margin-bottom:10px;">
-        <input type="radio" name="subArtifact" value="${opt}">
-        <b>${opt}</b><br>
-        <span style="font-size:13px; color:#6b7280;">
-          ${definitions[opt]}
-        </span>
-      </label>`;
-  });
-
-  container.innerHTML = html;
-}
-
-
-let audioFiles=[ "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac", "audio/DF_E_2000042.flac","audio/DF_E_2000048.flac","audio/DF_E_2000053.flac", "audio/DF_E_2000055.flac","audio/DF_E_2000075.flac","audio/DF_E_2000079.flac", "audio/DF_E_2000091.flac","audio/DF_E_2000100.flac","audio/DF_E_2000102.flac", "audio/DF_E_2000508.flac","audio/DF_E_2000524.flac","audio/DF_E_2749699.flac", "audio/DF_E_2749700.flac","audio/DF_E_2749711.flac","audio/DF_E_2749732.flac", "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac" ];
-let responses=new Array(audioFiles.length).fill(null);
 let currentIndex=0;
 let audioPlayed=false;
-let submitting=false;
 
-const audioPlayer=document.getElementById("audioPlayer");
-const audioSource=document.getElementById("audioSource");
-
-audioPlayer.addEventListener("play",()=>{
-  audioPlayed=true;
-  document.getElementById("audioError").style.display="none";
-});
-
-function updateProgress(){
-  const percent=((currentIndex+1)/audioFiles.length)*100;
-  document.getElementById("progressBar").style.width=percent+"%";
-  document.getElementById("progressText").innerText=
-    `Sample ${currentIndex+1} of ${audioFiles.length}`;
-  document.getElementById("backBtn").disabled=currentIndex===0;
-
-  const nextBtn=document.getElementById("nextBtn");
-  nextBtn.innerText=currentIndex===audioFiles.length-1?"Finish":"Next Audio";
-}
+/* ---------- LOAD SAMPLE ---------- */
 
 function loadSample(){
-  audioSource.src=audioFiles[currentIndex];
-  audioPlayer.load();
+const s=selectedSamples[currentIndex];
+document.getElementById("audioSource").src=s.file;
+document.getElementById("audioPlayer").load();
 
-  document.querySelectorAll(".error").forEach(e=>e.style.display="none");
-  document.getElementById("artifactCategory").value="";
-  document.getElementById("subOptions").innerHTML="";
-  document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
-  document.getElementById("comments").value="";
-  audioPlayed=false;
+document.querySelectorAll("input").forEach(i=>i.checked=false);
+document.getElementById("comments").value="";
+document.getElementById("artifactCategory").value="";
+document.getElementById("subOptions").innerHTML="";
+audioPlayed=false;
 
-  updateProgress();
+const percent=((currentIndex+1)/selectedSamples.length)*100;
+document.getElementById("progressBar").style.width=percent+"%";
+document.getElementById("progressText").innerText=
+`Sample ${currentIndex+1} of ${selectedSamples.length}`;
+
+const box=document.getElementById("validationBox");
+if(s.isValidation){
+box.style.display="block";
+document.getElementById("groundTruthText").innerText=s.groundTruth;
+}else box.style.display="none";
 }
 
+/* ---------- SUB OPTIONS ---------- */
 
+const subOptionMap={
+Articulation:["Poor Word Articulation","Slurred Speech"],
+Linguistic:["Word / Phrase Repetition","Mispronounced Words","Unnatural Paralinguistics"],
+Temporal:["Awkward Pauses / Word Stress","Missing Natural Pauses","Flat Intonation"],
+Signal:["Background Noise","Impulsive Noise"],
+Voice:["Unnatural Timbre","Muffled Voice","Wobbly Voice"],
+None:[]
+};
+
+function showSubOptions(){
+const cat=document.getElementById("artifactCategory").value;
+const c=document.getElementById("subOptions");
+c.innerHTML="";
+if(!cat||cat==="None") return;
+
+subOptionMap[cat].forEach(opt=>{
+c.innerHTML+=`
+<label style="display:block;margin-bottom:6px;">
+<input type="radio" name="subArtifact" value="${opt}"> ${opt}
+</label>`;
+});
+}
+
+/* ---------- SUBMIT ---------- */
 
 async function submitAndNext(){
 
-  if(submitting) return;
+const s=selectedSamples[currentIndex];
+const category=document.getElementById("artifactCategory").value;
+const sub=document.querySelector('input[name="subArtifact"]:checked');
+const diff=document.querySelector('input[name="difficulty"]:checked');
+const useful=document.querySelector('input[name="useful"]:checked');
 
-  const category=document.getElementById("artifactCategory").value;
-  const subArtifact=document.querySelector('input[name="subArtifact"]:checked');
-  const confidence=document.querySelector('input[name="confidence"]:checked');
-  const difficulty=document.querySelector('input[name="difficulty"]:checked');
+if(!audioPlayed)return alert("Please play audio.");
+if(!category||(category!=="None"&&!sub))return alert("Select artifact.");
+if(!diff)return alert("Select difficulty.");
+if(s.isValidation&&!useful)return alert("Answer usefulness.");
 
-  document.querySelectorAll(".error").forEach(e=>e.style.display="none");
+const payload={
+...sessionData,
+sample:currentIndex+1,
+audio:s.file,
+category,
+artifact:category==="None"?"None":sub.value,
+difficulty:diff.value,
+comments:document.getElementById("comments").value,
+isValidation:s.isValidation,
+groundTruth:s.groundTruth,
+explanationUseful:s.isValidation?useful.value:""
+};
 
-  if(!audioPlayed){document.getElementById("audioError").style.display="block";return;}
-  if(!category || (category!=="None"&&!subArtifact)){
-    document.getElementById("artifactError").style.display="block";return;
-  }
-  if(!confidence){document.getElementById("confidenceError").style.display="block";return;}
-  if(!difficulty){document.getElementById("difficultyError").style.display="block";return;}
+await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
 
-  submitting=true;
-  document.getElementById("nextBtn").disabled=true;
-  document.getElementById("loadingWrapper").style.display="block";
-
-  const responseData={
-    sample:currentIndex+1,
-    category:category,
-    artifact:category==="None"?"None":subArtifact.value,
-    confidence:confidence.value,
-    difficulty:difficulty.value,
-    comments:document.getElementById("comments").value
-  };
-
-  try{
-    await fetch(APPS_SCRIPT_URL,{
-      method:"POST",
-      mode:"no-cors",
-      body:JSON.stringify({...sessionData,...responseData})
-    });
-  }catch(e){console.error(e);}
-
-  currentIndex++;
-  if(currentIndex>=audioFiles.length){
-    window.location.href="thankyou.html";
-    return;
-  }
-
-  loadSample();
-  submitting=false;
-  document.getElementById("nextBtn").disabled=false;
-  document.getElementById("loadingWrapper").style.display="none";
+currentIndex++;
+if(currentIndex>=selectedSamples.length) return window.location="thankyou.html";
+loadSample();
 }
 
-function goBack(){
-  if(currentIndex===0)return;
-  currentIndex--;
-  loadSample();
-}
-
+document.getElementById("audioPlayer").addEventListener("play",()=>audioPlayed=true);
 loadSample();
 
 </script>
