@@ -133,15 +133,27 @@
 
   <p><b>Q1. Which artifact category best describes the issue?</b></p>
 
-  <select id="artifactCategory" onchange="showSubOptions()">
-    <option value="">-- Select category --</option>
-    <option value="Articulation">Articulation Related</option>
-    <option value="Linguistic">Linguistic / Paralinguistic</option>
-    <option value="Temporal">Temporal / Prosodic</option>
-    <option value="Signal">Signal-Level</option>
-    <option value="Voice">Voice-Quality Related</option>
-    <option value="None">No obvious artifact</option>
-  </select>
+<div style="display:flex; gap:40px; align-items:flex-start; margin-top:10px;">
+
+  <!-- LEFT COLUMN -->
+  <div style="min-width:260px;">
+    <select id="artifactCategory" onchange="showSubOptions()" style="width:100%;">
+      <option value="">-- Select category --</option>
+      <option value="Articulation">Articulation Related</option>
+      <option value="Linguistic">Linguistic / Paralinguistic</option>
+      <option value="Temporal">Temporal / Prosodic</option>
+      <option value="Signal">Signal-Level</option>
+      <option value="Voice">Voice-Quality Related</option>
+      <option value="None">No obvious artifact</option>
+    </select>
+  </div>
+
+  <!-- RIGHT COLUMN -->
+  <div id="subOptions" style="flex:1;"></div>
+
+</div>
+
+<div id="artifactError" class="error">Please select artifact category and type.</div>
 
   <div id="subOptions" style="margin-top:12px;"></div>
 
@@ -208,21 +220,37 @@ const subOptionMap = {
 };
 
 function showSubOptions() {
+
   const category = document.getElementById("artifactCategory").value;
   const container = document.getElementById("subOptions");
   container.innerHTML = "";
 
-  if(!category || category==="None") return;
+  if (!category) return;
 
-  subOptionMap[category].forEach(opt=>{
-    container.innerHTML += `
-      <label>
+  if (category === "None") {
+    container.innerHTML = `
+      <div style="color:#6b7280; font-style:italic;">
+        No artifact selected.
+      </div>`;
+    return;
+  }
+
+  const options = subOptionMap[category];
+
+  let html = `<div style="font-weight:600; margin-bottom:6px;">
+                Select specific issue:
+              </div>`;
+
+  options.forEach(opt => {
+    html += `
+      <label style="display:block; margin-bottom:6px;">
         <input type="radio" name="subArtifact" value="${opt}">
         ${opt}
-      </label><br>`;
+      </label>`;
   });
-}
 
+  container.innerHTML = html;
+}
 
 
 let audioFiles=[ "audio/DF_E_2000013.flac","audio/DF_E_2000024.flac","audio/DF_E_2000026.flac", "audio/DF_E_2000042.flac","audio/DF_E_2000048.flac","audio/DF_E_2000053.flac", "audio/DF_E_2000055.flac","audio/DF_E_2000075.flac","audio/DF_E_2000079.flac", "audio/DF_E_2000091.flac","audio/DF_E_2000100.flac","audio/DF_E_2000102.flac", "audio/DF_E_2000508.flac","audio/DF_E_2000524.flac","audio/DF_E_2749699.flac", "audio/DF_E_2749700.flac","audio/DF_E_2749711.flac","audio/DF_E_2749732.flac", "audio/DF_E_2749783.flac","audio/DF_E_2749817.flac" ];
