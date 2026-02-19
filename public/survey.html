@@ -106,8 +106,37 @@ const audioSource=document.getElementById("audioSource");
 let audioPlayed=false;
 audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
-const audioPool=[ /* your list unchanged */ ];
-const groundTruthMap={ /* your map unchanged */ };
+const audioPool=[
+"DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
+"DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
+"DF_E_2000079.flac","DF_E_2000091.flac","DF_E_2000100.flac","DF_E_2000102.flac",
+"DF_E_2000508.flac","DF_E_2000524.flac","DF_E_2749699.flac","DF_E_2749700.flac",
+"DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
+];
+
+const groundTruthMap={
+"DF_E_2000013.flac":"This clip contains noticeable background noise affecting clarity.",
+"DF_E_2000024.flac":"Speech articulation is unclear, reducing intelligibility.",
+"DF_E_2000026.flac":"Background noise artifacts are present.",
+"DF_E_2000042.flac":"Voice sounds robotic and unnatural.",
+"DF_E_2000048.flac":"Background noise reduces audio clarity.",
+"DF_E_2000053.flac":"Background noise artifacts are audible.",
+"DF_E_2000055.flac":"Robotic tone detected in speech.",
+"DF_E_2000075.flac":"Pronunciation clarity issues present.",
+"DF_E_2000079.flac":"No clear artifact detected in this sample.",
+"DF_E_2000091.flac":"Background noise present.",
+"DF_E_2000100.flac":"Pronunciation clarity issues present.",
+"DF_E_2000102.flac":"Robotic voice characteristics detected.",
+"DF_E_2000508.flac":"No obvious artifact detected.",
+"DF_E_2000524.flac":"No obvious artifact detected.",
+"DF_E_2749699.flac":"Robotic voice present.",
+"DF_E_2749700.flac":"Pronunciation clarity issues present.",
+"DF_E_2749711.flac":"Robotic tone detected.",
+"DF_E_2749732.flac":"No clear artifact present.",
+"DF_E_2749783.flac":"No clear artifact present.",
+"DF_E_2749817.flac":"No clear artifact present."
+};
+
 
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
