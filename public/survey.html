@@ -99,9 +99,9 @@ select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
 const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
 if(!sessionData) window.location.href="index.html";
 
-const APPS_SCRIPT_URL="YOUR_SCRIPT_URL_HERE";
+const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzmjUQET1I_rSu5f6Hmxc93ksYXeChoAkPaUpKidg0_bddQvQUhJb_5QuDCjXBYUfTv/exec";
 
-/* ---------- AUDIO POOL ---------- */
+
 
 const audioPool=[
 "DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
@@ -111,7 +111,7 @@ const audioPool=[
 "DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
 ];
 
-/* ---------- GROUND TRUTH ---------- */
+
 
 const groundTruthMap={
 "DF_E_2000013.flac":"This clip contains noticeable background noise affecting clarity.",
@@ -136,7 +136,7 @@ const groundTruthMap={
 "DF_E_2749817.flac":"No clear artifact present."
 };
 
-/* ---------- RANDOMIZATION ---------- */
+
 
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
@@ -152,7 +152,7 @@ groundTruth:groundTruthMap[f]
 let currentIndex=0;
 let audioPlayed=false;
 
-/* ---------- LOAD SAMPLE ---------- */
+
 
 function loadSample(){
 const s=selectedSamples[currentIndex];
@@ -177,7 +177,7 @@ document.getElementById("groundTruthText").innerText=s.groundTruth;
 }else box.style.display="none";
 }
 
-/* ---------- SUB OPTIONS ---------- */
+
 
 const subOptionMap={
 Articulation:["Poor Word Articulation","Slurred Speech"],
@@ -202,7 +202,7 @@ c.innerHTML+=`
 });
 }
 
-/* ---------- SUBMIT ---------- */
+
 
 async function submitAndNext(){
 
