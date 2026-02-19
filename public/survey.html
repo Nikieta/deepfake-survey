@@ -109,7 +109,7 @@
 <body>
 
 <div class="container">
-<h1>Audio Clip</h1>
+<h1>Audio Deepfake Sample</h1>
 
 <div class="card">
 
@@ -132,16 +132,9 @@
   <input type="radio" name="artifact" value="Prosody"> Prosody mismatch<br>
   <input type="radio" name="artifact" value="Noise"> Background noise<br>
 
-  <div id="artifactError" class="error">Please select an artifact.</div>
+  <div id="artifactError" class="error">Please select an artifact.</div> 
 
-  <p><b>Q2. How confident are you?</b></p>
-  <input type="radio" name="confidence" value="Low"> Low
-  <input type="radio" name="confidence" value="Medium"> Medium
-  <input type="radio" name="confidence" value="High"> High
-
-  <div id="confidenceError" class="error">Please select confidence level.</div>
-
-  <p><b>Q3. How easy or difficult was it to identify?</b></p>
+  <p><b>Q2. How easy or difficult was it to identify?</b></p>
   <input type="radio" name="difficulty" value="Very Easy"> Very Easy
   <input type="radio" name="difficulty" value="Easy"> Easy
   <input type="radio" name="difficulty" value="Neutral"> Neutral
@@ -150,7 +143,7 @@
 
   <div id="difficultyError" class="error">Please select difficulty level.</div>
 
-  <p><b>Q4. What made this audio sound unnatural?</b></p>
+  <p><b>Q3. What made this audio sound unnatural?</b></p>
   <textarea id="comments"></textarea>
 
   <div id="loadingWrapper">
