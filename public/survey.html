@@ -65,13 +65,10 @@ select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
 <div id="subOptions" style="flex:1;"></div>
 </div>
 
-<div id="artifactError" class="error">Please select artifact category and type.</div>
-
 <p><b>Q2. How easy or difficult was it to identify?</b></p>
 <label><input type="radio" name="difficulty" value="Easy"> Easy</label>
 <label><input type="radio" name="difficulty" value="Neutral"> Neutral</label>
 <label><input type="radio" name="difficulty" value="Difficult"> Difficult</label>
-<div id="difficultyError" class="error">Please select difficulty level.</div>
 
 <p><b>Q3. Describe the artifact in your own language.</b></p>
 <textarea id="comments"></textarea>
@@ -86,7 +83,6 @@ select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
 <label><input type="radio" name="rating" value="3"> 3 (Neutral)</label><br>
 <label><input type="radio" name="rating" value="4"> 4</label><br>
 <label><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
-<div id="ratingError" class="error">Please rate the description.</div>
 </div>
 
 <div style="margin-top:20px;display:flex;justify-content:space-between;">
@@ -102,58 +98,28 @@ select{padding:6px;border-radius:6px;border:1px solid #d1d5db;}
 const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
 if(!sessionData) window.location.href="index.html";
 
-const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwmmIFWe6f6U5o8hjTS2mZ79L4k7OAv7lshvdHx1erlLDiuv-Ah4ueU1Mvq0c7MFd_W/exec";
+const APPS_SCRIPT_URL="YOUR_SCRIPT_URL_HERE";
 
 const audioPlayer=document.getElementById("audioPlayer");
 const audioSource=document.getElementById("audioSource");
 
-audioPlayer.addEventListener("play",()=>{
-  audioPlayed=true;
-  document.getElementById("audioError").style.display="none";
-});
+let audioPlayed=false;
+audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
-const audioPool=[
-"DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
-"DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
-"DF_E_2000079.flac","DF_E_2000091.flac","DF_E_2000100.flac","DF_E_2000102.flac",
-"DF_E_2000508.flac","DF_E_2000524.flac","DF_E_2749699.flac","DF_E_2749700.flac",
-"DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
-];
-
-const groundTruthMap={
-"DF_E_2000013.flac":"This clip contains noticeable background noise affecting clarity.",
-"DF_E_2000024.flac":"Speech articulation is unclear, reducing intelligibility.",
-"DF_E_2000026.flac":"Background noise artifacts are present.",
-"DF_E_2000042.flac":"Voice sounds robotic and unnatural.",
-"DF_E_2000048.flac":"Background noise reduces audio clarity.",
-"DF_E_2000053.flac":"Background noise artifacts are audible.",
-"DF_E_2000055.flac":"Robotic tone detected in speech.",
-"DF_E_2000075.flac":"Pronunciation clarity issues present.",
-"DF_E_2000079.flac":"No clear artifact detected in this sample.",
-"DF_E_2000091.flac":"Background noise present.",
-"DF_E_2000100.flac":"Pronunciation clarity issues present.",
-"DF_E_2000102.flac":"Robotic voice characteristics detected.",
-"DF_E_2000508.flac":"No obvious artifact detected.",
-"DF_E_2000524.flac":"No obvious artifact detected.",
-"DF_E_2749699.flac":"Robotic voice present.",
-"DF_E_2749700.flac":"Pronunciation clarity issues present.",
-"DF_E_2749711.flac":"Robotic tone detected.",
-"DF_E_2749732.flac":"No clear artifact present.",
-"DF_E_2749783.flac":"No clear artifact present.",
-"DF_E_2749817.flac":"No clear artifact present."
-};
+const audioPool=[ /* your list unchanged */ ];
+const groundTruthMap={ /* your map unchanged */ };
 
 function shuffle(arr){return arr.sort(()=>Math.random()-0.5);}
 
-let selectedSamples=shuffle([...audioPool]).slice(0,15);
-selectedSamples=selectedSamples.map((f,i)=>({
+let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({
 file:"audio/"+f,
+id:f,
 isValidation:i>=12,
 groundTruth:groundTruthMap[f]
 }));
 
+let responses=new Array(selectedSamples.length).fill(null);
 let currentIndex=0;
-let audioPlayed=false;
 
 function showSubOptions(){
 const map={
@@ -163,12 +129,10 @@ Temporal:["Awkward pauses","Missing pauses","Flat voice"],
 Signal:["Background noise","Clicks/pops"],
 Voice:["Metallic voice","Muffled voice","Wobbly voice"]
 };
-
 const cat=document.getElementById("artifactCategory").value;
 const c=document.getElementById("subOptions");
 c.innerHTML="";
 if(!cat||cat==="None")return;
-
 map[cat].forEach(o=>{
 c.innerHTML+=`<label style="display:block;margin-bottom:6px;">
 <input type="radio" name="subArtifact" value="${o}"> ${o}
@@ -177,27 +141,46 @@ c.innerHTML+=`<label style="display:block;margin-bottom:6px;">
 }
 
 function loadSample(){
-
 const s=selectedSamples[currentIndex];
 audioSource.src=s.file;
 audioPlayer.load();
-audioPlayed=false;
 
+const saved=responses[currentIndex];
+audioPlayed=!!saved;
+
+document.getElementById("artifactCategory").value=saved?.category||"";
+document.getElementById("comments").value=saved?.comments||"";
 document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
-document.getElementById("comments").value="";
-document.getElementById("artifactCategory").value="";
-document.getElementById("subOptions").innerHTML="";
-document.getElementById("validationBox").style.display=s.isValidation?"block":"none";
+showSubOptions();
+
+setTimeout(()=>{
+if(saved?.artifact){
+const el=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);
+if(el) el.checked=true;
+}
+if(saved?.difficulty){
+const d=document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`);
+if(d) d.checked=true;
+}
+if(saved?.rating){
+const r=document.querySelector(`input[name="rating"][value="${saved.rating}"]`);
+if(r) r.checked=true;
+}
+},40);
+
+document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
+document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of ${selectedSamples.length}`;
+
+const v=document.getElementById("validationBox");
+if(s.isValidation){
+v.style.display="block";
 document.getElementById("groundTruthText").innerText=s.groundTruth;
+}else v.style.display="none";
 
-document.getElementById("progressBar").style.width=((currentIndex+1)/15*100)+"%";
-document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of 15`;
-
-document.getElementById("nextBtn").innerText=currentIndex===14?"Finish":"Next Audio";
+document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish":"Next Audio";
 }
 
 async function submitAndNext(){
-
 const s=selectedSamples[currentIndex];
 const cat=document.getElementById("artifactCategory").value;
 const sub=document.querySelector('input[name="subArtifact"]:checked');
@@ -211,8 +194,8 @@ if(s.isValidation&&!rating)return alert("Rate description.");
 
 const payload={
 ...sessionData,
+audio_id:s.id,
 sample:currentIndex+1,
-audio:s.file,
 category:cat,
 artifact:cat==="None"?"None":sub.value,
 difficulty:diff.value,
@@ -220,10 +203,12 @@ comments:document.getElementById("comments").value,
 rating:s.isValidation?rating.value:""
 };
 
+responses[currentIndex]=payload;
+
 await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
 
 currentIndex++;
-if(currentIndex>=15){
+if(currentIndex>=selectedSamples.length){
 window.location.href="thankyou.html";
 return;
 }
