@@ -230,22 +230,45 @@ function showSubOptions() {
   if (category === "None") {
     container.innerHTML = `
       <div style="color:#6b7280; font-style:italic;">
-        No artifact selected.
+        No noticeable artifact detected.
       </div>`;
     return;
   }
 
+  const definitions = {
+    "Poor Word Articulation": "Words are spoken unclearly, as if sounds are not fully formed.",
+    "Slurred Speech": "Speech sounds blended together, making words run into each other.",
+
+    "Word / Phrase Repetition": "Words or short phrases repeat unnecessarily.",
+    "Mispronounced Words": "Some words are pronounced incorrectly or oddly.",
+    "Unnatural Paralinguistics": "Odd vocal sounds like unnatural 'uhh', 'hmm', or fillers.",
+
+    "Awkward Pauses / Word Stress": "Strange pauses or emphasis in the wrong places.",
+    "Missing Natural Pauses": "Speech flows too continuously without natural breaks.",
+    "Lack of Expressiveness / Flat Intonation": "Voice sounds monotone or emotionless.",
+
+    "Background Noise": "Constant unwanted noise like hiss, static, or hum.",
+    "Impulsive Noise": "Sudden clicks, pops, or short noises interrupt speech.",
+
+    "Unnatural Voice Timbre": "Voice tone sounds metallic, sharp, or artificial.",
+    "Muffled Voice": "Speech sounds distant or covered, like through a cloth.",
+    "Distorted / Wobbly Voice": "Voice sounds unstable, shaky, or warped."
+  };
+
   const options = subOptionMap[category];
 
-  let html = `<div style="font-weight:600; margin-bottom:6px;">
+  let html = `<div style="font-weight:600; margin-bottom:8px;">
                 Select specific issue:
               </div>`;
 
   options.forEach(opt => {
     html += `
-      <label style="display:block; margin-bottom:6px;">
+      <label style="display:block; margin-bottom:10px;">
         <input type="radio" name="subArtifact" value="${opt}">
-        ${opt}
+        <b>${opt}</b><br>
+        <span style="font-size:13px; color:#6b7280;">
+          ${definitions[opt]}
+        </span>
       </label>`;
   });
 
