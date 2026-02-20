@@ -93,11 +93,11 @@ button{
 <div class="split">
 
 <div class="leftPanel">
-<label class="option"><input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()"> <b>Articulation Related</b><small>Speech sounds unclear</small></label>
-<label class="option"><input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()"> <b>Linguistic / Paralinguistic</b><small>Word or pronunciation issues</small></label>
-<label class="option"><input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()"> <b>Temporal / Prosodic</b><small>Timing or emotion unnatural</small></label>
-<label class="option"><input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()"> <b>Signal-Level</b><small>Noise or distortion present</small></label>
-<label class="option"><input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()"> <b>Voice Quality</b><small>Tone sounds artificial</small></label>
+<label class="option"><input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()"> <b>Articulation Related</b><small>Lack of clarity in the speech formation</small></label>
+<label class="option"><input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()"> <b>Linguistic / Paralinguistic</b><small>Clear but Mispronounced / Repeated words/ non-verbal sounds</small></label>
+<label class="option"><input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()"> <b>Temporal / Prosodic</b><small>Unnatural timings, speed, rhythm or speaking style</small></label>
+<label class="option"><input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()"> <b>Signal-Level</b><small>Noise / Glitches in the signal background</small></label>
+<label class="option"><input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()"> <b>Voice Quality</b><small>Unnatural Voice characteristics</small></label>
 <label class="option"><input type="radio" name="artifactCategory" value="None" onchange="showSubOptions()"> <b>No obvious artifact</b></label>
 </div>
 
@@ -113,14 +113,24 @@ button{
 <label class="option"><input type="radio" name="difficulty" value="5"> 5 — Very Difficult to spot</label>
 
 <p><b>Q3. Describe the artifact in your own language.</b></p>
-<textarea id="comments" placeholder="The audio sounds to be synthetic (You may use the labels above)."></textarea>
+<textarea id="comments" placeholder="For eg. The audio sounds to be synthetic (You may use the labels above)."></textarea>
 
 <div id="accuracyBox">
-<p><b>Q4. Do you find the description accurate for the artifacts?</b></p>
-<label class="option"><input type="radio" name="accuracy" value="Highly accurate"> Highly accurate</label>
-<label class="option"><input type="radio" name="accuracy" value="Moderately accurate"> Moderately accurate</label>
-<label class="option"><input type="radio" name="accuracy" value="Slightly accurate"> Slightly accurate</label>
-<label class="option"><input type="radio" name="accuracy" value="Not accurate"> Not accurate</label>
+<p><b>Q4. Were the provided categories and descriptions helpful in identifying the artifact in this audio?</b></p>
+  
+<div id="accuracyBox">
+<p><b>Q4. Were the provided categories and descriptions helpful in identifying the artifact in this audio?</b></p>
+
+<label class="option">
+  <input type="radio" name="accuracy" value="Helpful">
+  Helpful (clear and useful)
+</label>
+
+<label class="option">
+  <input type="radio" name="accuracy" value="Not helpful">
+  Not helpful (unclear or ambiguous)
+</label>
+</div>
 </div>
 
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
@@ -267,11 +277,17 @@ if(isValidation){
 
 function showSubOptions(){
 const defs={
-Temporal:[["Awkward Pauses","Pauses misplaced"],["Missing Pauses","Speech continuous"],["Flat Intonation","Monotone"]],
-Signal:[["Background Noise","Hiss/static"],["Impulsive Noise","Clicks/pops"]],
-Articulation:[["Poor Word Articulation","Words unclear"],["Slurred Speech","Words merged"]],
-Linguistic:[["Word Repetition","Words repeat"],["Mispronounced Words","Wrong pronunciation"],["Unnatural Paralinguistics","Odd fillers"]],
-Voice:[["Unnatural Timbre","Metallic tone"],["Muffled Voice","Distant"],["Distorted Voice","Wobbly"]]
+Temporal:[["Awkward Pauses","Pauses occur awkwardly mid sentence"],["Missing Pauses","Overly fast speech with missing natural pauses"],["Flat Intonation","Monotonous speaking style with no expression"]],
+Signal:[["Background Noise","Constant Background Noise like buzz, hum or noise accompanying vocals"],["Impulsive Noise","Sudden short-duration noise like click, thud etc"]],
+Articulation:[["Poor Word Articulation","Unclear words while word boundaries are clear"],["Slurred Speech","Unclear speech with merged/blended word boundaries
+
+"]],
+Linguistic:[["Word Repetition","Unintentional repetition of words / phrases"],["Mispronounced Words","Mispronounciation of words especially short-forms, Units etc.
+
+"],["Unnatural Paralinguistics","Unnatural fillers or non-verbal sounds like huh, hmm."]],
+Voice:[["Unnatural Timbre","Voice texture is mechanical, overly sharp or rough"],["Muffled Voice","Voice sounds Suppressed/ distant 
+
+"],["Distorted Voice","Voice is stretched/distorted or shaky/unstable"]]
 };
 const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
 const c=document.getElementById("subOptions");
