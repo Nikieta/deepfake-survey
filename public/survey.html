@@ -3,7 +3,7 @@
 <head>
 <title>Artifact Identification</title>
 
-<style>
+<style> 
   body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f6f7fb;
@@ -125,13 +125,7 @@ button{
 
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
 <textarea id="extraComments" placeholder="Additional Description (Optional)"></textarea>
-<div id="loader" style="display:none;text-align:center;margin:10px 0;">
-  <div class="spinner"></div>
-</div>
-<div style="margin-top:14px;display:flex;justify-content:space-between;">
-<button onclick="goBack()">Back</button>
-<button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-</div>
+
 </div>
   <div id="validationQuestions" style="display:none;">
 
@@ -149,6 +143,15 @@ button{
 
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
 <textarea id="validationExtra" placeholder="Additional Description (Optional)"></textarea>
+
+</div>
+  <div id="loader" style="display:none;text-align:center;margin:10px 0;">
+  <div class="spinner"></div>
+</div>
+<div style="margin-top:14px;display:flex;justify-content:space-between;">
+  <button onclick="goBack()">Back</button>
+<button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
+
 
 </div>
 
@@ -211,6 +214,7 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   const saved = responses[currentIndex];
 
   document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
+  document.getElementById("subOptions").innerHTML="";
   document.getElementById("comments").value = saved?.comments || "";
   document.getElementById("extraComments").value = saved?.extra || "";
   document.querySelectorAll('input[name="rating"]').forEach(r=>r.checked=false);
@@ -324,12 +328,13 @@ const payload = {
   extra: document.getElementById("validationExtra").value
 } : {
   category: cat,
-  artifact: cat==="None" ? "None" : sub.value,
+  artifact: cat==="None" ? "None" : (sub ? sub.value : ""),
   difficulty: diff.value,
   accuracy: accuracy ? accuracy.value : "",
   comments: document.getElementById("comments").value,
   extra: document.getElementById("extraComments").value
 };
+  
   document.getElementById("nextBtn").disabled = true;
   document.getElementById("loader").style.display="block";
   await fetch(APPS_SCRIPT_URL,{
@@ -356,6 +361,9 @@ function preloadNextAudio(){
   a.src = selectedSamples[currentIndex+1].file;
 }
 loadSample();
+document.addEventListener("keydown", e=>{
+  if(e.key==="Enter") e.preventDefault();
+});
 
 </script>
 
