@@ -405,11 +405,11 @@ const payload = {
   
   document.getElementById("nextBtn").disabled = true;
   document.getElementById("loader").style.display="block";
- fetch(APPS_SCRIPT_URL,{
+  fetch(APPS_SCRIPT_URL,{
   method:"POST",
-  headers:{ "Content-Type":"application/json" },
-  body:JSON.stringify(payload)
-}).catch(()=>{});
+  mode:"no-cors",
+  body: JSON.stringify(payload)
+});
   currentIndex++;
 
   if(currentIndex >= selectedSamples.length){
