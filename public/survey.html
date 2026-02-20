@@ -337,9 +337,11 @@ const payload = {
   
   document.getElementById("nextBtn").disabled = true;
   document.getElementById("loader").style.display="block";
-  await fetch(APPS_SCRIPT_URL,{
+ await fetch(APPS_SCRIPT_URL,{
   method:"POST",
-  mode:"no-cors",
+  headers: {
+    "Content-Type": "application/json"
+  },
   body: JSON.stringify(payload)
 });
   currentIndex++;
