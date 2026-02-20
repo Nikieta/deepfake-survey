@@ -28,6 +28,16 @@ button{background:#4f46e5;color:white;border:none;padding:10px 18px;border-radiu
 .error{color:#dc2626;font-size:13px;margin-top:6px;display:none;}
 #validationBox{display:none;margin-top:18px;padding:14px;border-radius:10px;background:#f3f4f6;}
 small{color:#6b7280;}
+  
+.option-label{
+  color:#374151;         
+  font-weight:500;
+  line-height:1.4;
+}
+.option-label small{
+  color:#6b7280;
+  font-weight:400;
+}
 </style>
 </head>
 
@@ -52,37 +62,37 @@ First select a broad category on the left. Then choose the specific issue that a
 <div style="display:flex;gap:80px;align-items:flex-start;">
 <div style="min-width:320px;">
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()">
 <b>Articulation Related</b><br>
 <small>Speech sounds are not clearly formed.</small>
 </label><br><br>
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()">
 <b>Linguistic / Paralinguistic</b><br>
 <small>Issues with words, pronunciation, or filler sounds.</small>
 </label><br><br>
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()">
 <b>Temporal / Prosodic</b><br>
 <small>Timing, pauses, or emotion in speech sound unnatural.</small>
 </label><br><br>
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()">
 <b>Signal-Level</b><br>
 <small>Noise or distortions affecting audio quality.</small>
 </label><br><br>
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()">
 <b>Voice-Quality Related</b><br>
 <small>Voice tone or texture sounds unnatural.</small>
 </label><br><br>
 
-<label>
+<label class="option-label">
 <input type="radio" name="artifactCategory" value="None" onchange="showSubOptions()">
 <b>No obvious artifact</b>
 </label>
@@ -93,9 +103,9 @@ First select a broad category on the left. Then choose the specific issue that a
 </div>
 
 <p><b>Q2. How easy or difficult was it to identify?</b></p>
-<label><input type="radio" name="difficulty" value="Easy"> Easy</label>
-<label><input type="radio" name="difficulty" value="Moderate"> Moderate</label>
-<label><input type="radio" name="difficulty" value="Difficult"> Difficult</label>
+<label class="option-label"><input type="radio" name="difficulty" value="Easy"> Easy</label>
+<label class="option-label"><input type="radio" name="difficulty" value="Moderate"> Moderate</label>
+<label class="option-label"><input type="radio" name="difficulty" value="Difficult"> Difficult</label>
 
 <p><b>Q3. Describe the artifact in your own language.</b></p>
 <textarea id="comments"></textarea>
@@ -105,11 +115,12 @@ First select a broad category on the left. Then choose the specific issue that a
 <div id="groundTruthText" style="margin-bottom:12px;"></div>
 
 <b>Q4. How good is this description for the audio?</b><br>
-<label><input type="radio" name="rating" value="1"> 1 (Very Poor)</label><br>
-<label><input type="radio" name="rating" value="2"> 2</label><br>
-<label><input type="radio" name="rating" value="3"> 3 (Neutral)</label><br>
-<label><input type="radio" name="rating" value="4"> 4</label><br>
-<label><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+
+<label class="option-label"><input type="radio" name="rating" value="1"> 1 (Very Poor)</label><br>
+<label class="option-label"><input type="radio" name="rating" value="2"> 2</label><br>
+<label class="option-label"><input type="radio" name="rating" value="3"> 3 (Neutral)</label><br>
+<label class="option-label"><input type="radio" name="rating" value="4"> 4</label><br>
+<label class="option-label"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
 </div>
 
 <div style="margin-top:20px;display:flex;justify-content:space-between;">
@@ -140,7 +151,29 @@ const audioPool=[
 "DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
 ];
 
-const groundTruthMap={ /* unchanged */ };
+const groundTruthMap={
+"DF_E_2000013.flac":"This clip contains noticeable background noise affecting clarity.",
+"DF_E_2000024.flac":"Speech articulation is unclear, reducing intelligibility.",
+"DF_E_2000026.flac":"Background noise artifacts are present.",
+"DF_E_2000042.flac":"Voice sounds robotic and unnatural.",
+"DF_E_2000048.flac":"Background noise reduces audio clarity.",
+"DF_E_2000053.flac":"Background noise artifacts are audible.",
+"DF_E_2000055.flac":"Robotic tone detected in speech.",
+"DF_E_2000075.flac":"Pronunciation clarity issues present.",
+"DF_E_2000079.flac":"No clear artifact detected in this sample.",
+"DF_E_2000091.flac":"Background noise present.",
+"DF_E_2000100.flac":"Pronunciation clarity issues present.",
+"DF_E_2000102.flac":"Robotic voice characteristics detected.",
+"DF_E_2000508.flac":"No obvious artifact detected.",
+"DF_E_2000524.flac":"No obvious artifact detected.",
+"DF_E_2749699.flac":"Robotic voice present.",
+"DF_E_2749700.flac":"Pronunciation clarity issues present.",
+"DF_E_2749711.flac":"Robotic tone detected.",
+"DF_E_2749732.flac":"No clear artifact present.",
+"DF_E_2749783.flac":"No clear artifact present.",
+"DF_E_2749817.flac":"No clear artifact present."
+};
+
 
 function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 
@@ -188,7 +221,7 @@ if(!cat||cat==="None")return;
 
 defs[cat].forEach(d=>{
 c.innerHTML+=`
-<label style="display:block;margin-bottom:10px;">
+<label class="option-label" style="display:block;margin-bottom:10px;">
 <input type="radio" name="subArtifact" value="${d[0]}">
 <b>${d[0]}</b><br><small>${d[1]}</small>
 </label>`;
