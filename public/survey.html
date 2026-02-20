@@ -4,13 +4,28 @@
 <title>Artifact Identification</title>
 
 <style>
-body{
+  body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f6f7fb;
   margin:0;
-  padding:24px;
+  padding:18px;
   color:#111827;
 }
+
+.card{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:14px;
+  padding:16px 22px;
+  box-shadow:0 3px 10px rgba(0,0,0,.05);
+}
+.progress-text{margin-bottom:6px;}
+audio{margin:4px 0 10px 0;}
+.option{margin-bottom:4px;font-size:14px;}
+textarea{min-height:48px;}
+h1{margin-bottom:8px;}
+p{margin:8px 0 4px;}
+
 .container{max-width:1000px;margin:auto;}
 .card{
   background:#fff;
@@ -171,15 +186,14 @@ if(!diff)return alert("Select difficulty.");
 if(currentIndex<12 && !accuracy)return alert("Select accuracy.");
 
 const payload={
-...sessionData,
-audio_id:s.id,
-sample:currentIndex+1,
-category:cat,
-artifact:cat==="None"?"None":sub.value,
-difficulty:diff.value,
-comments:document.getElementById("comments").value,
-accuracy:accuracy?accuracy.value:"",
-extra:document.getElementById("extraComments").value
+  ...sessionData,
+  audio:s.file,      // ✅ ADD THIS LINE
+  sample:currentIndex+1,
+  category:cat,
+  artifact:cat==="None"?"None":sub.value,
+  difficulty:diff.value,
+  comments:document.getElementById("comments").value,
+  rating:s.isValidation?rating.value:""
 };
 
 await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
