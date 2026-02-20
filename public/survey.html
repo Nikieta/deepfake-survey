@@ -55,6 +55,19 @@ button{
   font-size:14px;
   cursor:pointer;
 }
+.spinner{
+  width:28px;
+  height:28px;
+  border:3px solid #e5e7eb;
+  border-top:3px solid #4f46e5;
+  border-radius:50%;
+  animation:spin 0.7s linear infinite;
+  margin:auto;
+}
+@keyframes spin{
+  from{transform:rotate(0deg);}
+  to{transform:rotate(360deg);}
+}
 .option{margin-bottom:6px;color:#374151;}
 .option small{display:block;color:#6b7280;font-weight:400;}
 .split{display:flex;gap:80px;align-items:flex-start;}
@@ -74,7 +87,7 @@ button{
 <div class="progress-text" id="progressText"></div>
 
 <audio controls id="audioPlayer" preload="metadata"></audio>
-
+<div id="mainQuestions">
 <p><b>Q1. Which artifact category best describes the issue?</b></p>
 
 <div class="split">
@@ -112,10 +125,31 @@ button{
 
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
 <textarea id="extraComments" placeholder="Additional Description (Optional)"></textarea>
-
+<div id="loader" style="display:none;text-align:center;margin:10px 0;">
+  <div class="spinner"></div>
+</div>
 <div style="margin-top:14px;display:flex;justify-content:space-between;">
 <button onclick="goBack()">Back</button>
 <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
+</div>
+</div>
+  <div id="validationQuestions" style="display:none;">
+
+<p><b>Provided description for this audio:</b></p>
+<p id="groundTruthText" style="background:#f3f4f6;padding:10px;border-radius:8px;"></p>
+
+<p><b>Do you think this description matches the audio?</b></p>
+<p><b>Rate how good this description is (1–5):</b></p>
+
+<label class="option"><input type="radio" name="rating" value="1"> 1 (Very Poor)</label>
+<label class="option"><input type="radio" name="rating" value="2"> 2</label>
+<label class="option"><input type="radio" name="rating" value="3"> 3</label>
+<label class="option"><input type="radio" name="rating" value="4"> 4</label>
+<label class="option"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+
+<p><b>Q5. Describe any other artifact not highlighted above.</b></p>
+<textarea id="validationExtra" placeholder="Additional Description (Optional)"></textarea>
+
 </div>
 
 </div>
@@ -127,7 +161,28 @@ const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
 if(!sessionData) window.location.href="index.html";
 
 const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwgJ6DNVvq6_OzoaRkrI7m9PXI51nnp0S3HIPqkOF1kAVJpzCXJt8y2bVszt_4dGj0G/exec";
-
+const groundTruthMap={
+"DF_E_2000013.flac":"Background noise affects clarity.",
+"DF_E_2000024.flac":"Speech articulation is unclear.",
+"DF_E_2000026.flac":"Background noise artifacts present.",
+"DF_E_2000042.flac":"Voice sounds robotic.",
+"DF_E_2000048.flac":"Background noise reduces clarity.",
+"DF_E_2000053.flac":"Noise artifacts audible.",
+"DF_E_2000055.flac":"Robotic tone detected.",
+"DF_E_2000075.flac":"Pronunciation clarity issues.",
+"DF_E_2000079.flac":"No obvious artifact.",
+"DF_E_2000091.flac":"Background noise present.",
+"DF_E_2000100.flac":"Pronunciation clarity issues.",
+"DF_E_2000102.flac":"Robotic voice detected.",
+"DF_E_2000508.flac":"No obvious artifact.",
+"DF_E_2000524.flac":"No obvious artifact.",
+"DF_E_2749699.flac":"Robotic voice present.",
+"DF_E_2749700.flac":"Pronunciation clarity issues.",
+"DF_E_2749711.flac":"Robotic tone detected.",
+"DF_E_2749732.flac":"No clear artifact.",
+"DF_E_2749783.flac":"No clear artifact.",
+"DF_E_2749817.flac":"No clear artifact."
+};
 const audioPool=[
 "DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
 "DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
@@ -158,6 +213,8 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
   document.getElementById("comments").value = saved?.comments || "";
   document.getElementById("extraComments").value = saved?.extra || "";
+  document.querySelectorAll('input[name="rating"]').forEach(r=>r.checked=false);
+  document.getElementById("validationExtra").value="";
 
   if(saved){
     const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
@@ -188,6 +245,20 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
   preloadNextAudio();
   document.getElementById("nextBtn").disabled = false;
+  document.getElementById("loader").style.display="none";
+    const isValidation = currentIndex >= 12;
+
+document.getElementById("mainQuestions").style.display =
+  isValidation ? "none" : "block";
+
+document.getElementById("validationQuestions").style.display =
+  isValidation ? "block" : "none";
+
+if(isValidation){
+  const filename = selectedSamples[currentIndex].id;
+  document.getElementById("groundTruthText").innerText =
+    groundTruthMap[filename] || "";
+}
 }
 
 function showSubOptions(){
@@ -211,29 +282,47 @@ async function submitAndNext(){
 
   const s = selectedSamples[currentIndex];
 
-  const cat = document.querySelector('input[name="artifactCategory"]:checked')?.value;
-  const sub = document.querySelector('input[name="subArtifact"]:checked');
-  const diff = document.querySelector('input[name="difficulty"]:checked');
-  const accuracy = document.querySelector('input[name="accuracy"]:checked');
+const cat = document.querySelector('input[name="artifactCategory"]:checked')?.value;
+const sub = document.querySelector('input[name="subArtifact"]:checked');
+const diff = document.querySelector('input[name="difficulty"]:checked');
+const accuracy = document.querySelector('input[name="accuracy"]:checked');
 
-  if(!audioPlayed) return alert("Please play audio.");
+const isValidation = currentIndex >= 12;
+const rating = document.querySelector('input[name="rating"]:checked');
+
+if(!audioPlayed) return alert("Please play audio.");
+
+if(!isValidation){
   if(!cat || (cat!=="None" && !sub)) return alert("Select artifact.");
   if(!diff) return alert("Select difficulty.");
-  if(currentIndex < 12 && !accuracy) return alert("Select accuracy.");
+  if(!accuracy) return alert("Select accuracy.");
+}
 
-  const payload = {
+if(isValidation && !rating) return alert("Please rate the description.");
+
+const payload = {
   ...sessionData,
   audio: s.file,
   sample: currentIndex+1,
-  category: cat,
-  artifact: cat==="None" ? "None" : sub.value,
-  difficulty: diff.value,
-  accuracy: accuracy ? accuracy.value : "",
-  isValidation: currentIndex >= 12,
-  comments: document.getElementById("comments").value,
-  extraComments: document.getElementById("extraComments").value
+  isValidation:isValidation,
+
+  // normal answers
+  category: isValidation ? "" : cat,
+  artifact: isValidation ? "" : (cat==="None" ? "None" : (sub ? sub.value : "")),
+  difficulty: isValidation ? "" : diff.value,
+  accuracy: isValidation ? "" : (accuracy?accuracy.value:""),
+  comments: isValidation ? "" : document.getElementById("comments").value,
+  extraComments: isValidation
+      ? document.getElementById("validationExtra").value
+      : document.getElementById("extraComments").value,
+
+  // validation rating
+  rating: isValidation && rating ? rating.value : ""
 };
-  responses[currentIndex] = {
+  responses[currentIndex] = isValidation ? {
+  rating: rating.value,
+  extra: document.getElementById("validationExtra").value
+} : {
   category: cat,
   artifact: cat==="None" ? "None" : sub.value,
   difficulty: diff.value,
@@ -242,6 +331,7 @@ async function submitAndNext(){
   extra: document.getElementById("extraComments").value
 };
   document.getElementById("nextBtn").disabled = true;
+  document.getElementById("loader").style.display="block";
   await fetch(APPS_SCRIPT_URL,{
     method:"POST",
     mode:"no-cors",
