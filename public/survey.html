@@ -3,8 +3,8 @@
 <head>
 <title>Artifact Identification</title>
 
-<style> 
-  body{
+<style>
+body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f6f7fb;
   margin:0;
@@ -12,21 +12,8 @@
   color:#111827;
 }
 
-.card{
-  background:#fff;
-  border:1px solid #e5e7eb;
-  border-radius:14px;
-  padding:16px 22px;
-  box-shadow:0 3px 10px rgba(0,0,0,.05);
-}
-.progress-text{margin-bottom:6px;}
-audio{margin:4px 0 10px 0;}
-.option{margin-bottom:4px;font-size:14px;}
-textarea{min-height:48px;}
-h1{margin-bottom:8px;}
-p{margin:8px 0 4px;}
-
 .container{max-width:1000px;margin:auto;}
+
 .card{
   background:#fff;
   border:1px solid #e5e7eb;
@@ -34,18 +21,22 @@ p{margin:8px 0 4px;}
   padding:20px 26px;
   box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
+
 .progress-container{width:100%;background:#e5e7eb;border-radius:8px;height:10px;margin-bottom:8px;}
 .progress-bar{height:10px;width:0;background:#4f46e5;border-radius:8px;}
 .progress-text{text-align:center;margin-bottom:10px;font-weight:600;}
-audio{width:100%;margin:6px 0 12px 0;}
+
+audio{width:100%;margin:10px 0 16px 0;}
+
 textarea{
   width:100%;
-  min-height:48px; 
+  min-height:48px;
   padding:8px;
   border-radius:8px;
   border:1px solid #d1d5db;
   margin-top:4px;
 }
+
 button{
   background:#4f46e5;
   color:white;
@@ -55,6 +46,7 @@ button{
   font-size:14px;
   cursor:pointer;
 }
+
 .spinner{
   width:28px;
   height:28px;
@@ -64,59 +56,33 @@ button{
   animation:spin 0.7s linear infinite;
   margin:auto;
 }
-@keyframes spin{
-  from{transform:rotate(0deg);}
-  to{transform:rotate(360deg);}
-}p{
-  margin:12px 0 6px;
-}
+
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+p{margin:12px 0 6px;}
+
 .option{
-  margin-bottom:6px;   /* reduced from 10px */
+  margin-bottom:6px;
   padding:2px 0;
   font-size:14px;
   line-height:1.35;
 }
-
-.option input{
-  margin-right:6px;
-}
+.option input{margin-right:6px;}
 .option small{
   display:block;
   margin-left:22px;
   margin-top:2px;
   color:#6b7280;
-  font-size:13.5px;      /* was tiny → now readable */
-  line-height:1.35;
+  font-size:13.5px;
 }
-  
-.option b{
-  font-size:15px;
-}
-.split{
-  display:flex;
-  gap:60px;
-  align-items:flex-start;
-  margin-top:6px;
-  margin-bottom:12px;
-}
+.option b{font-size:15px;}
+
+.split{display:flex;gap:60px;align-items:flex-start;margin-top:6px;margin-bottom:12px;}
 .leftPanel{flex:1.1}
-.rightPanel{
-  flex:1;
-  padding-left:28px;
-  border-left:1px solid #e5e7eb;
-}
+.rightPanel{flex:1;padding-left:28px;border-left:1px solid #e5e7eb;}
+
 #accuracyBox{display:none;margin-top:10px;}
-#mainQuestions > p,
-#validationQuestions > p{
-  margin-top:18px;
-}
-label.option{
-  display:block;
-}
-audio{
-  margin:10px 0 16px 0;
-}
-  
+
 </style>
 </head>
 
@@ -130,11 +96,13 @@ audio{
 <div class="progress-text" id="progressText"></div>
 
 <audio controls id="audioPlayer" preload="metadata"></audio>
+
+<!-- MAIN QUESTIONS -->
 <div id="mainQuestions">
+
 <p><b>Q1. Which artifact category best describes the issue?</b></p>
 
 <div class="split">
-
 <div class="leftPanel">
 <label class="option"><input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()"> <b>Articulation Related</b><small>Lack of clarity in the speech formation</small></label>
 <label class="option"><input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()"> <b>Linguistic / Paralinguistic</b><small>Clear but Mispronounced / Repeated words/ non-verbal sounds</small></label>
@@ -145,7 +113,6 @@ audio{
 </div>
 
 <div id="subOptions" class="rightPanel"></div>
-
 </div>
 
 <p><b>Q2. How difficult is the artifact to spot on a scale of 1-5?</b></p>
@@ -158,26 +125,19 @@ audio{
 <p><b>Q3. Describe the artifact in your own language.</b></p>
 <textarea id="comments" placeholder="For eg. The audio sounds to be synthetic (You may use the labels above)."></textarea>
 
-  
 <div id="accuracyBox">
 <p><b>Q4. Were the provided categories and descriptions helpful in identifying the artifact in this audio?</b></p>
-
-<label class="option">
-  <input type="radio" name="accuracy" value="Helpful">
-  Helpful (clear and useful)
-</label>
-
-<label class="option">
-  <input type="radio" name="accuracy" value="Not helpful">
-  Not helpful (unclear or ambiguous)
-</label>
+<label class="option"><input type="radio" name="accuracy" value="Helpful"> Helpful (clear and useful)</label>
+<label class="option"><input type="radio" name="accuracy" value="Not helpful"> Not helpful (unclear or ambiguous)</label>
 </div>
-</div>
+
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
 <textarea id="extraComments" placeholder="Additional Description (Optional)"></textarea>
 
 </div>
-  <div id="validationQuestions" style="display:none;">
+
+<!-- VALIDATION QUESTIONS -->
+<div id="validationQuestions" style="display:none;">
 
 <p><b>Provided description for this audio:</b></p>
 <p id="groundTruthText" style="background:#f3f4f6;padding:10px;border-radius:8px;"></p>
@@ -191,18 +151,18 @@ audio{
 <label class="option"><input type="radio" name="rating" value="4"> 4</label>
 <label class="option"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
 
-<p><b>Q5. Describe any other artifact not highlighted above.</b></p>
+<p><b>Question. Describe any other artifact not highlighted above.</b></p>
 <textarea id="validationExtra" placeholder="Additional Description (Optional)"></textarea>
 
 </div>
-  <div id="loader" style="display:none;text-align:center;margin:10px 0;">
-  <div class="spinner"></div>
+
+<div id="loader" style="display:none;text-align:center;margin:10px 0;">
+<div class="spinner"></div>
 </div>
+
 <div style="margin-top:14px;display:flex;justify-content:space-between;">
-  <button onclick="goBack()">Back</button>
+<button onclick="goBack()">Back</button>
 <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-
-
 </div>
 
 </div>
