@@ -40,7 +40,7 @@ p{margin:8px 0 4px;}
 audio{width:100%;margin:6px 0 12px 0;}
 textarea{
   width:100%;
-  min-height:55px;
+  min-height:48px; 
   padding:8px;
   border-radius:8px;
   border:1px solid #d1d5db;
@@ -73,7 +73,7 @@ button{
 <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
 <div class="progress-text" id="progressText"></div>
 
-<audio controls id="audioPlayer"></audio>
+<audio controls id="audioPlayer" preload="metadata"></audio>
 
 <p><b>Q1. Which artifact category best describes the issue?</b></p>
 
@@ -141,19 +141,53 @@ let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({file:"audio
 
 let currentIndex=0;
 let audioPlayed=false;
+let responses = new Array(selectedSamples.length).fill(null);
 const audioPlayer=document.getElementById("audioPlayer");
 audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
-function loadSample(){
-const s=selectedSamples[currentIndex];
-audioPlayer.src=s.file;
-audioPlayer.load();
-audioPlayed=false;
+  function loadSample(){
+  const s = selectedSamples[currentIndex];
 
-document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
-document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of ${selectedSamples.length}`;
-document.getElementById("accuracyBox").style.display=currentIndex<12?"block":"none";
-document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish":"Next Audio";
+  audioPlayer.src = s.file;
+  audioPlayer.load();
+  audioPlayed = false;
+
+  // restore saved answers if exist
+  const saved = responses[currentIndex];
+
+  document.querySelectorAll("input[type=radio]").forEach(r=>r.checked=false);
+  document.getElementById("comments").value = saved?.comments || "";
+  document.getElementById("extraComments").value = saved?.extra || "";
+
+  if(saved){
+    const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
+    if(cat){cat.checked=true; showSubOptions();}
+    setTimeout(()=>{
+      if(saved.artifact){
+        const sub=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);
+        if(sub) sub.checked=true;
+      }
+      const diff=document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`);
+      if(diff) diff.checked=true;
+      const acc=document.querySelector(`input[name="accuracy"][value="${saved.accuracy}"]`);
+      if(acc) acc.checked=true;
+    },40);
+  }
+
+  document.getElementById("progressBar").style.width =
+    ((currentIndex+1)/selectedSamples.length*100)+"%";
+
+  document.getElementById("progressText").innerText =
+    `Sample ${currentIndex+1} of ${selectedSamples.length}`;
+
+  document.getElementById("accuracyBox").style.display =
+    currentIndex < 12 ? "block" : "none";
+
+  document.getElementById("nextBtn").innerText =
+    currentIndex === selectedSamples.length-1 ? "Finish" : "Next Audio";
+
+  preloadNextAudio();
+  document.getElementById("nextBtn").disabled = false;
 }
 
 function showSubOptions(){
@@ -174,36 +208,63 @@ c.innerHTML+=`<label class="option"><input type="radio" name="subArtifact" value
 }
 
 async function submitAndNext(){
-const s=selectedSamples[currentIndex];
-const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
-const sub=document.querySelector('input[name="subArtifact"]:checked');
-const diff=document.querySelector('input[name="difficulty"]:checked');
-const accuracy=document.querySelector('input[name="accuracy"]:checked');
 
-if(!audioPlayed)return alert("Please play audio.");
-if(!cat||(cat!=="None"&&!sub))return alert("Select artifact.");
-if(!diff)return alert("Select difficulty.");
-if(currentIndex<12 && !accuracy)return alert("Select accuracy.");
+  const s = selectedSamples[currentIndex];
 
-const payload={
+  const cat = document.querySelector('input[name="artifactCategory"]:checked')?.value;
+  const sub = document.querySelector('input[name="subArtifact"]:checked');
+  const diff = document.querySelector('input[name="difficulty"]:checked');
+  const accuracy = document.querySelector('input[name="accuracy"]:checked');
+
+  if(!audioPlayed) return alert("Please play audio.");
+  if(!cat || (cat!=="None" && !sub)) return alert("Select artifact.");
+  if(!diff) return alert("Select difficulty.");
+  if(currentIndex < 12 && !accuracy) return alert("Select accuracy.");
+
+  const payload = {
   ...sessionData,
-  audio:s.file,      // ✅ ADD THIS LINE
-  sample:currentIndex+1,
-  category:cat,
-  artifact:cat==="None"?"None":sub.value,
-  difficulty:diff.value,
-  comments:document.getElementById("comments").value,
-  rating:s.isValidation?rating.value:""
+  audio: s.file,
+  sample: currentIndex+1,
+  category: cat,
+  artifact: cat==="None" ? "None" : sub.value,
+  difficulty: diff.value,
+  accuracy: accuracy ? accuracy.value : "",
+  isValidation: currentIndex >= 12,
+  comments: document.getElementById("comments").value,
+  extraComments: document.getElementById("extraComments").value
 };
+  responses[currentIndex] = {
+  category: cat,
+  artifact: cat==="None" ? "None" : sub.value,
+  difficulty: diff.value,
+  accuracy: accuracy ? accuracy.value : "",
+  comments: document.getElementById("comments").value,
+  extra: document.getElementById("extraComments").value
+};
+  document.getElementById("nextBtn").disabled = true;
+  await fetch(APPS_SCRIPT_URL,{
+    method:"POST",
+    mode:"no-cors",
+    body: JSON.stringify(payload)
+  });
 
-await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
+  currentIndex++;
 
-currentIndex++;
-if(currentIndex>=selectedSamples.length){window.location.href="thankyou.html";return;}
-loadSample();
+  if(currentIndex >= selectedSamples.length){
+    window.location.href="thankyou.html";
+    return;
+  }
+
+  loadSample();
 }
+  
 
 function goBack(){if(currentIndex>0){currentIndex--;loadSample();}}
+function preloadNextAudio(){
+  if(currentIndex+1 >= selectedSamples.length) return;
+  const a = new Audio();
+  a.src = selectedSamples[currentIndex+1].file;
+}
 loadSample();
 
 </script>
