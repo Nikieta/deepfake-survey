@@ -4,6 +4,7 @@
 <title>Artifact Identification</title>
 
 <style>
+
 body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f6f7fb;
@@ -11,51 +12,104 @@ body{
   padding:20px;
   color:#111827;
 }
-.container{max-width:1000px;margin:auto;}
+
+.container{
+  width:96%;
+  max-width:1400px;
+  margin:auto;
+}
+
 .card{
   background:#fff;
   border:1px solid #e5e7eb;
   border-radius:14px;
-  padding:20px 24px;
-  box-shadow:0 4px 10px rgba(0,0,0,.05);
+  padding:20px 28px;
+  box-shadow:0 4px 12px rgba(0,0,0,.05);
 }
-.progress-container{width:100%;background:#e5e7eb;border-radius:6px;height:8px;margin-bottom:6px;}
-.progress-bar{height:8px;width:0;background:#4f46e5;border-radius:6px;}
-.progress-text{text-align:center;margin-bottom:12px;font-weight:600;font-size:14px;}
-audio{width:100%; margin:6px 0;}
+
+h1{margin-bottom:12px}
+
+.progress-container{
+  width:100%;
+  background:#e5e7eb;
+  border-radius:8px;
+  height:10px;
+  margin-bottom:6px;
+}
+
+.progress-bar{
+  height:10px;
+  width:0;
+  background:#4f46e5;
+  border-radius:8px;
+}
+
+.progress-text{
+  text-align:center;
+  margin-bottom:10px;
+  font-weight:600;
+}
+
+audio{
+  width:100%;
+  margin:6px 0 14px 0;
+}
+
+.split{
+  display:flex;
+  gap:90px;
+  align-items:flex-start;
+}
+
+.leftPanel{flex:1.1}
+.rightPanel{
+  flex:1;
+  padding-left:28px;
+  border-left:1px solid #e5e7eb;
+}
+
+.option{
+  margin-bottom:10px;
+  color:#374151;
+}
+
+.option small{
+  display:block;
+  color:#6b7280;
+  font-weight:400;
+}
+
 textarea{
   width:100%;
   min-height:70px;
-  padding:6px;
-  border-radius:6px;
+  padding:8px;
+  border-radius:8px;
   border:1px solid #d1d5db;
 }
+
 button{
   background:#4f46e5;
   color:white;
   border:none;
-  padding:8px 16px;
-  border-radius:6px;
+  padding:10px 18px;
+  border-radius:8px;
   font-size:14px;
   cursor:pointer;
 }
-.error{color:#dc2626;font-size:12px;margin-top:4px;display:none;}
+
 #validationBox{
   display:none;
-  margin-top:10px;
-  padding:10px;
-  border-radius:8px;
+  margin-top:12px;
+  padding:12px;
+  border-radius:10px;
   background:#f3f4f6;
-  font-size:14px;
 }
-small{color:#6b7280;}
-.option-label{color:#374151;font-weight:500;}
-.option-label small{color:#6b7280;font-weight:400;}
-h1{margin-bottom:10px}
+
 </style>
 </head>
 
 <body>
+
 <div class="container">
 <h1>Artifact Identification</h1>
 
@@ -64,84 +118,77 @@ h1{margin-bottom:10px}
 <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
 <div class="progress-text" id="progressText"></div>
 
-<audio controls id="audioPlayer">
-<source id="audioSource" src="" type="audio/flac">
-</audio>
+<audio controls id="audioPlayer"></audio>
 
 <p><b>Q1. Which artifact category best describes the issue?</b></p>
-<p style="margin-top:-6px;margin-bottom:10px;color:#6b7280;font-size:13px;">
-Choose a broad category first, then pick the specific issue on the right.
+<p style="margin-top:-6px;margin-bottom:12px;color:#6b7280;font-size:14px;">
+Choose a broad category first, then select the specific issue on the right.
 </p>
 
-<div style="display:flex;gap:60px;align-items:flex-start;">
+<div class="split">
 
-<div style="min-width:300px;">
+<div class="leftPanel">
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()">
-<b>Articulation Related</b><br>
-<small>Speech sounds unclear</small>
-</label><br>
+<b>Articulation Related</b>
+<small>Speech sounds unclear or not fully formed</small>
+</label>
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()">
-<b>Linguistic / Paralinguistic</b><br>
-<small>Word or pronunciation issues</small>
-</label><br>
+<b>Linguistic / Paralinguistic</b>
+<small>Word, pronunciation, or filler sound issues</small>
+</label>
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()">
-<b>Temporal / Prosodic</b><br>
-<small>Timing or emotion unnatural</small>
-</label><br>
+<b>Temporal / Prosodic</b>
+<small>Timing, pauses, or emotion sound unnatural</small>
+</label>
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()">
-<b>Signal-Level</b><br>
-<small>Noise or distortions</small>
-</label><br>
+<b>Signal-Level</b>
+<small>Noise or distortions present</small>
+</label>
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()">
-<b>Voice Quality</b><br>
-<small>Voice tone unnatural</small>
-</label><br>
+<b>Voice Quality</b>
+<small>Voice tone or texture sounds artificial</small>
+</label>
 
-<label class="option-label">
+<label class="option">
 <input type="radio" name="artifactCategory" value="None" onchange="showSubOptions()">
 <b>No obvious artifact</b>
 </label>
 
 </div>
 
-<div id="subOptions" style="flex:1;padding-left:18px;border-left:1px solid #e5e7eb;"></div>
+<div id="subOptions" class="rightPanel"></div>
 
 </div>
 
-<p style="margin-top:14px;"><b>Q2. How difficult is the artifact to spot?</b></p>
+<p style="margin-top:16px;"><b>Q2. How difficult is the artifact to spot?</b></p>
 
-<label class="option-label"><input type="radio" name="difficulty" value="1"> 1 (Very Easy)</label>
-<label class="option-label"><input type="radio" name="difficulty" value="2"> 2</label>
-<label class="option-label"><input type="radio" name="difficulty" value="3"> 3</label>
-<label class="option-label"><input type="radio" name="difficulty" value="4"> 4</label>
-<label class="option-label"><input type="radio" name="difficulty" value="5"> 5 (Very Hard)</label>
+<label class="option"><input type="radio" name="difficulty" value="1"> 1 (Very Easy)</label>
+<label class="option"><input type="radio" name="difficulty" value="2"> 2</label>
+<label class="option"><input type="radio" name="difficulty" value="3"> 3</label>
+<label class="option"><input type="radio" name="difficulty" value="4"> 4</label>
+<label class="option"><input type="radio" name="difficulty" value="5"> 5 (Very Hard)</label>
 
-<p style="margin-top:12px;"><b>Q3. Describe the artifact in your own language.</b></p>
-<textarea id="comments"></textarea>
+<p style="margin-top:14px;"><b>Q3. Describe the artifact in your own language.</b></p>
+
+<textarea id="comments"
+placeholder="The audio sounds to be synthetic (You may use the description of the labels to answer this question)."></textarea>
 
 <div id="validationBox">
 <div style="font-weight:600;margin-bottom:6px;">Provided description for this audio</div>
-<div id="groundTruthText" style="margin-bottom:10px;"></div>
-
-<b>Q4. How good is this description for the audio?</b><br>
-<label class="option-label"><input type="radio" name="rating" value="1"> 1 (Very Poor)</label>
-<label class="option-label"><input type="radio" name="rating" value="2"> 2</label>
-<label class="option-label"><input type="radio" name="rating" value="3"> 3</label>
-<label class="option-label"><input type="radio" name="rating" value="4"> 4</label>
-<label class="option-label"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+<div id="groundTruthText"></div>
 </div>
 
-<div style="margin-top:14px;display:flex;justify-content:space-between;">
+<div style="margin-top:18px;display:flex;justify-content:space-between;">
 <button onclick="goBack()">Back</button>
 <button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
 </div>
@@ -151,45 +198,51 @@ Choose a broad category first, then pick the specific issue on the right.
 
 <script>
 
-/* ---------- JS LEFT UNCHANGED EXCEPT DIFFICULTY SCALE ---------- */
-
 const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
 if(!sessionData) window.location.href="index.html";
 
 const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwgJ6DNVvq6_OzoaRkrI7m9PXI51nnp0S3HIPqkOF1kAVJpzCXJt8y2bVszt_4dGj0G/exec";
 
-const audioPlayer=document.getElementById("audioPlayer");
-const audioSource=document.getElementById("audioSource");
-
-let audioPlayed=false;
-audioPlayer.addEventListener("play",()=>audioPlayed=true);
-
-const audioPool=[/* keep your same list */];
-const groundTruthMap={/* keep your same map */};
+const audioPool=[
+"DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
+"DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
+"DF_E_2000079.flac","DF_E_2000091.flac","DF_E_2000100.flac","DF_E_2000102.flac",
+"DF_E_2000508.flac","DF_E_2000524.flac","DF_E_2749699.flac","DF_E_2749700.flac",
+"DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
+];
 
 function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 
-let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({
+let selectedSamples=shuffle([...audioPool]).slice(0,15).map(f=>({
 file:"audio/"+f,
-id:f,
-isValidation:i>=12,
-groundTruth:groundTruthMap[f]
+id:f
 }));
 
-let responses=new Array(selectedSamples.length).fill(null);
 let currentIndex=0;
+let audioPlayed=false;
+
+const audioPlayer=document.getElementById("audioPlayer");
+
+audioPlayer.addEventListener("play",()=>audioPlayed=true);
+
+function loadSample(){
+
+const s=selectedSamples[currentIndex];
+
+audioPlayer.src=s.file;
+audioPlayer.load();
+
+audioPlayed=false;
+
+document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
+document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of ${selectedSamples.length}`;
+
+document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish":"Next Audio";
+}
 
 function showSubOptions(){
+
 const defs={
-Articulation:[
-["Poor Word Articulation","Words not fully formed"],
-["Slurred Speech","Words blend together"]
-],
-Linguistic:[
-["Word Repetition","Words repeat"],
-["Mispronounced Words","Pronunciation wrong"],
-["Unnatural Paralinguistics","Odd fillers"]
-],
 Temporal:[
 ["Awkward Pauses","Pauses misplaced"],
 ["Missing Pauses","Speech too continuous"],
@@ -198,6 +251,15 @@ Temporal:[
 Signal:[
 ["Background Noise","Hiss or static"],
 ["Impulsive Noise","Clicks or pops"]
+],
+Articulation:[
+["Poor Word Articulation","Words unclear"],
+["Slurred Speech","Words blended"]
+],
+Linguistic:[
+["Word Repetition","Words repeat"],
+["Mispronounced Words","Wrong pronunciation"],
+["Unnatural Paralinguistics","Odd fillers"]
 ],
 Voice:[
 ["Unnatural Timbre","Metallic tone"],
@@ -209,45 +271,29 @@ Voice:[
 const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
 const c=document.getElementById("subOptions");
 c.innerHTML="";
+
 if(!cat||cat==="None")return;
 
 defs[cat].forEach(d=>{
 c.innerHTML+=`
-<label class="option-label" style="display:block;margin-bottom:8px;">
+<label class="option">
 <input type="radio" name="subArtifact" value="${d[0]}">
-<b>${d[0]}</b><br><small>${d[1]}</small>
+<b>${d[0]}</b>
+<small>${d[1]}</small>
 </label>`;
 });
 }
 
-function loadSample(){
-const s=selectedSamples[currentIndex];
-audioSource.src=s.file;
-audioPlayer.load();
-
-document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
-document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of ${selectedSamples.length}`;
-
-const v=document.getElementById("validationBox");
-if(s.isValidation){
-v.style.display="block";
-document.getElementById("groundTruthText").innerText=s.groundTruth;
-}else v.style.display="none";
-
-document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish":"Next Audio";
-}
-
 async function submitAndNext(){
+
 const s=selectedSamples[currentIndex];
 const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
 const sub=document.querySelector('input[name="subArtifact"]:checked');
 const diff=document.querySelector('input[name="difficulty"]:checked');
-const rating=document.querySelector('input[name="rating"]:checked');
 
 if(!audioPlayed)return alert("Please play audio.");
 if(!cat||(cat!=="None"&&!sub))return alert("Select artifact.");
 if(!diff)return alert("Select difficulty.");
-if(s.isValidation&&!rating)return alert("Rate description.");
 
 const payload={
 ...sessionData,
@@ -256,8 +302,7 @@ sample:currentIndex+1,
 category:cat,
 artifact:cat==="None"?"None":sub.value,
 difficulty:diff.value,
-comments:document.getElementById("comments").value,
-rating:s.isValidation?rating.value:""
+comments:document.getElementById("comments").value
 };
 
 await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
@@ -267,12 +312,20 @@ if(currentIndex>=selectedSamples.length){
 window.location.href="thankyou.html";
 return;
 }
+
 loadSample();
 }
 
-function goBack(){if(currentIndex>0){currentIndex--;loadSample();}}
+function goBack(){
+if(currentIndex>0){
+currentIndex--;
+loadSample();
+}
+}
+
 loadSample();
 
 </script>
+
 </body>
 </html>
