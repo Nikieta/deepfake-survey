@@ -2,133 +2,280 @@
 <html>
 <head>
 <title>Artifact Identification</title>
-
 <style>
+*{box-sizing:border-box;margin:0;padding:0;}
 body{
   font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   background:#f6f7fb;
-  margin:0;
-  padding:40px;
+  height:100vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
   color:#111827;
 }
-.container{max-width:900px;margin:auto;}
-.card{
+
+/* TOP BAR */
+.topbar{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  padding:10px 24px;
+  display:flex;
+  align-items:center;
+  gap:16px;
+  flex-shrink:0;
+}
+.topbar h1{font-size:16px;font-weight:700;color:#111827;white-space:nowrap;}
+.progress-wrap{flex:1;display:flex;align-items:center;gap:10px;}
+.progress-container{flex:1;background:#e5e7eb;border-radius:8px;height:8px;}
+.progress-bar{height:8px;width:0;background:#4f46e5;border-radius:8px;transition:width .3s;}
+.progress-text{font-size:13px;font-weight:600;color:#4f46e5;white-space:nowrap;}
+
+/* AUDIO ROW */
+.audio-row{
+  background:#fff;
+  border-bottom:1px solid #e5e7eb;
+  padding:8px 24px;
+  flex-shrink:0;
+}
+audio{width:100%;height:36px;}
+
+/* MAIN CONTENT */
+.main{
+  flex:1;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  padding:12px 24px;
+  gap:10px;
+}
+
+/* QUESTION BLOCKS */
+.q-row{
+  display:flex;
+  gap:12px;
+  flex:1;
+  overflow:hidden;
+  min-height:0;
+}
+
+/* Q1 block takes most space */
+.q1-block{
+  flex:2.2;
   background:#fff;
   border:1px solid #e5e7eb;
-  border-radius:16px;
-  padding:28px 32px;
-  box-shadow:0 4px 12px rgba(0,0,0,.05);
+  border-radius:12px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:hidden;
 }
-.progress-container{width:100%;background:#e5e7eb;border-radius:8px;height:10px;margin-bottom:12px;}
-.progress-bar{height:10px;width:0;background:#4f46e5;border-radius:8px;}
-.progress-text{text-align:center;margin-bottom:20px;font-weight:600;}
-audio{width:100%;margin:10px 0;}
-textarea{width:100%;min-height:90px;padding:8px;border-radius:8px;border:1px solid #d1d5db;}
-button{background:#4f46e5;color:white;border:none;padding:10px 18px;border-radius:8px;font-size:14px;cursor:pointer;}
-.error{color:#dc2626;font-size:13px;margin-top:6px;display:none;}
-#validationBox{display:none;margin-top:18px;padding:14px;border-radius:10px;background:#f3f4f6;}
-small{color:#6b7280;}
-  
+.q1-inner{
+  display:flex;
+  gap:0;
+  flex:1;
+  overflow:hidden;
+}
+.cat-col{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow:auto;
+  padding-right:12px;
+}
+.sub-col{
+  flex:1;
+  padding-left:14px;
+  border-left:1px solid #e5e7eb;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  overflow:auto;
+}
+
+/* RIGHT SIDEBAR (Q2 + Q3 + Q4) */
+.sidebar{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  overflow:hidden;
+}
+
+.q-block{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:12px 14px;
+  flex-shrink:0;
+}
+.q-block.grow{flex:1;overflow:hidden;display:flex;flex-direction:column;}
+
+/* TYPOGRAPHY */
+.q-label{font-size:12.5px;font-weight:700;margin-bottom:6px;color:#111827;}
+.q-hint{font-size:11px;color:#6b7280;margin-bottom:6px;}
+
 .option-label{
-  color:#374151;         
+  display:flex;
+  align-items:flex-start;
+  gap:6px;
+  cursor:pointer;
+  font-size:12.5px;
   font-weight:500;
+  color:#374151;
+  line-height:1.3;
+}
+.option-label input{margin-top:2px;flex-shrink:0;}
+.option-label small{color:#6b7280;font-weight:400;font-size:11px;display:block;}
+
+/* Q2 scale row */
+.scale-row{display:flex;gap:6px;align-items:center;}
+.scale-btn{
+  flex:1;
+  background:#f3f4f6;
+  border:1.5px solid #e5e7eb;
+  border-radius:8px;
+  padding:6px 4px;
+  text-align:center;
+  cursor:pointer;
+  font-size:12px;
+  font-weight:600;
+  color:#374151;
+  transition:all .15s;
+  user-select:none;
+}
+.scale-btn:hover{background:#e0e7ff;border-color:#a5b4fc;}
+.scale-btn.active{background:#4f46e5;border-color:#4f46e5;color:#fff;}
+.scale-labels{display:flex;justify-content:space-between;font-size:10px;color:#9ca3af;margin-top:3px;}
+
+/* Q3 textarea */
+textarea{
+  width:100%;
+  flex:1;
+  resize:none;
+  padding:7px;
+  border-radius:8px;
+  border:1px solid #d1d5db;
+  font-size:12.5px;
+  font-family:inherit;
   line-height:1.4;
 }
-.option-label small{
-  color:#6b7280;
-  font-weight:400;
+
+/* Validation box */
+#validationBox{
+  background:#fff;
+  border:1px solid #e5e7eb;
+  border-radius:12px;
+  padding:12px 14px;
+  flex-shrink:0;
+  display:none;
 }
+.gt-text{font-size:12px;color:#374151;margin:4px 0 8px;padding:6px 8px;background:#f9fafb;border-radius:6px;}
+
+/* BOTTOM BAR */
+.bottombar{
+  background:#fff;
+  border-top:1px solid #e5e7eb;
+  padding:8px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-shrink:0;
+}
+.btn{background:#4f46e5;color:white;border:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-secondary{background:#f3f4f6;color:#374151;border:1px solid #e5e7eb;}
+.btn:hover{opacity:.9;}
 </style>
 </head>
-
 <body>
-<div class="container">
-<h1>Artifact Identification</h1>
 
-<div class="card">
-
-<div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
-<div class="progress-text" id="progressText"></div>
-
-<audio controls id="audioPlayer">
-<source id="audioSource" src="" type="audio/flac">
-</audio>
-
-<p><b>Q1. Which artifact category best describes the issue?</b></p>
-<p style="margin-top:-8px; margin-bottom:14px; color:#6b7280; font-size:14px;">
-First select a broad category on the left. Then choose the specific issue that appears on the right.
-</p>
-
-<div style="display:flex;gap:80px;align-items:flex-start;">
-<div style="min-width:320px;">
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()">
-<b>Articulation Related</b><br>
-<small>Speech sounds are not clearly formed.</small>
-</label><br><br>
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()">
-<b>Linguistic / Paralinguistic</b><br>
-<small>Issues with words, pronunciation, or filler sounds.</small>
-</label><br><br>
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()">
-<b>Temporal / Prosodic</b><br>
-<small>Timing, pauses, or emotion in speech sound unnatural.</small>
-</label><br><br>
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()">
-<b>Signal-Level</b><br>
-<small>Noise or distortions affecting audio quality.</small>
-</label><br><br>
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()">
-<b>Voice-Quality Related</b><br>
-<small>Voice tone or texture sounds unnatural.</small>
-</label><br><br>
-
-<label class="option-label">
-<input type="radio" name="artifactCategory" value="None" onchange="showSubOptions()">
-<b>No obvious artifact</b>
-</label>
-
+<!-- TOP PROGRESS BAR -->
+<div class="topbar">
+  <h1>Artifact Identification</h1>
+  <div class="progress-wrap">
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+    <div class="progress-text" id="progressText"></div>
+  </div>
 </div>
 
-<div id="subOptions" style="flex:1; padding-left:24px; border-left:1px solid #e5e7eb;"></div>
+<!-- AUDIO PLAYER -->
+<div class="audio-row">
+  <audio controls id="audioPlayer">
+    <source id="audioSource" src="" type="audio/flac">
+  </audio>
 </div>
 
-<p><b>Q2. How easy or difficult was it to identify?</b></p>
-<label class="option-label"><input type="radio" name="difficulty" value="Easy"> Easy</label>
-<label class="option-label"><input type="radio" name="difficulty" value="Moderate"> Moderate</label>
-<label class="option-label"><input type="radio" name="difficulty" value="Difficult"> Difficult</label>
+<!-- MAIN -->
+<div class="main">
+  <div class="q-row">
 
-<p><b>Q3. Describe the artifact in your own language.</b></p>
-<textarea id="comments"></textarea>
+    <!-- Q1 -->
+    <div class="q1-block">
+      <div class="q-label">Q1. Which artifact category best describes the issue?</div>
+      <div class="q-hint">Select a broad category (left), then the specific issue (right).</div>
+      <div class="q1-inner">
+        <div class="cat-col" id="catCol">
+          <label class="option-label"><input type="radio" name="artifactCategory" value="Articulation" onchange="showSubOptions()"> <span><b>Articulation Related</b><small>Speech sounds not clearly formed.</small></span></label>
+          <label class="option-label"><input type="radio" name="artifactCategory" value="Linguistic" onchange="showSubOptions()"> <span><b>Linguistic / Paralinguistic</b><small>Issues with words or filler sounds.</small></span></label>
+          <label class="option-label"><input type="radio" name="artifactCategory" value="Temporal" onchange="showSubOptions()"> <span><b>Temporal / Prosodic</b><small>Timing, pauses, or emotion unnatural.</small></span></label>
+          <label class="option-label"><input type="radio" name="artifactCategory" value="Signal" onchange="showSubOptions()"> <span><b>Signal-Level</b><small>Noise or distortions in audio.</small></span></label>
+          <label class="option-label"><input type="radio" name="artifactCategory" value="Voice" onchange="showSubOptions()"> <span><b>Voice-Quality Related</b><small>Voice tone or texture unnatural.</small></span></label>
+          <label class="option-label"><input type="radio" name="artifactCategory" value="None" onchange="showSubOptions()"> <span><b>No obvious artifact</b></span></label>
+        </div>
+        <div class="sub-col" id="subOptions">
+          <div style="color:#9ca3af;font-size:12px;margin-top:8px;">← Select a category first</div>
+        </div>
+      </div>
+    </div>
 
-<div id="validationBox">
-<div style="font-weight:600;margin-bottom:6px;">Provided description for this audio</div>
-<div id="groundTruthText" style="margin-bottom:12px;"></div>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
 
-<b>Q4. How good is this description for the audio?</b><br>
+      <!-- Q2 -->
+      <div class="q-block">
+        <div class="q-label">Q2. How difficult is the artifact to spot?</div>
+        <div class="scale-row" id="scaleRow">
+          <div class="scale-btn" onclick="selectScale(1)">1</div>
+          <div class="scale-btn" onclick="selectScale(2)">2</div>
+          <div class="scale-btn" onclick="selectScale(3)">3</div>
+          <div class="scale-btn" onclick="selectScale(4)">4</div>
+          <div class="scale-btn" onclick="selectScale(5)">5</div>
+        </div>
+        <div class="scale-labels"><span>Very Easy</span><span>Very Difficult</span></div>
+        <input type="hidden" id="difficultyVal" value="">
+      </div>
 
-<label class="option-label"><input type="radio" name="rating" value="1"> 1 (Very Poor)</label><br>
-<label class="option-label"><input type="radio" name="rating" value="2"> 2</label><br>
-<label class="option-label"><input type="radio" name="rating" value="3"> 3 (Neutral)</label><br>
-<label class="option-label"><input type="radio" name="rating" value="4"> 4</label><br>
-<label class="option-label"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+      <!-- Q3 -->
+      <div class="q-block grow">
+        <div class="q-label">Q3. Describe the artifact in your own words.</div>
+        <textarea id="comments" placeholder="Type your description here..."></textarea>
+      </div>
+
+      <!-- Q4 (Validation only) -->
+      <div id="validationBox">
+        <div class="q-label">Provided description for this audio</div>
+        <div class="gt-text" id="groundTruthText"></div>
+        <div class="q-label">Q4. How good is this description for the audio?</div>
+        <div class="scale-row" id="ratingRow">
+          <div class="scale-btn" onclick="selectRating(1)">1</div>
+          <div class="scale-btn" onclick="selectRating(2)">2</div>
+          <div class="scale-btn" onclick="selectRating(3)">3</div>
+          <div class="scale-btn" onclick="selectRating(4)">4</div>
+          <div class="scale-btn" onclick="selectRating(5)">5</div>
+        </div>
+        <div class="scale-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <input type="hidden" id="ratingVal" value="">
+      </div>
+
+    </div>
+  </div>
 </div>
 
-<div style="margin-top:20px;display:flex;justify-content:space-between;">
-<button onclick="goBack()">Back</button>
-<button id="nextBtn" onclick="submitAndNext()">Next Audio</button>
-</div>
-
-</div>
+<!-- BOTTOM NAV -->
+<div class="bottombar">
+  <button class="btn btn-secondary" onclick="goBack()">← Back</button>
+  <button class="btn" id="nextBtn" onclick="submitAndNext()">Next Audio →</button>
 </div>
 
 <script>
@@ -139,7 +286,6 @@ const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbwgJ6DNVvq6_OzoaR
 
 const audioPlayer=document.getElementById("audioPlayer");
 const audioSource=document.getElementById("audioSource");
-
 let audioPlayed=false;
 audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
@@ -174,125 +320,107 @@ const groundTruthMap={
 "DF_E_2749817.flac":"No clear artifact present."
 };
 
-
 function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 
 let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({
-file:"audio/"+f,
-id:f,
-isValidation:i>=12,
-groundTruth:groundTruthMap[f]
+  file:"audio/"+f,id:f,isValidation:i>=12,groundTruth:groundTruthMap[f]
 }));
 
 let responses=new Array(selectedSamples.length).fill(null);
 let currentIndex=0;
 
-function showSubOptions(){
-const defs={
-Articulation:[
-["Poor Word Articulation","Words not fully formed"],
-["Slurred Speech","Words blend together"]
-],
-Linguistic:[
-["Word / Phrase Repetition","Words repeat unnaturally"],
-["Mispronounced Words","Pronunciation incorrect"],
-["Unnatural Paralinguistics","Odd filler sounds"]
-],
-Temporal:[
-["Awkward Pauses","Pauses in wrong places"],
-["Missing Pauses","Speech too continuous"],
-["Flat Intonation","Monotone voice"]
-],
-Signal:[
-["Background Noise","Hiss or static present"],
-["Impulsive Noise","Clicks or pops"]
-],
-Voice:[
-["Unnatural Timbre","Metallic/artificial tone"],
-["Muffled Voice","Distant or covered sound"],
-["Distorted Voice","Wobbly or warped tone"]
-]
+const subDefs={
+  Articulation:[["Poor Word Articulation","Words not fully formed"],["Slurred Speech","Words blend together"]],
+  Linguistic:[["Word / Phrase Repetition","Words repeat unnaturally"],["Mispronounced Words","Pronunciation incorrect"],["Unnatural Paralinguistics","Odd filler sounds"]],
+  Temporal:[["Awkward Pauses","Pauses in wrong places"],["Missing Pauses","Speech too continuous"],["Flat Intonation","Monotone voice"]],
+  Signal:[["Background Noise","Hiss or static present"],["Impulsive Noise","Clicks or pops"]],
+  Voice:[["Unnatural Timbre","Metallic/artificial tone"],["Muffled Voice","Distant or covered sound"],["Distorted Voice","Wobbly or warped tone"]]
 };
 
-const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
-const c=document.getElementById("subOptions");
-c.innerHTML="";
-if(!cat||cat==="None")return;
+function showSubOptions(){
+  const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
+  const c=document.getElementById("subOptions");
+  c.innerHTML="";
+  if(!cat||cat==="None")return;
+  subDefs[cat].forEach(d=>{
+    c.innerHTML+=`<label class="option-label"><input type="radio" name="subArtifact" value="${d[0]}"> <span><b>${d[0]}</b><small>${d[1]}</small></span></label>`;
+  });
+}
 
-defs[cat].forEach(d=>{
-c.innerHTML+=`
-<label class="option-label" style="display:block;margin-bottom:10px;">
-<input type="radio" name="subArtifact" value="${d[0]}">
-<b>${d[0]}</b><br><small>${d[1]}</small>
-</label>`;
-});
+function selectScale(val){
+  document.getElementById("difficultyVal").value=val;
+  document.querySelectorAll("#scaleRow .scale-btn").forEach((b,i)=>b.classList.toggle("active",i+1===val));
+}
+
+function selectRating(val){
+  document.getElementById("ratingVal").value=val;
+  document.querySelectorAll("#ratingRow .scale-btn").forEach((b,i)=>b.classList.toggle("active",i+1===val));
 }
 
 function loadSample(){
-const s=selectedSamples[currentIndex];
-audioSource.src=s.file;
-audioPlayer.load();
+  const s=selectedSamples[currentIndex];
+  audioSource.src=s.file;
+  audioPlayer.load();
+  audioPlayed=false;
 
-const saved=responses[currentIndex];
-audioPlayed=!!saved;
+  // Reset
+  document.querySelectorAll("input[type=radio]").forEach(i=>i.checked=false);
+  document.getElementById("subOptions").innerHTML='<div style="color:#9ca3af;font-size:12px;margin-top:8px;">← Select a category first</div>';
+  document.getElementById("comments").value="";
+  document.getElementById("difficultyVal").value="";
+  document.getElementById("ratingVal").value="";
+  document.querySelectorAll(".scale-btn").forEach(b=>b.classList.remove("active"));
 
-document.querySelectorAll("input").forEach(i=>i.checked=false);
-document.getElementById("comments").value=saved?.comments||"";
-if(saved){
-const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
-if(cat){cat.checked=true;showSubOptions();}
-setTimeout(()=>{
-if(saved.artifact){
-const el=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);
-if(el)el.checked=true;}
-const d=document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`);
-if(d)d.checked=true;
-const r=document.querySelector(`input[name="rating"][value="${saved.rating}"]`);
-if(r)r.checked=true;
-},50);
-}
+  const saved=responses[currentIndex];
+  if(saved){
+    audioPlayed=true;
+    const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
+    if(cat){cat.checked=true;showSubOptions();}
+    setTimeout(()=>{
+      if(saved.artifact){const el=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);if(el)el.checked=true;}
+      if(saved.difficulty)selectScale(parseInt(saved.difficulty));
+      if(saved.rating)selectRating(parseInt(saved.rating));
+    },50);
+    document.getElementById("comments").value=saved.comments||"";
+  }
 
-document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
-document.getElementById("progressText").innerText=`Sample ${currentIndex+1} of ${selectedSamples.length}`;
+  document.getElementById("progressBar").style.width=((currentIndex+1)/selectedSamples.length*100)+"%";
+  document.getElementById("progressText").innerText=`${currentIndex+1} / ${selectedSamples.length}`;
 
-const v=document.getElementById("validationBox");
-if(s.isValidation){
-v.style.display="block";
-document.getElementById("groundTruthText").innerText=s.groundTruth;
-}else v.style.display="none";
+  const v=document.getElementById("validationBox");
+  if(s.isValidation){v.style.display="block";document.getElementById("groundTruthText").innerText=s.groundTruth;}
+  else v.style.display="none";
 
-document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish":"Next Audio";
+  document.getElementById("nextBtn").innerText=currentIndex===selectedSamples.length-1?"Finish ✓":"Next Audio →";
 }
 
 async function submitAndNext(){
-const s=selectedSamples[currentIndex];
-const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
-const sub=document.querySelector('input[name="subArtifact"]:checked');
-const diff=document.querySelector('input[name="difficulty"]:checked');
-const rating=document.querySelector('input[name="rating"]:checked');
+  const s=selectedSamples[currentIndex];
+  const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
+  const sub=document.querySelector('input[name="subArtifact"]:checked');
+  const diff=document.getElementById("difficultyVal").value;
+  const rating=document.getElementById("ratingVal").value;
 
-if(!audioPlayed)return alert("Please play audio.");
-if(!cat||(cat!=="None"&&!sub))return alert("Select artifact.");
-if(!diff)return alert("Select difficulty.");
-if(s.isValidation&&!rating)return alert("Rate description.");
+  if(!audioPlayed)return alert("Please play the audio before proceeding.");
+  if(!cat||(cat!=="None"&&!sub))return alert("Please select an artifact type.");
+  if(!diff)return alert("Please rate the difficulty.");
+  if(s.isValidation&&!rating)return alert("Please rate the description.");
 
-const payload={
-...sessionData,
-audio_id:s.id,
-sample:currentIndex+1,
-category:cat,
-artifact:cat==="None"?"None":sub.value,
-difficulty:diff.value,
-comments:document.getElementById("comments").value,
-rating:s.isValidation?rating.value:""
-};
+  const payload={
+    ...sessionData,
+    audio_id:s.id,sample:currentIndex+1,
+    category:cat,artifact:cat==="None"?"None":sub.value,
+    difficulty:diff,
+    comments:document.getElementById("comments").value,
+    rating:s.isValidation?rating:""
+  };
 
-responses[currentIndex]=payload;
-await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
+  responses[currentIndex]=payload;
+  await fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:JSON.stringify(payload)});
 
-currentIndex++;
-if(currentIndex>=selectedSamples.length){window.location.href="thankyou.html";return;}
-loadSample();
+  currentIndex++;
+  if(currentIndex>=selectedSamples.length){window.location.href="thankyou.html";return;}
+  loadSample();
 }
 
 function goBack(){if(currentIndex>0){currentIndex--;loadSample();}}
