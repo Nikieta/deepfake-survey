@@ -68,13 +68,11 @@ button{
   from{transform:rotate(0deg);}
   to{transform:rotate(360deg);}
 }p{
-  margin:14px 0 8px;
-  line-height:1.45;
+  margin:12px 0 6px;
 }
-
 .option{
-  margin-bottom:10px;
-  padding:4px 0;
+  margin-bottom:6px;   /* reduced from 10px */
+  padding:2px 0;
   font-size:14px;
   line-height:1.35;
 }
@@ -82,12 +80,17 @@ button{
 .option input{
   margin-right:6px;
 }
-
 .option small{
   display:block;
   margin-left:22px;
   margin-top:2px;
   color:#6b7280;
+  font-size:13.5px;      /* was tiny → now readable */
+  line-height:1.35;
+}
+  
+.option b{
+  font-size:15px;
 }
 .split{
   display:flex;
@@ -170,7 +173,6 @@ audio{
 </label>
 </div>
 </div>
-
 <p><b>Q5. Describe any other artifact not highlighted above.</b></p>
 <textarea id="extraComments" placeholder="Additional Description (Optional)"></textarea>
 
@@ -365,7 +367,7 @@ if(!audioPlayed) return alert("Please play audio.");
 if(!isValidation){
   if(!cat || (cat!=="None" && !sub)) return alert("Select artifact.");
   if(!diff) return alert("Select difficulty.");
-  if(!accuracy) return alert("Select accuracy.");
+  if(!isValidation && !accuracy) return alert("Select accuracy.");
 }
 
 if(isValidation && !rating) return alert("Please rate the description.");
@@ -403,13 +405,11 @@ const payload = {
   
   document.getElementById("nextBtn").disabled = true;
   document.getElementById("loader").style.display="block";
- await fetch(APPS_SCRIPT_URL,{
+ fetch(APPS_SCRIPT_URL,{
   method:"POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify(payload)
-});
+  headers:{ "Content-Type":"application/json" },
+  body:JSON.stringify(payload)
+}).catch(()=>{});
   currentIndex++;
 
   if(currentIndex >= selectedSamples.length){
