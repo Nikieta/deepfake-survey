@@ -67,13 +67,53 @@ button{
 @keyframes spin{
   from{transform:rotate(0deg);}
   to{transform:rotate(360deg);}
+}p{
+  margin:14px 0 8px;
+  line-height:1.45;
 }
-.option{margin-bottom:6px;color:#374151;}
-.option small{display:block;color:#6b7280;font-weight:400;}
-.split{display:flex;gap:80px;align-items:flex-start;}
+
+.option{
+  margin-bottom:10px;
+  padding:4px 0;
+  font-size:14px;
+  line-height:1.35;
+}
+
+.option input{
+  margin-right:6px;
+}
+
+.option small{
+  display:block;
+  margin-left:22px;
+  margin-top:2px;
+  color:#6b7280;
+}
+.split{
+  display:flex;
+  gap:60px;
+  align-items:flex-start;
+  margin-top:6px;
+  margin-bottom:12px;
+}
 .leftPanel{flex:1.1}
-.rightPanel{flex:1;padding-left:24px;border-left:1px solid #e5e7eb;}
+.rightPanel{
+  flex:1;
+  padding-left:28px;
+  border-left:1px solid #e5e7eb;
+}
 #accuracyBox{display:none;margin-top:10px;}
+#mainQuestions > p,
+#validationQuestions > p{
+  margin-top:18px;
+}
+label.option{
+  display:block;
+}
+audio{
+  margin:10px 0 16px 0;
+}
+  
 </style>
 </head>
 
@@ -115,8 +155,6 @@ button{
 <p><b>Q3. Describe the artifact in your own language.</b></p>
 <textarea id="comments" placeholder="For eg. The audio sounds to be synthetic (You may use the labels above)."></textarea>
 
-<div id="accuracyBox">
-<p><b>Q4. Were the provided categories and descriptions helpful in identifying the artifact in this audio?</b></p>
   
 <div id="accuracyBox">
 <p><b>Q4. Were the provided categories and descriptions helpful in identifying the artifact in this audio?</b></p>
@@ -277,17 +315,29 @@ if(isValidation){
 
 function showSubOptions(){
 const defs={
-Temporal:[["Awkward Pauses","Pauses occur awkwardly mid sentence"],["Missing Pauses","Overly fast speech with missing natural pauses"],["Flat Intonation","Monotonous speaking style with no expression"]],
-Signal:[["Background Noise","Constant Background Noise like buzz, hum or noise accompanying vocals"],["Impulsive Noise","Sudden short-duration noise like click, thud etc"]],
-Articulation:[["Poor Word Articulation","Unclear words while word boundaries are clear"],["Slurred Speech","Unclear speech with merged/blended word boundaries
-
-"]],
-Linguistic:[["Word Repetition","Unintentional repetition of words / phrases"],["Mispronounced Words","Mispronounciation of words especially short-forms, Units etc.
-
-"],["Unnatural Paralinguistics","Unnatural fillers or non-verbal sounds like huh, hmm."]],
-Voice:[["Unnatural Timbre","Voice texture is mechanical, overly sharp or rough"],["Muffled Voice","Voice sounds Suppressed/ distant 
-
-"],["Distorted Voice","Voice is stretched/distorted or shaky/unstable"]]
+Temporal:[
+["Awkward Pauses","Pauses occur awkwardly mid sentence"],
+["Missing Pauses","Overly fast speech with missing natural pauses"],
+["Flat Intonation","Monotonous speaking style with no expression"]
+],
+Signal:[
+["Background Noise","Constant background buzz or hum with speech"],
+["Impulsive Noise","Sudden short noises like click or thud"]
+],
+Articulation:[
+["Poor Word Articulation","Unclear words but boundaries remain"],
+["Slurred Speech","Merged or blended word boundaries"]
+],
+Linguistic:[
+["Word Repetition","Unintentional repetition of words or phrases"],
+["Mispronounced Words","Incorrect pronunciation of words"],
+["Unnatural Paralinguistics","Odd fillers or non verbal sounds"]
+],
+Voice:[
+["Unnatural Timbre","Voice texture sounds mechanical or rough"],
+["Muffled Voice","Voice sounds suppressed or distant"],
+["Distorted Voice","Voice sounds stretched or unstable"]
+]
 };
 const cat=document.querySelector('input[name="artifactCategory"]:checked')?.value;
 const c=document.getElementById("subOptions");
