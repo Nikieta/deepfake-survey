@@ -182,14 +182,32 @@ audio{
 <p><b>Provided description for this audio:</b></p>
 <p id="groundTruthText" style="background:#f3f4f6;padding:10px;border-radius:8px;"></p>
 
-<p><b>Do you think this description matches the audio?</b></p>
-<p><b>Rate how good this description is (1–5):</b></p>
+<p><b>How well does the provided description match the audio?</b></p>
 
-<label class="option"><input type="radio" name="rating" value="1"> 1 (Very Poor)</label>
-<label class="option"><input type="radio" name="rating" value="2"> 2</label>
-<label class="option"><input type="radio" name="rating" value="3"> 3</label>
-<label class="option"><input type="radio" name="rating" value="4"> 4</label>
-<label class="option"><input type="radio" name="rating" value="5"> 5 (Excellent)</label>
+<label class="option">
+  <input type="radio" name="rating" value="1">
+  1 — Does not match at all (completely different)
+</label>
+
+<label class="option">
+  <input type="radio" name="rating" value="2">
+  2 — Slightly matches (only a few elements are similar)
+</label>
+
+<label class="option">
+  <input type="radio" name="rating" value="3">
+  3 — Moderately matches (some parts are correct, some are not)
+</label>
+
+<label class="option">
+  <input type="radio" name="rating" value="4">
+  4 — Mostly matches (description is largely accurate)
+</label>
+
+<label class="option">
+  <input type="radio" name="rating" value="5">
+  5 — Perfectly matches (description accurately represents the audio)
+</label>
 
 <p><b>Describe any other artifact not highlighted above.</b></p>
 <textarea id="validationExtra" placeholder="Additional Description (Optional)"></textarea>
