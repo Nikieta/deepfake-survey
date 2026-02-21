@@ -303,21 +303,37 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   document.querySelectorAll('input[name="rating"]').forEach(r=>r.checked=false);
   document.getElementById("validationExtra").value="";
 
-  if(saved){
-    const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
-    if(cat){cat.checked=true; showSubOptions();}
-    setTimeout(()=>{
-      if(saved.artifact){
-        const sub=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);
-        if(sub) sub.checked=true;
-      }
-      const diff=document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`);
-      if(diff) diff.checked=true;
-      const acc=document.querySelector(`input[name="accuracy"][value="${saved.accuracy}"]`);
-      if(acc) acc.checked=true;
-    },40);
+    if(saved){
+
+  // restore main answers
+  const cat=document.querySelector(`input[name="artifactCategory"][value="${saved.category}"]`);
+  if(cat){cat.checked=true; showSubOptions();}
+
+  setTimeout(()=>{
+    if(saved.artifact){
+      const sub=document.querySelector(`input[name="subArtifact"][value="${saved.artifact}"]`);
+      if(sub) sub.checked=true;
+    }
+    const diff=document.querySelector(`input[name="difficulty"][value="${saved.difficulty}"]`);
+    if(diff) diff.checked=true;
+
+    const acc=document.querySelector(`input[name="accuracy"][value="${saved.accuracy}"]`);
+    if(acc) acc.checked=true;
+  },40);
+
+  // ⭐ restore validation answers
+  if(saved.rating){
+    const r=document.querySelector(`input[name="rating"][value="${saved.rating}"]`);
+    if(r) r.checked=true;
   }
 
+  if(saved.confidence){
+    const c=document.querySelector(`input[name="confidence"][value="${saved.confidence}"]`);
+    if(c) c.checked=true;
+  }
+
+  document.getElementById("validationExtra").value = saved.extra || "";
+}
   document.getElementById("progressBar").style.width =
     ((currentIndex+1)/selectedSamples.length*100)+"%";
 
@@ -430,6 +446,7 @@ const payload = {
 };
   responses[currentIndex] = isValidation ? {
   rating: rating.value,
+  confidence: confidence.value,
   extra: document.getElementById("validationExtra").value
 } : {
   category: cat,
