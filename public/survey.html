@@ -207,6 +207,22 @@ audio{
 <label class="option">
   <input type="radio" name="rating" value="5">
   5 — Perfectly matches (description accurately represents the audio)
+</label><p><b>How confident are you in your rating?</b></p>
+
+<label class="option">
+  <input type="radio" name="confidence" value="1"> 1 — Not confident at all
+</label>
+<label class="option">
+  <input type="radio" name="confidence" value="2"> 2 — Slightly confident
+</label>
+<label class="option">
+  <input type="radio" name="confidence" value="3"> 3 — Moderately confident
+</label>
+<label class="option">
+  <input type="radio" name="confidence" value="4"> 4 — Very confident
+</label>
+<label class="option">
+  <input type="radio" name="confidence" value="5"> 5 — Extremely confident
 </label>
 
 <p><b>Describe any other artifact not highlighted above.</b></p>
@@ -378,6 +394,7 @@ const accuracy = document.querySelector('input[name="accuracy"]:checked');
 
 const isValidation = currentIndex >= 10;
 const rating = document.querySelector('input[name="rating"]:checked');
+const confidence = document.querySelector('input[name="confidence"]:checked');
 
 if(!audioPlayed) return alert("Please play audio.");
 
@@ -387,13 +404,15 @@ if(!isValidation){
   if(!isValidation && !accuracy) return alert("Select accuracy.");
 }
 
-if(isValidation && !rating) return alert("Please rate the description.");
+if(isValidation && (!rating || !confidence))
+  return alert("Please rate the description and select confidence.");
 
 const payload = {
   ...sessionData,
   audio: s.file,
   sample: currentIndex+1,
   isValidation:isValidation,
+  
 
   // normal answers
   category: isValidation ? "" : cat,
@@ -407,6 +426,7 @@ const payload = {
 
   // validation rating
   rating: isValidation && rating ? rating.value : ""
+  confidence: isValidation && confidence ? confidence.value : ""
 };
   responses[currentIndex] = isValidation ? {
   rating: rating.value,
