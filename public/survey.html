@@ -269,13 +269,33 @@ const groundTruthMap={
 "DF_E_2749783.flac":"No clear artifact.",
 "DF_E_2749817.flac":"No clear artifact."
 };
+
 const audioPool=[
-"DF_E_2000013.flac","DF_E_2000024.flac","DF_E_2000026.flac","DF_E_2000042.flac",
-"DF_E_2000048.flac","DF_E_2000053.flac","DF_E_2000055.flac","DF_E_2000075.flac",
-"DF_E_2000079.flac","DF_E_2000091.flac","DF_E_2000100.flac","DF_E_2000102.flac",
-"DF_E_2000508.flac","DF_E_2000524.flac","DF_E_2749699.flac","DF_E_2749700.flac",
-"DF_E_2749711.flac","DF_E_2749732.flac","DF_E_2749783.flac","DF_E_2749817.flac"
+"AU01909.wav",
+"AU03007.wav",
+"AU04248.wav",
+"AU05456.wav",
+"AU05632.wav",
+"AU06841.wav",
+"AU08222.wav",
+"AU10016.wav",
+"AU10822.wav",
+"AU12156.wav",
+"AU12673.wav",
+"AU14892.wav",
+"TM00150.wav",
+"TM00805.wav",
+"TM00874.wav",
+"TM01786.wav",
+"TM01833.wav",
+"TM01894.wav",
+"TM01946.wav",
+"TM02031.wav",
+"TM02048.wav",
+"TM02128.wav",
+"TM02157.wav"
 ];
+
 
 function shuffle(a){return a.sort(()=>Math.random()-0.5);}
 let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({file:"audio/"+f,id:f}));
