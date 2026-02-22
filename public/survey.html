@@ -277,18 +277,17 @@ async function loadStudyData(){
   function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
 
   const mainSet = shuffle([...quesAudios]).slice(0,10).map(f=>({
-    file:"public/audio/"+f
+    file:"/audio/"+f,
     id:f,
     isValidation:false
-  }));
+}));
 
-  const valSet = shuffle([...descPairs]).slice(0,5).map(p=>({
-    file:"public/audio/"+f
+const valSet = shuffle([...descPairs]).slice(0,5).map(p=>({
+    file:"/audio/"+p.file,
     id:p.file,
     isValidation:true,
     desc:p.desc
-  }));
-
+}));
   selectedSamples = shuffle([...mainSet,...valSet]);
   responses = new Array(selectedSamples.length).fill(null);
   loadSample();
