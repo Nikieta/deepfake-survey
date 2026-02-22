@@ -247,62 +247,58 @@ const sessionData = JSON.parse(sessionStorage.getItem("participantData"));
 if(!sessionData) window.location.href="index.html";
 
 const APPS_SCRIPT_URL="https://script.google.com/macros/s/AKfycbyLLsFwfw9tEcUcoKm-l53XPg0z9nlG1JrEDJ519MVBp0hHPpiHbEEoYgV2lJqpJc8b/exec";
-const groundTruthMap={
-"DF_E_2000013.flac":"Background noise affects clarity.",
-"DF_E_2000024.flac":"Speech articulation is unclear.",
-"DF_E_2000026.flac":"Background noise artifacts present.",
-"DF_E_2000042.flac":"Voice sounds robotic.",
-"DF_E_2000048.flac":"Background noise reduces clarity.",
-"DF_E_2000053.flac":"Noise artifacts audible.",
-"DF_E_2000055.flac":"Robotic tone detected.",
-"DF_E_2000075.flac":"Pronunciation clarity issues.",
-"DF_E_2000079.flac":"No obvious artifact.",
-"DF_E_2000091.flac":"Background noise present.",
-"DF_E_2000100.flac":"Pronunciation clarity issues.",
-"DF_E_2000102.flac":"Robotic voice detected.",
-"DF_E_2000508.flac":"No obvious artifact.",
-"DF_E_2000524.flac":"No obvious artifact.",
-"DF_E_2749699.flac":"Robotic voice present.",
-"DF_E_2749700.flac":"Pronunciation clarity issues.",
-"DF_E_2749711.flac":"Robotic tone detected.",
-"DF_E_2749732.flac":"No clear artifact.",
-"DF_E_2749783.flac":"No clear artifact.",
-"DF_E_2749817.flac":"No clear artifact."
-};
-
-const audioPool=[
-"AU01909.wav",
-"AU03007.wav",
-"AU04248.wav",
-"AU05456.wav",
-"AU05632.wav",
-"AU06841.wav",
-"AU08222.wav",
-"AU10016.wav",
-"AU10822.wav",
-"AU12156.wav",
-"AU12673.wav",
-"AU14892.wav",
-"TM00150.wav",
-"TM00805.wav",
-"TM00874.wav",
-"TM01786.wav",
-"TM01833.wav",
-"TM01894.wav",
-"TM01946.wav",
-"TM02031.wav",
-"TM02048.wav",
-"TM02128.wav",
-"TM02157.wav"
-];
 
 
-function shuffle(a){return a.sort(()=>Math.random()-0.5);}
-let selectedSamples=shuffle([...audioPool]).slice(0,15).map((f,i)=>({file:"audio/"+f,id:f}));
+const QUES_URL = "PASTE_RAW_LINK_TO_userstudy_ques.csv";
+const DESC_URL = "PASTE_RAW_LINK_TO_userstudy_desc.csv";
+
+let selectedSamples = [];
+
+async function loadStudyData(){
+
+  const quesCSV = await fetch(QUES_URL).then(r=>r.text());
+  const descCSV = await fetch(DESC_URL).then(r=>r.text());
+ 
+  const quesRows = quesCSV.trim().split("\n").slice(1);
+  const descRows = descCSV.trim().split("\n").slice(1);
+
+  const quesAudios = quesRows.map(r=>{
+    const cols=r.split(",");
+    return cols[0].trim();   // first column = filename
+  });
+
+  const descPairs = descRows.map(r=>{
+    const cols=r.split(",");
+    return {
+      file: cols[0].trim(),      // filename
+      desc: cols[1].trim()       // description
+    };
+  });
+
+  function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+  const mainSet = shuffle([...quesAudios]).slice(0,10).map(f=>({
+    file:"audio/"+f,
+    id:f,
+    isValidation:false
+  }));
+
+  const valSet = shuffle([...descPairs]).slice(0,5).map(p=>({
+    file:"audio/"+p.file,
+    id:p.file,
+    isValidation:true,
+    desc:p.desc
+  }));
+
+  selectedSamples = shuffle([...mainSet,...valSet]);
+  responses = new Array(selectedSamples.length).fill(null);
+  loadSample();
+} 
+
 
 let currentIndex=0;
 let audioPlayed=false;
-let responses = new Array(selectedSamples.length).fill(null);
+let responses = [];
 const audioPlayer=document.getElementById("audioPlayer");
 audioPlayer.addEventListener("play",()=>audioPlayed=true);
 
@@ -312,6 +308,7 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   audioPlayer.src = s.file;
   audioPlayer.load();
   audioPlayed = false;
+ 
 
   // restore saved answers if exist
   const saved = responses[currentIndex];
@@ -360,8 +357,8 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   document.getElementById("progressText").innerText =
     `Sample ${currentIndex+1} of ${selectedSamples.length}`;
 
-  document.getElementById("accuracyBox").style.display =
-    currentIndex < 10 ? "block" : "none";
+document.getElementById("accuracyBox").style.display =
+    selectedSamples[currentIndex].isValidation ? "none" : "block";
 
   document.getElementById("nextBtn").innerText =
     currentIndex === selectedSamples.length-1 ? "Finish" : "Next Audio";
@@ -369,7 +366,7 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   preloadNextAudio();
   document.getElementById("nextBtn").disabled = false;
   document.getElementById("loader").style.display="none";
-    const isValidation = currentIndex >= 10;
+  const isValidation = selectedSamples[currentIndex].isValidation;
 
 document.getElementById("mainQuestions").style.display =
   isValidation ? "none" : "block";
@@ -378,9 +375,8 @@ document.getElementById("validationQuestions").style.display =
   isValidation ? "block" : "none";
 
 if(isValidation){
-  const filename = selectedSamples[currentIndex].id;
   document.getElementById("groundTruthText").innerText =
-    groundTruthMap[filename] || "";
+    selectedSamples[currentIndex].desc || "";
 }
 }
 
@@ -421,14 +417,14 @@ c.innerHTML+=`<label class="option"><input type="radio" name="subArtifact" value
 
 async function submitAndNext(){
 
-  const s = selectedSamples[currentIndex];
+const s = selectedSamples[currentIndex];
 
 const cat = document.querySelector('input[name="artifactCategory"]:checked')?.value;
 const sub = document.querySelector('input[name="subArtifact"]:checked');
 const diff = document.querySelector('input[name="difficulty"]:checked');
 const accuracy = document.querySelector('input[name="accuracy"]:checked');
 
-const isValidation = currentIndex >= 10;
+const isValidation = selectedSamples[currentIndex].isValidation;
 const rating = document.querySelector('input[name="rating"]:checked');
 const confidence = document.querySelector('input[name="confidence"]:checked');
 
@@ -501,7 +497,7 @@ function preloadNextAudio(){
   const a = new Audio();
   a.src = selectedSamples[currentIndex+1].file;
 }
-loadSample();
+loadStudyData();
 document.addEventListener("keydown", e=>{
   if(e.key==="Enter") e.preventDefault();
 });
