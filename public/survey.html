@@ -277,13 +277,13 @@ async function loadStudyData(){
   function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
 
   const mainSet = shuffle([...quesAudios]).slice(0,10).map(f=>({
-    file:"audio/"+f,
+    file:"public/audio/"+f
     id:f,
     isValidation:false
   }));
 
   const valSet = shuffle([...descPairs]).slice(0,5).map(p=>({
-    file:"audio/"+p.file,
+    file:"public/audio/"+f
     id:p.file,
     isValidation:true,
     desc:p.desc
