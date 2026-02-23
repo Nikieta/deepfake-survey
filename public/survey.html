@@ -129,7 +129,9 @@ audio{
 <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
 <div class="progress-text" id="progressText"></div>
 
-<audio controls id="audioPlayer" preload="metadata"></audio>
+<audio id="audioPlayer" controls preload="metadata">
+  <source id="audioSource" src="" type="audio/wav">
+</audio>
 <div id="mainQuestions">
 <p><b>Q1. Which artifact category best describes the issue?</b></p>
 
@@ -303,8 +305,8 @@ audioPlayer.addEventListener("play",()=>audioPlayed=true);
   function loadSample(){
   const s = selectedSamples[currentIndex];
 
-  audioPlayer.src = s.file;
-  audioPlayer.load();
+document.getElementById("audioSource").src = s.file;
+audioPlayer.load();
   audioPlayed = false;
  
 
