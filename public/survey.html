@@ -261,20 +261,20 @@ async function loadStudyData(){
   const descCSV = await fetch(DESC_URL).then(r=>r.text());
  
   const quesRows = quesCSV.trim().split("\n").slice(1);
-  const descRows = descCSV.trim().split("\n").slice(1);
+const descRows = descCSV.trim().split("\n").slice(1);
 
-  const quesAudios = quesRows.map(r=>{
-    const cols=r.split(",");
-    return cols[0].trim();   // first column = filename
-  });
+const quesAudios = quesRows.map(r => {
+  const cols = r.split("|");   // ← was ","
+  return cols[0].trim();
+});
 
-  const descPairs = descRows.map(r=>{
-    const cols=r.split(",");
-    return {
-      file: cols[0].trim(),      // filename
-      desc: cols[1].trim()       // description
-    };
-  });
+const descPairs = descRows.map(r => {
+  const cols = r.split("|");   // ← was ","
+  return {
+    file: cols[0].trim(),
+    desc: cols[1].trim()
+  };
+});
 
   function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
 
