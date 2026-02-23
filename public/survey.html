@@ -290,7 +290,7 @@ const valSet = shuffle([...descPairs]).slice(0,5).map(p=>({
     isValidation:true,
     desc:p.desc
 }));
-  selectedSamples = shuffle([...mainSet,...valSet]);
+  selectedSamples = [...mainSet, ...valSet];
   responses = new Array(selectedSamples.length).fill(null);
   loadSample();
 } 
